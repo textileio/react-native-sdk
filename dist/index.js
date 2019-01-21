@@ -8,3 +8,5 @@ var Events_1 = require("./Events");
 exports.Events = Events_1.default;
 var CameraRoll_1 = require("./CameraRoll");
 exports.CameraRoll = CameraRoll_1.default;
+var react_native_protobufs_1 = require("@textile/react-native-protobufs");
+exports.Protobufs = react_native_protobufs_1.default;
