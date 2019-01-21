@@ -1,5 +1,4 @@
 "use strict";
-// export type BlockId = string & { _blockIdBrand: void }
 Object.defineProperty(exports, "__esModule", { value: true });
 var BlockType;
 (function (BlockType) {

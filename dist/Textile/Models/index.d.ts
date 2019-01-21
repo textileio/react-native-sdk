@@ -1,3 +1,44 @@
+export declare enum BlockType {
+    MERGE = "MERGE",
+    IGNORE = "IGNORE",
+    FLAG = "FLAG",
+    JOIN = "JOIN",
+    ANNOUNCE = "ANNOUNCE",
+    LEAVE = "LEAVE",
+    MESSAGE = "MESSAGE",
+    FILES = "FILES",
+    COMMENT = "COMMENT",
+    LIKE = "LIKE",
+    INVALID = "INVALID"
+}
+export declare enum NotificationType {
+    InviteReceivedNotification = "INVITE_RECEIVED",
+    AccountPeerJoinedNotification = "ACCOUNT_PEER_JOINED",
+    PeerJoinedNotification = "PEER_JOINED",
+    PeerLeftNotification = "PEER_LEFT",
+    MessageAddedNotification = "MESSAGE_ADDED",
+    FilesAddedNotification = "FILES_ADDED",
+    CommentAddedNotification = "COMMENT_ADDED",
+    LikeAddedNotification = "LIKE_ADDED"
+}
+export declare enum ThreadType {
+    PRIVATE = "PRIVATE",
+    READONLY = "READONLY",
+    PUBLIC = "PUBLIC",
+    OPEN = "OPEN",
+    INVALID = "INVALID"
+}
+export declare enum ThreadState {
+    LOADING = "LOADING",
+    LOADED = "LOADED",
+    INVALID = "INVALID"
+}
+export declare enum UpdateType {
+    ThreadAdded = 0,
+    ThreadRemoved = 1,
+    AccountPeerAdded = 2,
+    AccountPeerRemoved = 3
+}
 export interface File {
     readonly mill: string;
     readonly checksum: string;
@@ -47,19 +88,6 @@ export interface ThreadFilesInfo {
     readonly likes: ReadonlyArray<ThreadLikeInfo>;
     readonly threads: ReadonlyArray<string>;
 }
-export declare enum BlockType {
-    MERGE = "MERGE",
-    IGNORE = "IGNORE",
-    FLAG = "FLAG",
-    JOIN = "JOIN",
-    ANNOUNCE = "ANNOUNCE",
-    LEAVE = "LEAVE",
-    MESSAGE = "MESSAGE",
-    FILES = "FILES",
-    COMMENT = "COMMENT",
-    LIKE = "LIKE",
-    INVALID = "INVALID"
-}
 export interface BlockInfo {
     readonly id: string;
     readonly thread_id: string;
@@ -101,16 +129,6 @@ export interface ContactInfo {
     readonly created: string;
     readonly updated: string;
     readonly thread_ids?: ReadonlyArray<string>;
-}
-export declare enum NotificationType {
-    InviteReceivedNotification = "INVITE_RECEIVED",
-    AccountPeerJoinedNotification = "ACCOUNT_PEER_JOINED",
-    PeerJoinedNotification = "PEER_JOINED",
-    PeerLeftNotification = "PEER_LEFT",
-    MessageAddedNotification = "MESSAGE_ADDED",
-    FilesAddedNotification = "FILES_ADDED",
-    CommentAddedNotification = "COMMENT_ADDED",
-    LikeAddedNotification = "LIKE_ADDED"
 }
 export interface NotificationInfo {
     readonly id: string;
@@ -168,18 +186,6 @@ export interface Node {
         readonly [key: string]: Link;
     };
 }
-export declare enum ThreadType {
-    PRIVATE = "PRIVATE",
-    READONLY = "READONLY",
-    PUBLIC = "PUBLIC",
-    OPEN = "OPEN",
-    INVALID = "INVALID"
-}
-export declare enum ThreadState {
-    LOADING = "LOADING",
-    LOADED = "LOADED",
-    INVALID = "INVALID"
-}
 export interface ThreadInfo {
     readonly id: string;
     readonly key: string;
@@ -203,12 +209,6 @@ export interface ThreadUpdate {
     thread_id: string;
     thread_name: string;
     info?: any;
-}
-export declare enum UpdateType {
-    ThreadAdded = 0,
-    ThreadRemoved = 1,
-    AccountPeerAdded = 2,
-    AccountPeerRemoved = 3
 }
 export interface Update {
     id: string;

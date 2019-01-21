@@ -14,7 +14,7 @@ import {
   BlockInfo,
   ThreadFilesInfo,
   NotificationInfo
-} from './Model'
+} from './Models'
 import { IMobilePreparedFiles, IDirectory, MobilePreparedFiles, Directory } from '@textile/react-native-protobufs'
 
 const { TextileNode } = NativeModules
