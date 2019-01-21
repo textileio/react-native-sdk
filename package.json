@@ -20,7 +20,6 @@
   "author": "textile.io",
   "license": "MIT",
   "peerDependencies": {
-    "@textile/react-native-protobufs": "1.0.5",
     "react": "*",
     "react-native": "*"
   },
@@ -48,6 +47,7 @@
   },
   "dependencies": {
     "@textile/go-mobile": "1.0.0-rc26",
+    "@textile/react-native-protobufs": "1.0.5",
     "prop-types": "^15.6.1",
     "buffer": "^5.2.1"
   },
