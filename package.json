@@ -1,7 +1,7 @@
 {
   "name": "@textile/react-native-sdk",
   "version": "1.0.8",
-  "description": "",
+  "description": "## Getting started",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
@@ -45,6 +45,14 @@
     "buffer": "^5.2.1"
   },
   "directories": {
-    "dist": "dist"
-  }
+    "lib": "lib"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/textileio/react-native-sdk.git"
+  },
+  "bugs": {
+    "url": "https://github.com/textileio/react-native-sdk/issues"
+  },
+  "homepage": "https://github.com/textileio/react-native-sdk#readme"
 }

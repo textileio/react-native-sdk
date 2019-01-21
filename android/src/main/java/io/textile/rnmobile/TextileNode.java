@@ -27,7 +27,9 @@ import mobile.Callback;
 public class TextileNode extends ReactContextBaseJavaModule {
     public static final String REACT_CLASS = "TextileNode";
     private static ReactApplicationContext reactContext = null;
-    static Mobile_ node = null;
+
+    // made public so external native libraries can interact
+    public static Mobile_ node = null;
 
     private Executor executor = Executors.newSingleThreadExecutor();
 

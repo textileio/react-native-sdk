@@ -24,6 +24,11 @@ Textile/Libararies/RNTextile go to -> Build Settings -> Search Paths -> Framewor
 3. In XCode, in the project navigator, select your project. Add `libRNTextile.a` to your project's `Build Phases` ➜ `Link Binary With Libraries`
 4. Run your project (`Cmd+R`)<
 
+
+Note: In my setup I had to dd the following in Search Paths of RNTextile inside my Xcode project -> `Library Search Paths` and `Framework Search Paths`, `$(SRCROOT)/../../go-mobile/ios`
+
+^ The above also seems to get removed whenever i do an upgrade of this library.
+
 #### Android
 
 1. Open up `android/app/src/main/java/[...]/MainActivity.java`
@@ -47,4 +52,3 @@ import RNTextile from 'react-native-textile';
 // TODO: What to do with the module?
 RNTextile;
 ```
-  
