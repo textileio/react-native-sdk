@@ -1,49 +1,3 @@
-export enum BlockType {
-  MERGE = 'MERGE',
-  IGNORE = 'IGNORE',
-  FLAG = 'FLAG',
-  JOIN = 'JOIN',
-  ANNOUNCE = 'ANNOUNCE',
-  LEAVE = 'LEAVE',
-  MESSAGE = 'MESSAGE',
-  FILES = 'FILES',
-  COMMENT = 'COMMENT',
-  LIKE = 'LIKE',
-  INVALID = 'INVALID'
-}
-
-export enum NotificationType {
-  InviteReceivedNotification = 'INVITE_RECEIVED',
-  AccountPeerJoinedNotification = 'ACCOUNT_PEER_JOINED',
-  PeerJoinedNotification = 'PEER_JOINED',
-  PeerLeftNotification = 'PEER_LEFT',
-  MessageAddedNotification = 'MESSAGE_ADDED',
-  FilesAddedNotification = 'FILES_ADDED',
-  CommentAddedNotification = 'COMMENT_ADDED',
-  LikeAddedNotification = 'LIKE_ADDED'
-}
-
-export enum ThreadType {
-  PRIVATE = 'PRIVATE',
-  READONLY = 'READONLY',
-  PUBLIC = 'PUBLIC',
-  OPEN = 'OPEN',
-  INVALID = 'INVALID'
-}
-
-export enum ThreadState {
-  LOADING = 'LOADING',
-  LOADED = 'LOADED',
-  INVALID = 'INVALID'
-}
-
-export enum UpdateType {
-  ThreadAdded,
-  ThreadRemoved,
-  AccountPeerAdded,
-  AccountPeerRemoved
-}
-
 export interface File {
   readonly mill: string
   readonly checksum: string
@@ -74,6 +28,7 @@ export interface ThreadCommentInfo {
   readonly date: string
   readonly author_id: string
   readonly username?: string
+  readonly avatar?: string
   readonly body: string
 }
 
@@ -82,6 +37,7 @@ export interface ThreadLikeInfo {
   readonly date: string
   readonly author_id: string
   readonly username?: string
+  readonly avatar?: string
 }
 
 export interface ThreadFilesInfo {
@@ -90,6 +46,7 @@ export interface ThreadFilesInfo {
   readonly date: string
   readonly author_id: string
   readonly username?: string
+  readonly avatar?: string
   readonly caption?: string
   readonly files: ReadonlyArray<ThreadFileInfo>
   readonly comments: ReadonlyArray<ThreadCommentInfo>
@@ -97,11 +54,26 @@ export interface ThreadFilesInfo {
   readonly threads: ReadonlyArray<string>
 }
 
+export enum BlockType {
+  MERGE = 'MERGE',
+  IGNORE = 'IGNORE',
+  FLAG = 'FLAG',
+  JOIN = 'JOIN',
+  ANNOUNCE = 'ANNOUNCE',
+  LEAVE = 'LEAVE',
+  MESSAGE = 'MESSAGE',
+  FILES = 'FILES',
+  COMMENT = 'COMMENT',
+  LIKE = 'LIKE',
+  INVALID = 'INVALID'
+}
+
 export interface BlockInfo {
   readonly id: string
   readonly thread_id: string
   readonly author_id: string
   readonly username: string
+  readonly avatar?: string
   readonly type: BlockType
   readonly date: string
   readonly parents: ReadonlyArray<string>
@@ -144,11 +116,28 @@ export interface ContactInfo {
   readonly thread_ids?: ReadonlyArray<string>
 }
 
+export interface ContactInfoQueryResult {
+  readonly local?: ReadonlyArray<ContactInfo>
+  readonly remote?: ReadonlyArray<ContactInfo>
+}
+
+export enum NotificationType {
+  InviteReceivedNotification = 'INVITE_RECEIVED',
+  AccountPeerJoinedNotification = 'ACCOUNT_PEER_JOINED',
+  PeerJoinedNotification = 'PEER_JOINED',
+  PeerLeftNotification = 'PEER_LEFT',
+  MessageAddedNotification = 'MESSAGE_ADDED',
+  FilesAddedNotification = 'FILES_ADDED',
+  CommentAddedNotification = 'COMMENT_ADDED',
+  LikeAddedNotification = 'LIKE_ADDED'
+}
+
 export interface NotificationInfo {
   readonly id: string
   readonly date: string
   readonly actor_id: string
   readonly username?: string
+  readonly avatar?: string
   readonly subject: string
   readonly subject_id: string
   readonly block_id?: string
@@ -159,18 +148,10 @@ export interface NotificationInfo {
 }
 
 export interface Overview {
-  readonly swarm_size: number
   readonly account_peer_cnt: number
   readonly thread_cnt: number
   readonly file_cnt: number
   readonly contact_cnt: number
-}
-
-export interface Profile {
-  readonly address: string
-  readonly inboxes?: ReadonlyArray<string>
-  readonly username?: string
-  readonly avatar_uri?: string
 }
 
 export interface FileData {
@@ -196,6 +177,20 @@ export interface Node {
   readonly links?: { readonly [key: string]: Link }
 }
 
+export enum ThreadType {
+  PRIVATE = 'PRIVATE',
+  READONLY = 'READONLY',
+  PUBLIC = 'PUBLIC',
+  OPEN = 'OPEN',
+  INVALID = 'INVALID'
+}
+
+export enum ThreadState {
+  LOADING = 'LOADING',
+  LOADED = 'LOADED',
+  INVALID = 'INVALID'
+}
+
 export interface ThreadInfo {
   readonly id: string
   readonly key: string
@@ -219,12 +214,21 @@ export interface WalletAccount {
 export interface ThreadUpdate {
   block: BlockInfo
   thread_id: string
+  thread_key: string
   thread_name: string
   info?: any
 }
 
+export enum UpdateType {
+  ThreadAdded,
+  ThreadRemoved,
+  AccountPeerAdded,
+  AccountPeerRemoved
+}
+
 export interface Update {
   id: string
+  key: string
   name: string
   type: UpdateType
 }

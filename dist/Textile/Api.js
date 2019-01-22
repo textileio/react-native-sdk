@@ -43,12 +43,6 @@ function addExternalThreadInvite(threadId) {
     });
 }
 exports.addExternalThreadInvite = addExternalThreadInvite;
-function addPeerToThread(id_, threadId) {
-    return __awaiter(this, void 0, void 0, function* () {
-        yield TextileNode.addPeerToThread(id_, threadId);
-    });
-}
-exports.addPeerToThread = addPeerToThread;
 function addSchema(jsonstr) {
     return __awaiter(this, void 0, void 0, function* () {
         const result = yield TextileNode.addSchema(jsonstr);
@@ -115,6 +109,13 @@ function address() {
     });
 }
 exports.address = address;
+function avatar() {
+    return __awaiter(this, void 0, void 0, function* () {
+        const result = yield TextileNode.avatar();
+        return result.length > 0 ? result : undefined;
+    });
+}
+exports.avatar = avatar;
 function cafeSession(peerId) {
     return __awaiter(this, void 0, void 0, function* () {
         const result = yield TextileNode.cafeSession(peerId);
@@ -149,14 +150,6 @@ function contactThreads(id_) {
     });
 }
 exports.contactThreads = contactThreads;
-function contactUsername(id_) {
-    return __awaiter(this, void 0, void 0, function* () {
-        // TODO: Deal with empty string?
-        const result = yield TextileNode.contactUsername(id_);
-        return result;
-    });
-}
-exports.contactUsername = contactUsername;
 function contacts() {
     return __awaiter(this, void 0, void 0, function* () {
         const result = yield TextileNode.contacts();
@@ -185,6 +178,13 @@ function fileData(hash) {
     });
 }
 exports.fileData = fileData;
+function findContact(username, limit, wait) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const result = yield TextileNode.findContact(username, limit, wait);
+        return JSON.parse(result);
+    });
+}
+exports.findContact = findContact;
 function ignoreThreadInviteViaNotification(id_) {
     return __awaiter(this, void 0, void 0, function* () {
         const result = yield TextileNode.ignoreThreadInviteViaNotification(id_);
@@ -221,13 +221,6 @@ function peerId() {
     });
 }
 exports.peerId = peerId;
-function peerProfile(peerId) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const result = yield TextileNode.peerProfile(peerId);
-        return JSON.parse(result);
-    });
-}
-exports.peerProfile = peerProfile;
 function prepareFiles(path, threadId) {
     return __awaiter(this, void 0, void 0, function* () {
         const result = yield TextileNode.prepareFiles(path, threadId);

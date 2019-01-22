@@ -1,4 +1,4 @@
-import { File, ExternalInvite, CafeSession, ContactInfo, Overview, Profile, FileData, ThreadInfo, WalletAccount, BlockInfo, ThreadFilesInfo, NotificationInfo } from './Models';
+import { File, ExternalInvite, CafeSession, ContactInfo, ContactInfoQueryResult, Overview, FileData, ThreadInfo, WalletAccount, BlockInfo, ThreadFilesInfo, NotificationInfo } from './Models';
 import { IMobilePreparedFiles, IDirectory } from '@textile/react-native-protobufs';
 /**
  * Returns the hash of the initial join block. Not the threadId of the final thread created/joined
@@ -7,7 +7,6 @@ export declare function acceptExternalThreadInvite(id_: string, key: string): Pr
 export declare function acceptThreadInviteViaNotification(id_: string): Promise<string>;
 export declare function addContact(contact: ContactInfo): Promise<void>;
 export declare function addExternalThreadInvite(threadId: string): Promise<ExternalInvite>;
-export declare function addPeerToThread(id_: string, threadId: string): Promise<void>;
 export declare function addSchema(jsonstr: string): Promise<File>;
 export declare function addThread(key: string, name: string, shared: boolean): Promise<ThreadInfo>;
 export declare function addThreadComment(blockId: string, body: string): Promise<string>;
@@ -17,25 +16,25 @@ export declare function addThreadIgnore(blockId: string): Promise<string>;
 export declare function addThreadInvite(threadId: string, inviteeId: string): Promise<string>;
 export declare function addThreadLike(blockId: string): Promise<string>;
 export declare function address(): Promise<string>;
+export declare function avatar(): Promise<string | undefined>;
 export declare function cafeSession(peerId: string): Promise<CafeSession>;
 export declare function cafeSessions(): Promise<ReadonlyArray<CafeSession>>;
 export declare function checkCafeMessages(): Promise<void>;
 export declare function contact(id_: string): Promise<ContactInfo>;
 export declare function contactThreads(id_: string): Promise<ReadonlyArray<ThreadInfo>>;
-export declare function contactUsername(id_: string): Promise<string>;
 export declare function contacts(): Promise<ReadonlyArray<ContactInfo>>;
 export declare function countUnreadNotifications(): Promise<number>;
 export declare function deregisterCafe(peerId: string): Promise<void>;
 export declare function fileData(hash: string): Promise<FileData>;
+export declare function findContact(username: string, limit: number, wait: number): Promise<ContactInfoQueryResult>;
 export declare function ignoreThreadInviteViaNotification(id_: string): Promise<string>;
 export declare function imageFileDataForMinWidth(pth: string, minWidth: number): Promise<FileData>;
 export declare function notifications(offset: string, limit: number): Promise<ReadonlyArray<NotificationInfo>>;
 export declare function overview(): Promise<Overview>;
 export declare function peerId(): Promise<string>;
-export declare function peerProfile(peerId: string): Promise<Profile>;
 export declare function prepareFiles(path: string, threadId: string): Promise<IMobilePreparedFiles>;
 export declare function prepareFilesAsync(path: string, threadId: string): Promise<IMobilePreparedFiles>;
-export declare function profile(): Promise<Profile>;
+export declare function profile(): Promise<ContactInfo>;
 export declare function readAllNotifications(): Promise<void>;
 export declare function readNotification(id_: string): Promise<void>;
 export declare function refreshCafeSession(cafeId: string): Promise<CafeSession>;

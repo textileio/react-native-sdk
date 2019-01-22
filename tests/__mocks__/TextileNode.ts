@@ -6,7 +6,7 @@ import {
     ThreadState,
     BlockInfo,
     BlockType,
-    Profile
+    ContactInfo
 } from '../../lib'
 
 export default {
@@ -65,9 +65,12 @@ export default {
         resolve(JSON.stringify(mockBlockInfo))
     })),
     profile: jest.fn((): Promise<string> => new Promise((resolve) => {
-        const mockProfile: Profile = {
+        const mockProfile: ContactInfo = {
+            id: 'id',
             address: '123',
-            username: 'mock'
+            username: 'mock',
+            created: 'created',
+            updated: 'updated'
         }
         resolve(JSON.stringify(mockProfile))
     })),
