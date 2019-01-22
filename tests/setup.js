@@ -10,8 +10,6 @@ jest.mock('NativeModules', () => {
     }
 })
 
-NativeModules.TextileNode = TextileNode
-
 jest.mock('CameraRoll', () => {
     return {
         getPhotos: jest.fn((payload) => new Promise((resolve) => {
