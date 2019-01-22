@@ -1,19 +1,16 @@
 import Enzyme from 'enzyme'
 import Adapter from 'enzyme-adapter-react-16'
 import TextileNode from './__mocks__/TextileNode'
+import {NativeModules} from 'react-native';
 
 // Custom mock APIs for native TextileNode
 jest.mock('NativeModules', () => {
     return {
-        TextileNode
+        TextileNode 
     }
 })
 
-// jest.mock('@textile/react-native-sdk', () => {
-//     return {
-//         eventEmitter: jest.fn()
-//     }
-// })
+NativeModules.TextileNode = TextileNode
 
 jest.mock('CameraRoll', () => {
     return {

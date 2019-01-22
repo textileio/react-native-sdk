@@ -12,14 +12,9 @@
     "strict": true,
     "outDir": "dist"
   },
-  "include": [
-    "./lib/**/*"
-  ],
   "exclude": [
     "node_modules",
-    "**/__tests__/**/*",
-    "coverage",
-    "dist"
+    "coverage"
   ],
   "compileOnSave": true
 }
