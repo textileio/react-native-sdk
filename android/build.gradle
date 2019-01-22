@@ -49,7 +49,7 @@ repositories {
 
 dependencies {
     implementation "com.facebook.react:react-native:+"  // From node_modules
-    compile project(':textilego')
+    implementation project(':textilego')
 }
 
 task wrapper(type: Wrapper) {

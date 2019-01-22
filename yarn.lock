@@ -714,9 +714,9 @@
   version "1.0.0-rc27"
   resolved "https://registry.yarnpkg.com/@textile/go-mobile/-/go-mobile-1.0.0-rc27.tgz#7d2c45ecafdeef9f19bccf4d76c87facc73acf43"
 
-"@textile/react-native-protobufs@1.0.5":
-  version "1.0.5"
-  resolved "https://registry.yarnpkg.com/@textile/react-native-protobufs/-/react-native-protobufs-1.0.5.tgz#6188556470818addcf5e11daa77da3371dcb95e0"
+"@textile/react-native-protobufs@1.0.6":
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/@textile/react-native-protobufs/-/react-native-protobufs-1.0.6.tgz#0ac6da7f565e746b686913efe1d43ca22cab81c7"
   dependencies:
     protobufjs "^6.8.8"
 
@@ -4443,7 +4443,7 @@ prompts@^0.1.9:
     kleur "^2.0.1"
     sisteransi "^0.1.1"
 
-prop-types@^15.5.8, prop-types@^15.6.1, prop-types@^15.6.2:
+prop-types@^15.5.8, prop-types@^15.6.2:
   version "15.6.2"
   resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.6.2.tgz#05d5ca77b4453e985d60fc7ff8c859094a497102"
   dependencies:
