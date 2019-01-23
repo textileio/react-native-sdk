@@ -144,6 +144,11 @@ export async function findContact(username: string, limit: number, wait: number)
   return JSON.parse(result) as ContactInfoQueryResult
 }
 
+export async function getDocumentDirectory(): Promise<string> {
+  const dir = await TextileNode.getDocumentDirectory()
+  return dir as string
+}
+
 export async function ignoreThreadInviteViaNotification(id_: string): Promise<string> {
   const result = await TextileNode.ignoreThreadInviteViaNotification(id_)
   return result as string

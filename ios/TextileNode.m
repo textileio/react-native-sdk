@@ -217,6 +217,16 @@ RCT_EXPORT_METHOD(findContact:(NSString*)username limit:(NSInteger)limit wait:(N
   [self fulfillWithResult:result error:error resolver:resolve rejecter:reject];
 }
 
+RCT_EXPORT_METHOD(getDocumentDirectory:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+  NSError *error;
+  NSFileManager *fileManager = [[NSFileManager alloc] init];
+  NSURL *rootDirectory = [[fileManager URLsForDirectory:NSDocumentDirectory
+                                              inDomains:NSUserDomainMask] lastObject];
+  NSURL *repoURL = [rootDirectory URLByAppendingPathComponent:@"textile-go/" isDirectory:true];
+
+  [self fulfillWithResult:[repoURL path] error:error resolver:resolve rejecter:reject];
+}
+
 RCT_EXPORT_METHOD(ignoreThreadInviteViaNotification:(NSString*)id_ resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSError *error;
   [self.node ignoreThreadInviteViaNotification:id_ error:&error];
