@@ -12,11 +12,6 @@ import com.facebook.react.modules.core.DeviceEventManagerModule;
 
 import org.json.JSONObject;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
@@ -886,77 +881,6 @@ public class TextileNode extends ReactContextBaseJavaModule {
             }
         });
     }
-
-    @ReactMethod
-    public void setupDocumentDirectory(final Promise promise) {
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    File appDir = reactContext.getFilesDir();
-                    File repoDir = new File(appDir, "textile-go");
-                    boolean exists = repoDir.exists();
-                    if (exists) {
-                        promise.resolve(null);
-                    } else {
-                        File[] files = appDir.listFiles();
-                        repoDir.mkdirs();
-                        for (int i = 0; i < files.length; i++)
-                        {
-                            String name = files[0].getName();
-                            if (name != "RCTAsyncLocalStorage_V1") {
-                                File destFile = new File(repoDir, name);
-                                move(files[0], destFile);
-                            }
-                        }
-                        promise.resolve(null);
-                    }
-                }
-                catch (Exception e) {
-                    promise.reject("setupDocumentDirectory", e);
-                }
-            }
-        });
-    }
-
-    @ReactMethod
-    public void getDocumentDirectory(final Promise promise) {
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    File appDir = reactContext.getFilesDir();
-                    File repoDir = new File(appDir, "textile-go");
-                    promise.resolve(repoDir.getAbsolutePath());
-                }
-                catch (Exception e) {
-                    promise.reject("getDocumentDirectory", e);
-                }
-            }
-        });
-    }
-
-    private boolean move(File sourceFile, File destFile)
-    {
-        if (sourceFile.isDirectory())
-        {
-            for (File file : sourceFile.listFiles())
-            {
-                move(file, new File(file.getPath().substring("temp".length()+1)));
-            }
-        }
-        else
-        {
-            try {
-                Files.move(Paths.get(sourceFile.getPath()), Paths.get(destFile.getPath()), StandardCopyOption.REPLACE_EXISTING);
-                return true;
-            } catch (IOException e) {
-                return false;
-            }
-        }
-        return false;
-    }
-
 
     private static void emitDeviceEvent(String eventName, @Nullable WritableMap eventData) {
         // A method for emitting from the native side to JS
