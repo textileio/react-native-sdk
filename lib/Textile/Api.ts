@@ -221,7 +221,6 @@ export async function setAvatar(id_: string): Promise<void> {
 export async function setUsername(username: string): Promise<void> {
   await TextileNode.setUsername(username)
 }
-
 export async function start(): Promise<void> {
   await TextileNode.start()
 }

@@ -670,6 +670,8 @@ public class TextileNode extends ReactContextBaseJavaModule {
         });
     }
 
+
+
     @ReactMethod
     public void start(final Promise promise) {
         executor.execute(new Runnable() {
@@ -885,4 +887,5 @@ public class TextileNode extends ReactContextBaseJavaModule {
         // https://facebook.github.io/react-native/docs/native-modules-android.html#sending-events-to-javascript
         reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(eventName, eventData);
     }
+
 }
