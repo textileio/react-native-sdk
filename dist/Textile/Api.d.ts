@@ -43,6 +43,7 @@ export declare function removeThread(id_: string): Promise<string>;
 export declare function seed(): Promise<string>;
 export declare function setAvatar(id_: string): Promise<void>;
 export declare function setUsername(username: string): Promise<void>;
+export declare function setupDocumentDirectory(): Promise<void>;
 export declare function start(): Promise<void>;
 export declare function stop(): Promise<void>;
 export declare function threadFiles(offset: string, limit: number, threadId?: string): Promise<ReadonlyArray<ThreadFilesInfo>>;

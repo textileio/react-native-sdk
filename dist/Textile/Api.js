@@ -295,6 +295,12 @@ function setUsername(username) {
     });
 }
 exports.setUsername = setUsername;
+function setupDocumentDirectory() {
+    return __awaiter(this, void 0, void 0, function* () {
+        yield TextileNode.setupDocumentDirectory();
+    });
+}
+exports.setupDocumentDirectory = setupDocumentDirectory;
 function start() {
     return __awaiter(this, void 0, void 0, function* () {
         yield TextileNode.start();

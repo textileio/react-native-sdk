@@ -318,6 +318,30 @@ RCT_EXPORT_METHOD(setUsername:(NSString*)username resolver:(RCTPromiseResolveBlo
   [self fulfillWithResult:nil error:error resolver:resolve rejecter:reject];
 }
 
+RCT_EXPORT_METHOD(setupDocumentDirectory:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+  NSError *error;
+  NSFileManager *fileManager = [[NSFileManager alloc] init];
+  NSURL *rootDirectory = [[fileManager URLsForDirectory:NSDocumentDirectory
+                                                          inDomains:NSUserDomainMask] lastObject];
+  NSURL *repoURL = [rootDirectory URLByAppendingPathComponent:@"textile-go/" isDirectory:true];
+  BOOL isDir = true;
+  BOOL repoExists = [fileManager fileExistsAtPath:[repoURL path] isDirectory:&isDir];
+  if (repoExists) {
+    [self fulfillWithResult:nil error:error resolver:resolve rejecter:reject];
+  } else {
+    NSArray *files = [fileManager contentsOfDirectoryAtPath:[rootDirectory path] error:&error];
+    [fileManager createDirectoryAtURL:repoURL withIntermediateDirectories:false attributes:NULL error:&error];
+
+    for (NSString *file in files) {
+      [fileManager moveItemAtURL:[rootDirectory URLByAppendingPathComponent:file]
+                           toURL:[repoURL URLByAppendingPathComponent:file]
+                           error:&error];
+    }
+
+    [self fulfillWithResult:nil error:error resolver:resolve rejecter:reject];
+  }
+}
+
 RCT_EXPORT_METHOD(start:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSError *error;
   [self.node start:&error];
