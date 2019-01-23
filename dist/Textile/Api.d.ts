@@ -27,7 +27,6 @@ export declare function countUnreadNotifications(): Promise<number>;
 export declare function deregisterCafe(peerId: string): Promise<void>;
 export declare function fileData(hash: string): Promise<FileData>;
 export declare function findContact(username: string, limit: number, wait: number): Promise<ContactInfoQueryResult>;
-export declare function getDocumentDirectory(): Promise<string>;
 export declare function ignoreThreadInviteViaNotification(id_: string): Promise<string>;
 export declare function imageFileDataForMinWidth(pth: string, minWidth: number): Promise<FileData>;
 export declare function notifications(offset: string, limit: number): Promise<ReadonlyArray<NotificationInfo>>;

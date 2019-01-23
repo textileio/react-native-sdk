@@ -185,13 +185,6 @@ function findContact(username, limit, wait) {
     });
 }
 exports.findContact = findContact;
-function getDocumentDirectory() {
-    return __awaiter(this, void 0, void 0, function* () {
-        const dir = yield TextileNode.getDocumentDirectory();
-        return dir;
-    });
-}
-exports.getDocumentDirectory = getDocumentDirectory;
 function ignoreThreadInviteViaNotification(id_) {
     return __awaiter(this, void 0, void 0, function* () {
         const result = yield TextileNode.ignoreThreadInviteViaNotification(id_);
