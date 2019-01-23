@@ -54,6 +54,15 @@
 
 @end
 
+typedef enum  {
+  Background,
+  BackgroundFromForeground,
+  Foreground,
+  Unknown
+} Lifecycle;
+
+Lifecycle lifecycle;
+
 @interface TextileNode()
 
 @property (nonatomic, strong) MobileMobile *node;
@@ -62,12 +71,45 @@
 
 @implementation TextileNode
 
+- (instancetype)init {
+  if (self = [super init]) {
+    // Initialize self
+
+    lifecycle = Foreground;
+
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didForeground)     name:UIApplicationDidBecomeActiveNotification object:nil];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didForeground)     name:UIApplicationWillEnterForegroundNotification object:nil];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didEnterBackground)     name:UIApplicationDidEnterBackgroundNotification object:nil];
+  }
+  return self;
+}
+
 // Export a native module
 // https://facebook.github.io/react-native/docs/native-modules-ios.html
 RCT_EXPORT_MODULE();
 
 - (dispatch_queue_t)methodQueue {
   return dispatch_queue_create("io.textile.TextileNodeQueue", DISPATCH_QUEUE_SERIAL);
+}
+
+- (void)didForeground
+{
+  if (lifecycle != Foreground) {
+    NSLog(@"Lifecycle: from %i to %i", lifecycle, Foreground);
+    lifecycle = Foreground;
+  }
+}
+- (void)didEnterBackground
+{
+  if (lifecycle == Foreground) {
+    NSLog(@"Lifecycle: from %i to %i", lifecycle, BackgroundFromForeground);
+    lifecycle = BackgroundFromForeground;
+  } else {
+    NSLog(@"Lifecycle: from %i to %i", lifecycle, Background);
+    lifecycle = Background;
+  }
 }
 
 // Export methods to a native module

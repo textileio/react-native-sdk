@@ -9,13 +9,14 @@
 
 `$ react-native link @textile/react-native-sdk`
 
-### Update framework search path
+I also need to add `go-mobile` to the search paths of parent project,
 
-In Xcode
-Textile/Libararies/RNTextile go to -> Build Settings -> Search Paths -> Frameworks and add `$(SRCROOT)/../node_modules/@textile/go-mobile/ios`
+```
+Framework search paths: $(SRCROOT)/../node_modules/@textile/go-mobile/ios
+Library search paths: $(SRCROOT)/../node_modules/@textile/go-mobile/ios
+```
 
 ### Manual installation
-
 
 #### iOS
 
@@ -23,11 +24,6 @@ Textile/Libararies/RNTextile go to -> Build Settings -> Search Paths -> Framewor
 2. Go to `node_modules` ➜ `@textile/react-native-sdk` and add `RNTextile.xcodeproj`
 3. In XCode, in the project navigator, select your project. Add `libRNTextile.a` to your project's `Build Phases` ➜ `Link Binary With Libraries`
 4. Run your project (`Cmd+R`)<
-
-
-Note: In my setup I had to dd the following in Search Paths of RNTextile inside my Xcode project -> `Library Search Paths` and `Framework Search Paths`, `$(SRCROOT)/../../go-mobile/ios`
-
-^ The above also seems to get removed whenever i do an upgrade of this library.
 
 #### Android
 
@@ -44,11 +40,29 @@ Note: In my setup I had to dd the following in Search Paths of RNTextile inside 
       compile project(':react-native-textile')
   	```
 
+## Hello World
 
-## Usage
 ```javascript
-import RNTextile from 'react-native-textile';
+import * as Textile from '@textile/react-native-sdk'
+import RNFS from 'react-native-fs'
 
-// TODO: What to do with the module?
-RNTextile;
+// Local directory for on-disk storage
+export const REPO_PATH = `${RNFS.DocumentDirectoryPath}/textile-go`
+
+// If directory doesn't exist, create it
+const repoPathExists: boolean = RNFS.exists(REPO_PATH)
+if (!repoPathExists) {
+  RNFS.mkdir(REPO_PATH)
+  // Move all Textile files into our local folder
+  RNFS.readDir(RNFS.DocumentDirectoryPath).then((files) => {
+     for (const file of files) {
+       if (file.path !== REPO_PATH && file.name !== 'RCTAsyncLocalStorage_V1') {
+         RNFS.moveFile(file.path, `${REPO_PATH}/${file.name}`)
+       }
+     }
+  })
+}
+
+Textile.newTextile(REPO_PATH, 'INFO')
+Textile.start()
 ```
