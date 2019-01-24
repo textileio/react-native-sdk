@@ -295,6 +295,12 @@ RCT_EXPORT_METHOD(registerCafe:(NSString*)peerId resolver:(RCTPromiseResolveBloc
   [self fulfillWithResult:nil error:error resolver:resolve rejecter:reject];
 }
 
+RCT_EXPORT_METHOD(removeContact:(NSString*)id_ resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+  NSError *error;
+  [self.node removeContact:id_ error:&error];
+  [self fulfillWithResult:nil error:error resolver:resolve rejecter:reject];
+}
+
 RCT_EXPORT_METHOD(removeThread:(NSString*)id_ resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSError *error;
   NSString *result = [self.node removeThread:id_ error:&error];
@@ -366,11 +372,12 @@ RCT_EXPORT_METHOD(version:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRe
 // MobileInitRepo only run one time ever
 // MobileNewTextile
 
-RCT_EXPORT_METHOD(initRepo:(NSString*)seed repoPath:(NSString*)repoPath logToDisk:(BOOL)logToDisk resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_EXPORT_METHOD(initRepo:(NSString*)seed repoPath:(NSString*)repoPath logToDisk:(BOOL)logToDisk debug:(BOOL)debug resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   MobileInitConfig *config = [[MobileInitConfig alloc] init];
   config.seed = seed;
   config.repoPath = repoPath;
   config.logToDisk = logToDisk;
+  config.debug = debug;
   NSError *error;
   MobileInitRepo(config, &error); // only run one time ever
   [self fulfillWithResult:nil error:error resolver:resolve rejecter:reject];
@@ -384,12 +391,12 @@ RCT_EXPORT_METHOD(migrateRepo:(NSString*)repoPath resolver:(RCTPromiseResolveBlo
   [self fulfillWithResult:nil error:error resolver:resolve rejecter:reject];
 }
 
-RCT_EXPORT_METHOD(newTextile:(NSString*)repoPath logLevels:(NSString*)logLevels resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_EXPORT_METHOD(newTextile:(NSString*)repoPath debug:(BOOL)debug resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSError *error;
   if (!self.node) {
     MobileRunConfig *config = [[MobileRunConfig alloc] init];
     config.repoPath = repoPath;
-    config.logLevels = logLevels;
+    config.debug = debug;
     self.node = MobileNewTextile(config, [[Messenger alloc] init], &error); // Returns the 'needs migration error'
   }
   [self fulfillWithResult:nil error:error resolver:resolve rejecter:reject];

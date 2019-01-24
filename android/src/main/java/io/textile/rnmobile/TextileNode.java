@@ -609,6 +609,22 @@ public class TextileNode extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
+    public void removeContact(final String id_, final Promise promise) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    node.removeContact(id_);
+                    promise.resolve(null);
+                }
+                catch (Exception e) {
+                    promise.reject("removeContact", e);
+                }
+            }
+        });
+    }
+
+    @ReactMethod
     public void removeThread(final String id_, final Promise promise) {
         executor.execute(new Runnable() {
             @Override
@@ -669,8 +685,6 @@ public class TextileNode extends ReactContextBaseJavaModule {
             }
         });
     }
-
-
 
     @ReactMethod
     public void start(final Promise promise) {
@@ -780,7 +794,7 @@ public class TextileNode extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void initRepo(final String seed, final String repoPath, final Boolean logToDisk, final Promise promise) {
+    public void initRepo(final String seed, final String repoPath, final Boolean logToDisk, final Boolean debug, final Promise promise) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
@@ -789,6 +803,7 @@ public class TextileNode extends ReactContextBaseJavaModule {
                     config.setSeed(seed);
                     config.setRepoPath(repoPath);
                     config.setLogToDisk(logToDisk);
+                    config.setDebug(debug);
                     Mobile.initRepo(config);
                     promise.resolve(null);
                 }
@@ -818,7 +833,7 @@ public class TextileNode extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void newTextile(final String repoPath, final String logLevels, final Promise promise) {
+    public void newTextile(final String repoPath, final Boolean debug, final Promise promise) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
@@ -826,7 +841,7 @@ public class TextileNode extends ReactContextBaseJavaModule {
                     try {
                         RunConfig config = new RunConfig();
                         config.setRepoPath(repoPath);
-                        config.setLogLevels(logLevels);
+                        config.setDebug(debug);
                         node = Mobile.newTextile(config, new Messenger() {
                             @Override
                             public void notify(Event event) {
