@@ -231,6 +231,21 @@ public class TextileNode extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
+    public void addThreadMessage(final String threadId, final String body, final Promise promise) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    promise.resolve(node.addThreadMessage(threadId, body));
+                }
+                catch (Exception e) {
+                    promise.reject("addThreadMessage", e);
+                }
+            }
+        });
+    }
+
+    @ReactMethod
     public void address(final Promise promise) {
         executor.execute(new Runnable() {
             @Override
@@ -725,6 +740,21 @@ public class TextileNode extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
+    public void threadFeed(final String offset, final Integer limit, final String threadId, final Promise promise) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    promise.resolve(node.threadFeed(offset, limit, threadId));
+                }
+                catch (Exception e) {
+                    promise.reject("threadFeed", e);
+                }
+            }
+        });
+    }
+
+    @ReactMethod
     public void threadFiles(final String offset, final Integer limit, final String threadId, final Promise promise) {
         executor.execute(new Runnable() {
             @Override
@@ -734,6 +764,21 @@ public class TextileNode extends ReactContextBaseJavaModule {
                 }
                 catch (Exception e) {
                     promise.reject("threadFiles", e);
+                }
+            }
+        });
+    }
+
+    @ReactMethod
+    public void threadMessages(final String offset, final Integer limit, final String threadId, final Promise promise) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    promise.resolve(node.threadMessages(offset, limit, threadId));
+                }
+                catch (Exception e) {
+                    promise.reject("threadMessages", e);
                 }
             }
         });

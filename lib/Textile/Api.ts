@@ -12,8 +12,10 @@ import {
   ThreadInfo,
   WalletAccount,
   BlockInfo,
+  NotificationInfo,
   ThreadFilesInfo,
-  NotificationInfo
+  ThreadFeedItem,
+  ThreadMessageInfo
 } from './Models'
 import { IMobilePreparedFiles, IDirectory, MobilePreparedFiles, Directory } from '@textile/react-native-protobufs'
 
@@ -237,10 +239,19 @@ export async function stop(): Promise<void> {
   await TextileNode.stop()
 }
 
-// TODO: How to pass undefined values?
+export async function threadFeed(offset: string, limit: number, threadId?: string): Promise<ReadonlyArray<ThreadFeedItem>> {
+  const result = await TextileNode.threadFeed(offset, limit, threadId)
+  return JSON.parse(result) as ReadonlyArray<ThreadFeedItem>
+}
+
 export async function threadFiles(offset: string, limit: number, threadId?: string): Promise<ReadonlyArray<ThreadFilesInfo>> {
   const result = await TextileNode.threadFiles(offset, limit, threadId)
   return JSON.parse(result) as ReadonlyArray<ThreadFilesInfo>
+}
+
+export async function threadMessages(offset: string, limit: number, threadId?: string): Promise<ReadonlyArray<ThreadMessageInfo>> {
+  const result = await TextileNode.threadMessages(offset, limit, threadId)
+  return JSON.parse(result) as ReadonlyArray<ThreadMessageInfo>
 }
 
 export async function threadInfo(threadId: string): Promise<ThreadInfo> {

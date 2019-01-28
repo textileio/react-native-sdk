@@ -146,6 +146,12 @@ RCT_EXPORT_METHOD(addThreadLike:(NSString*)blockId resolver:(RCTPromiseResolveBl
   [self fulfillWithResult:result error:error resolver:resolve rejecter:reject];
 }
 
+RCT_EXPORT_METHOD(addThreadMessage:(NSString*)threadId body:(NSString*)body resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+  NSError *error;
+  NSString *result = [self.node addThreadMessage:threadId body:body error:&error];
+  [self fulfillWithResult:result error:error resolver:resolve rejecter:reject];
+}
+
 RCT_EXPORT_METHOD(address:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSString *result = self.node.address;
   resolve(result);
@@ -339,9 +345,21 @@ RCT_EXPORT_METHOD(stop:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejec
   [self fulfillWithResult:nil error:error resolver:resolve rejecter:reject];
 }
 
+RCT_EXPORT_METHOD(threadFeed:(NSString*)offset limit:(NSInteger)limit threadId:(NSString*)threadId resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+  NSError *error;
+  NSString *result = [self.node threadFeed:offset limit:limit threadId:threadId error:&error];
+  [self fulfillWithResult:result error:error resolver:resolve rejecter:reject];
+}
+
 RCT_EXPORT_METHOD(threadFiles:(NSString*)offset limit:(NSInteger)limit threadId:(NSString*)threadId resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSError *error;
   NSString *result = [self.node threadFiles:offset limit:limit threadId:threadId error:&error];
+  [self fulfillWithResult:result error:error resolver:resolve rejecter:reject];
+}
+
+RCT_EXPORT_METHOD(threadMessages:(NSString*)offset limit:(NSInteger)limit threadId:(NSString*)threadId resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+  NSError *error;
+  NSString *result = [self.node threadMessages:offset limit:limit threadId:threadId error:&error];
   [self fulfillWithResult:result error:error resolver:resolve rejecter:reject];
 }
 
