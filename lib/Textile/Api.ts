@@ -15,7 +15,8 @@ import {
   NotificationInfo,
   ThreadFilesInfo,
   ThreadFeedItem,
-  ThreadMessageInfo
+  ThreadMessageInfo,
+  LogLevel
 } from './Models'
 import { IMobilePreparedFiles, IDirectory, MobilePreparedFiles, Directory } from '@textile/react-native-protobufs'
 
@@ -142,7 +143,6 @@ export async function deregisterCafe(peerId: string): Promise<void> {
   await TextileNode.deregisterCafe(peerId)
 }
 
-// TODO: Use this to get image data
 export async function fileData(hash: string): Promise<FileData> {
   const result = await TextileNode.fileData(hash)
   return JSON.parse(result) as FileData
@@ -228,9 +228,14 @@ export async function setAvatar(id_: string): Promise<void> {
   await TextileNode.setAvatar(id_)
 }
 
+export async function setLogLevels(levels: Map<string, LogLevel>): Promise<void> {
+  await TextileNode.setLogLevels(levels)
+}
+
 export async function setUsername(username: string): Promise<void> {
   await TextileNode.setUsername(username)
 }
+
 export async function start(): Promise<void> {
   await TextileNode.start()
 }
@@ -281,16 +286,16 @@ export async function version(): Promise<string> {
 // MobileInitRepo only run one time ever
 // MobileNewTextile
 
-export async function initRepo(seed: string, repoPath: string, logToDisk: boolean): Promise<void> {
-  return await TextileNode.initRepo(seed, repoPath, logToDisk)
+export async function initRepo(seed: string, repoPath: string, logToDisk: boolean, debug: boolean): Promise<void> {
+  return await TextileNode.initRepo(seed, repoPath, logToDisk, debug)
 }
 
 export async function migrateRepo(repoPath: string): Promise<void> {
   await TextileNode.migrateRepo(repoPath)
 }
 
-export async function newTextile(repoPath: string, logLevels: string): Promise<void> {
-  await TextileNode.newTextile(repoPath, logLevels)
+export async function newTextile(repoPath: string, debug: boolean): Promise<void> {
+  await TextileNode.newTextile(repoPath, debug)
 }
 
 export async function newWallet(wordCount: number): Promise<string> {

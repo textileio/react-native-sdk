@@ -327,6 +327,12 @@ RCT_EXPORT_METHOD(setAvatar:(NSString*)id_ resolver:(RCTPromiseResolveBlock)reso
   [self fulfillWithResult:nil error:error resolver:resolve rejecter:reject];
 }
 
+RCT_EXPORT_METHOD(setLogLevels:(NSString*)levels resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+  NSError *error;
+  [self.node setLogLevels:levels error:&error];
+  [self fulfillWithResult:nil error:error resolver:resolve rejecter:reject];
+}
+
 RCT_EXPORT_METHOD(setUsername:(NSString*)username resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSError *error;
   [self.node setUsername:username error:&error];

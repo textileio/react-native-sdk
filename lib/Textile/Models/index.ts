@@ -287,3 +287,12 @@ export interface Update {
   name: string
   type: UpdateType
 }
+
+export enum LogLevel {
+  CRITICAL = 'CRITICAL',
+  ERROR = 'ERROR',
+  WARNING = 'WARNING',
+  NOTICE = 'NOTICE',
+  INFO = 'INFO',
+  DEBUG = 'DEBUG'
+}

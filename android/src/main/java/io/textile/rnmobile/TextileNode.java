@@ -692,6 +692,22 @@ public class TextileNode extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
+    public void setLogLevels(final String levels, final Promise promise) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    node.setLogLevels(levels);
+                    promise.resolve(null);
+                }
+                catch (Exception e) {
+                    promise.reject("setLogLevels", e);
+                }
+            }
+        });
+    }
+
+    @ReactMethod
     public void setUsername(final String username, final Promise promise) {
         executor.execute(new Runnable() {
             @Override
