@@ -85,6 +85,11 @@ export async function addThreadLike(blockId: string): Promise<string> {
   return result as string
 }
 
+export async function addThreadMessage(threadId: string, body: string): Promise<string> {
+  const result = await TextileNode.addThreadMessage(threadId, body) // returns hash
+  return result as string
+}
+
 export async function address(): Promise<string> {
   const result = await TextileNode.address()
   return result as string

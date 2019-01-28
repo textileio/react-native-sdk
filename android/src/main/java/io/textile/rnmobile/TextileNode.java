@@ -266,7 +266,9 @@ public class TextileNode extends ReactContextBaseJavaModule {
             @Override
             public void run() {
                 try {
-                    promise.resolve(node.cafeSession(peerId));
+                    byte[] bytes = node.cafeSession(peerId);
+                    String base64 = Base64.encodeToString(bytes, Base64.DEFAULT);
+                    promise.resolve(base64);
                 }
                 catch (Exception e) {
                     promise.reject("cafeSession", e);
@@ -281,7 +283,9 @@ public class TextileNode extends ReactContextBaseJavaModule {
             @Override
             public void run() {
                 try {
-                    promise.resolve(node.cafeSessions());
+                    byte[] bytes = node.cafeSessions();
+                    String base64 = Base64.encodeToString(bytes, Base64.DEFAULT);
+                    promise.resolve(base64);
                 }
                 catch (Exception e) {
                     promise.reject("cafeSessions", e);
@@ -578,12 +582,14 @@ public class TextileNode extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void refreshCafeSession(final String cafeId, final Promise promise) {
+    public void refreshCafeSession(final String peerId, final Promise promise) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
                 try {
-                    promise.resolve(node.refreshCafeSession(cafeId));
+                    byte[] bytes = node.refreshCafeSession(peerId);
+                    String base64 = Base64.encodeToString(bytes, Base64.DEFAULT);
+                    promise.resolve(base64);
                 }
                 catch (Exception e) {
                     promise.reject("refreshCafeSession", e);
