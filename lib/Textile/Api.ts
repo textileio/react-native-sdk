@@ -4,7 +4,6 @@ import { Buffer } from 'buffer'
 import {
   File,
   ExternalInvite,
-  CafeSession,
   ContactInfo,
   ContactInfoQueryResult,
   Overview,
@@ -18,7 +17,16 @@ import {
   ThreadMessageInfo,
   LogLevel
 } from './Models'
-import { IMobilePreparedFiles, IDirectory, MobilePreparedFiles, Directory } from '@textile/react-native-protobufs'
+import {
+  IMobilePreparedFiles,
+  ICafeSession,
+  ICafeSessions,
+  IDirectory,
+  MobilePreparedFiles,
+  CafeSession,
+  CafeSessions,
+  Directory
+} from '@textile/react-native-protobufs'
 
 const { TextileNode } = NativeModules
 
@@ -103,16 +111,16 @@ export async function avatar(): Promise<string | undefined> {
   return result.length > 0 ? result : undefined
 }
 
-export async function cafeSession(peerId: string): Promise<CafeSession> {
+export async function cafeSession(peerId: string): Promise<ICafeSession> {
   const result = await TextileNode.cafeSession(peerId)
   const buffer = Buffer.from(result, 'base64')
-  return JSON.parse(buffer.toString()) as CafeSession
+  return CafeSession.decode(buffer)
 }
 
-export async function cafeSessions(): Promise<ReadonlyArray<CafeSession>> {
+export async function cafeSessions(): Promise<ICafeSessions> {
   const result = await TextileNode.cafeSessions()
   const buffer = Buffer.from(result, 'base64')
-  return JSON.parse(buffer.toString()) as ReadonlyArray<CafeSession>
+  return CafeSessions.decode(buffer)
 }
 
 export async function checkCafeMessages(): Promise<void> {
@@ -204,10 +212,10 @@ export async function readNotification(id_: string): Promise<void> {
   await TextileNode.readNotification(id_)
 }
 
-export async function refreshCafeSession(cafeId: string): Promise<CafeSession> {
+export async function refreshCafeSession(cafeId: string): Promise<ICafeSession> {
   const result = await TextileNode.refreshCafeSession(cafeId)
   const buffer = Buffer.from(result, 'base64')
-  return JSON.parse(buffer.toString()) as CafeSession
+  return CafeSession.decode(buffer)
 }
 
 export async function registerCafe(peerId: string): Promise<void> {
