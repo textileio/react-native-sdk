@@ -215,17 +215,17 @@
 		58B511F01A9E6C8500147676 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../../go-mobile/ios/**";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SRCROOT)/../node_modules/@textile/go-mobile/ios/**",
+					"$(SRCROOT)/../../go-mobile/ios/**",
+				);
 				HEADER_SEARCH_PATHS = (
-					"$(inherited)",
-					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
-					"$(SRCROOT)/../../../React/**",
-					"$(SRCROOT)/../../react-native/React/**",
-					"$(SRCROOT)/../../react-native/Libraries/**",
+					"$(SRCROOT)/../node_modules/@textile/go-mobile/ios/**",
+					"$(SRCROOT)/../../go-mobile/ios/**",
 				);
 				LIBRARY_SEARCH_PATHS = (
+					"$(SRCROOT)/../node_modules/@textile/go-mobile/ios/**",
 					"$(SRCROOT)/../../go-mobile/ios/**",
-					"$(inherited)/**",
 				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = RNTextile;
@@ -236,17 +236,17 @@
 		58B511F11A9E6C8500147676 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../../go-mobile/ios/**";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SRCROOT)/../node_modules/@textile/go-mobile/ios/**",
+					"$(SRCROOT)/../../go-mobile/ios/**",
+				);
 				HEADER_SEARCH_PATHS = (
-					"$(inherited)",
-					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
-					"$(SRCROOT)/../../../React/**",
-					"$(SRCROOT)/../../react-native/React/**",
-					"$(SRCROOT)/../../react-native/Libraries/**",
+					"$(SRCROOT)/../node_modules/@textile/go-mobile/ios/**",
+					"$(SRCROOT)/../../go-mobile/ios/**",
 				);
 				LIBRARY_SEARCH_PATHS = (
+					"$(SRCROOT)/../node_modules/@textile/go-mobile/ios/**",
 					"$(SRCROOT)/../../go-mobile/ios/**",
-					"$(inherited)/**",
 				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = RNTextile;

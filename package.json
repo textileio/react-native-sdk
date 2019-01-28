@@ -1,7 +1,8 @@
 {
   "name": "@textile/react-native-sdk",
-  "version": "1.0.16",
+  "version": "1.0.17",
   "description": "## Getting started",
+  "nativePackage": true,
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
@@ -12,7 +13,8 @@
   "scripts": {
     "build": "rm -rf dist/ && tsc",
     "lint": "tslint -c tslint.json --project .",
-    "test": "jest"
+    "test": "jest",
+    "ios-example": "yarn; yarn build; yarn install --production; cd example; yarn upgrade @textile/react-native-sdk; yarn; react-native run-ios"
   },
   "keywords": [
     "react-native"
@@ -38,8 +40,8 @@
     "@types/react-redux": "^6.0.9",
     "@types/react-test-renderer": "^16.0.3",
     "@types/uuid": "^3.4.4",
-    "babel-jest": "23.6.0",
     "babel-eslint": "^8.1.1",
+    "babel-jest": "23.6.0",
     "enzyme": "^3.7.0",
     "enzyme-adapter-react-16": "^1.6.0",
     "jest": "^23.6.0",
