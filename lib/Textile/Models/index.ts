@@ -101,7 +101,7 @@ export interface CafeSession {
   readonly id: string
   readonly access: string
   readonly refresh: string
-  readonly expiry: string
+  readonly exp: string
   readonly cafe: Cafe
 }
 

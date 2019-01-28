@@ -159,14 +159,16 @@ RCT_EXPORT_METHOD(avatar:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRej
 
 RCT_EXPORT_METHOD(cafeSession:(NSString*)peerId resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSError *error;
-  NSString *result = [self.node cafeSession:peerId error:&error];
-  [self fulfillWithResult:result error:error resolver:resolve rejecter:reject];
+  NSData *result = [self.node cafeSession:peerId error:&error];
+  NSString *base64 = [result base64EncodedStringWithOptions:0];
+  [self fulfillWithResult:base64 error:error resolver:resolve rejecter:reject];
 }
 
 RCT_EXPORT_METHOD(cafeSessions:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSError *error;
-  NSString *result = [self.node cafeSessions:&error];
-  [self fulfillWithResult:result error:error resolver:resolve rejecter:reject];
+  NSData *result = [self.node cafeSessions:&error];
+  NSString *base64 = [result base64EncodedStringWithOptions:0];
+  [self fulfillWithResult:base64 error:error resolver:resolve rejecter:reject];
 }
 
 RCT_EXPORT_METHOD(checkCafeMessages:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
@@ -285,8 +287,9 @@ RCT_EXPORT_METHOD(readNotification:(NSString*)id_ resolver:(RCTPromiseResolveBlo
 
 RCT_EXPORT_METHOD(refreshCafeSession:(NSString*)cafeId resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSError *error;
-  NSString *result = [self.node refreshCafeSession:cafeId error:&error];
-  [self fulfillWithResult:result error:error resolver:resolve rejecter:reject];
+  NSData *result = [self.node refreshCafeSession:cafeId error:&error];
+  NSString *base64 = [result base64EncodedStringWithOptions:0];
+  [self fulfillWithResult:base64 error:error resolver:resolve rejecter:reject];
 }
 
 RCT_EXPORT_METHOD(registerCafe:(NSString*)peerId resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {

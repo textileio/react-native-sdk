@@ -97,12 +97,14 @@ export async function avatar(): Promise<string | undefined> {
 
 export async function cafeSession(peerId: string): Promise<CafeSession> {
   const result = await TextileNode.cafeSession(peerId)
-  return JSON.parse(result) as CafeSession
+  const buffer = Buffer.from(result, 'base64')
+  return JSON.parse(buffer.toString()) as CafeSession
 }
 
 export async function cafeSessions(): Promise<ReadonlyArray<CafeSession>> {
   const result = await TextileNode.cafeSessions()
-  return JSON.parse(result) as ReadonlyArray<CafeSession>
+  const buffer = Buffer.from(result, 'base64')
+  return JSON.parse(buffer.toString()) as ReadonlyArray<CafeSession>
 }
 
 export async function checkCafeMessages(): Promise<void> {
@@ -197,7 +199,8 @@ export async function readNotification(id_: string): Promise<void> {
 
 export async function refreshCafeSession(cafeId: string): Promise<CafeSession> {
   const result = await TextileNode.refreshCafeSession(cafeId)
-  return JSON.parse(result) as CafeSession
+  const buffer = Buffer.from(result, 'base64')
+  return JSON.parse(buffer.toString()) as CafeSession
 }
 
 export async function registerCafe(peerId: string): Promise<void> {
