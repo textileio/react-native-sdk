@@ -111,14 +111,20 @@ export async function avatar(): Promise<string | undefined> {
   return result.length > 0 ? result : undefined
 }
 
-export async function cafeSession(peerId: string): Promise<ICafeSession> {
+export async function cafeSession(peerId: string): Promise<ICafeSession | undefined> {
   const result = await TextileNode.cafeSession(peerId)
+  if (!result) {
+    return undefined
+  }
   const buffer = Buffer.from(result, 'base64')
   return CafeSession.decode(buffer)
 }
 
-export async function cafeSessions(): Promise<ICafeSessions> {
+export async function cafeSessions(): Promise<ICafeSessions | undefined> {
   const result = await TextileNode.cafeSessions()
+  if (!result) {
+    return undefined
+  }
   const buffer = Buffer.from(result, 'base64')
   return CafeSessions.decode(buffer)
 }
@@ -212,8 +218,11 @@ export async function readNotification(id_: string): Promise<void> {
   await TextileNode.readNotification(id_)
 }
 
-export async function refreshCafeSession(cafeId: string): Promise<ICafeSession> {
-  const result = await TextileNode.refreshCafeSession(cafeId)
+export async function refreshCafeSession(peerId: string): Promise<ICafeSession | undefined> {
+  const result = await TextileNode.refreshCafeSession(peerId)
+  if (!result) {
+    return undefined
+  }
   const buffer = Buffer.from(result, 'base64')
   return CafeSession.decode(buffer)
 }

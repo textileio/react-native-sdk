@@ -126,6 +126,9 @@ exports.avatar = avatar;
 function cafeSession(peerId) {
     return __awaiter(this, void 0, void 0, function* () {
         const result = yield TextileNode.cafeSession(peerId);
+        if (!result) {
+            return undefined;
+        }
         const buffer = buffer_1.Buffer.from(result, 'base64');
         return react_native_protobufs_1.CafeSession.decode(buffer);
     });
@@ -134,6 +137,9 @@ exports.cafeSession = cafeSession;
 function cafeSessions() {
     return __awaiter(this, void 0, void 0, function* () {
         const result = yield TextileNode.cafeSessions();
+        if (!result) {
+            return undefined;
+        }
         const buffer = buffer_1.Buffer.from(result, 'base64');
         return react_native_protobufs_1.CafeSessions.decode(buffer);
     });
@@ -264,9 +270,12 @@ function readNotification(id_) {
     });
 }
 exports.readNotification = readNotification;
-function refreshCafeSession(cafeId) {
+function refreshCafeSession(peerId) {
     return __awaiter(this, void 0, void 0, function* () {
-        const result = yield TextileNode.refreshCafeSession(cafeId);
+        const result = yield TextileNode.refreshCafeSession(peerId);
+        if (!result) {
+            return undefined;
+        }
         const buffer = buffer_1.Buffer.from(result, 'base64');
         return react_native_protobufs_1.CafeSession.decode(buffer);
     });
