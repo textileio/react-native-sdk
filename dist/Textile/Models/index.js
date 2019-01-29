@@ -1,5 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+var ThreadFeedItemType;
+(function (ThreadFeedItemType) {
+    ThreadFeedItemType["join"] = "join";
+    ThreadFeedItemType["leave"] = "leave";
+    ThreadFeedItemType["files"] = "files";
+    ThreadFeedItemType["message"] = "message";
+})(ThreadFeedItemType = exports.ThreadFeedItemType || (exports.ThreadFeedItemType = {}));
 var BlockType;
 (function (BlockType) {
     BlockType["MERGE"] = "MERGE";
@@ -28,11 +35,18 @@ var NotificationType;
 var ThreadType;
 (function (ThreadType) {
     ThreadType["PRIVATE"] = "PRIVATE";
-    ThreadType["READONLY"] = "READONLY";
+    ThreadType["READ_ONLY"] = "READ_ONLY";
     ThreadType["PUBLIC"] = "PUBLIC";
     ThreadType["OPEN"] = "OPEN";
     ThreadType["INVALID"] = "INVALID";
 })(ThreadType = exports.ThreadType || (exports.ThreadType = {}));
+var ThreadSharing;
+(function (ThreadSharing) {
+    ThreadSharing["NOT_SHARED"] = "NOT_SHARED";
+    ThreadSharing["INVITE_ONLY"] = "INVITE_ONLY";
+    ThreadSharing["SHARED"] = "SHARED";
+    ThreadSharing["INVALID"] = "INVALID";
+})(ThreadSharing = exports.ThreadSharing || (exports.ThreadSharing = {}));
 var ThreadState;
 (function (ThreadState) {
     ThreadState["LOADING"] = "LOADING";
@@ -46,3 +60,12 @@ var UpdateType;
     UpdateType[UpdateType["AccountPeerAdded"] = 2] = "AccountPeerAdded";
     UpdateType[UpdateType["AccountPeerRemoved"] = 3] = "AccountPeerRemoved";
 })(UpdateType = exports.UpdateType || (exports.UpdateType = {}));
+var LogLevel;
+(function (LogLevel) {
+    LogLevel["CRITICAL"] = "CRITICAL";
+    LogLevel["ERROR"] = "ERROR";
+    LogLevel["WARNING"] = "WARNING";
+    LogLevel["NOTICE"] = "NOTICE";
+    LogLevel["INFO"] = "INFO";
+    LogLevel["DEBUG"] = "DEBUG";
+})(LogLevel = exports.LogLevel || (exports.LogLevel = {}));

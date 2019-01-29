@@ -1,5 +1,5 @@
-import { File, ExternalInvite, CafeSession, ContactInfo, ContactInfoQueryResult, Overview, FileData, ThreadInfo, WalletAccount, BlockInfo, ThreadFilesInfo, NotificationInfo } from './Models';
-import { IMobilePreparedFiles, IDirectory } from '@textile/react-native-protobufs';
+import { File, ExternalInvite, ContactInfo, ContactInfoQueryResult, Overview, FileData, ThreadInfo, WalletAccount, BlockInfo, NotificationInfo, ThreadFilesInfo, ThreadFeedItem, ThreadMessageInfo, LogLevel } from './Models';
+import { IMobilePreparedFiles, ICafeSession, ICafeSessions, IDirectory } from '@textile/react-native-protobufs';
 /**
  * Returns the hash of the initial join block. Not the threadId of the final thread created/joined
  */
@@ -15,10 +15,11 @@ export declare function addThreadFilesByTarget(target: string, threadId: string,
 export declare function addThreadIgnore(blockId: string): Promise<string>;
 export declare function addThreadInvite(threadId: string, inviteeId: string): Promise<string>;
 export declare function addThreadLike(blockId: string): Promise<string>;
+export declare function addThreadMessage(threadId: string, body: string): Promise<string>;
 export declare function address(): Promise<string>;
 export declare function avatar(): Promise<string | undefined>;
-export declare function cafeSession(peerId: string): Promise<CafeSession>;
-export declare function cafeSessions(): Promise<ReadonlyArray<CafeSession>>;
+export declare function cafeSession(peerId: string): Promise<ICafeSession>;
+export declare function cafeSessions(): Promise<ICafeSessions>;
 export declare function checkCafeMessages(): Promise<void>;
 export declare function contact(id_: string): Promise<ContactInfo>;
 export declare function contactThreads(id_: string): Promise<ReadonlyArray<ThreadInfo>>;
@@ -37,21 +38,24 @@ export declare function prepareFilesAsync(path: string, threadId: string): Promi
 export declare function profile(): Promise<ContactInfo>;
 export declare function readAllNotifications(): Promise<void>;
 export declare function readNotification(id_: string): Promise<void>;
-export declare function refreshCafeSession(cafeId: string): Promise<CafeSession>;
+export declare function refreshCafeSession(cafeId: string): Promise<ICafeSession>;
 export declare function registerCafe(peerId: string): Promise<void>;
 export declare function removeThread(id_: string): Promise<string>;
 export declare function seed(): Promise<string>;
 export declare function setAvatar(id_: string): Promise<void>;
+export declare function setLogLevels(levels: Map<string, LogLevel>): Promise<void>;
 export declare function setUsername(username: string): Promise<void>;
 export declare function start(): Promise<void>;
 export declare function stop(): Promise<void>;
+export declare function threadFeed(offset: string, limit: number, threadId?: string): Promise<ReadonlyArray<ThreadFeedItem>>;
 export declare function threadFiles(offset: string, limit: number, threadId?: string): Promise<ReadonlyArray<ThreadFilesInfo>>;
+export declare function threadMessages(offset: string, limit: number, threadId?: string): Promise<ReadonlyArray<ThreadMessageInfo>>;
 export declare function threadInfo(threadId: string): Promise<ThreadInfo>;
 export declare function threads(): Promise<ReadonlyArray<ThreadInfo>>;
 export declare function username(): Promise<string | undefined>;
 export declare function version(): Promise<string>;
-export declare function initRepo(seed: string, repoPath: string, logToDisk: boolean): Promise<void>;
+export declare function initRepo(seed: string, repoPath: string, logToDisk: boolean, debug: boolean): Promise<void>;
 export declare function migrateRepo(repoPath: string): Promise<void>;
-export declare function newTextile(repoPath: string, logLevels: string): Promise<void>;
+export declare function newTextile(repoPath: string, debug: boolean): Promise<void>;
 export declare function newWallet(wordCount: number): Promise<string>;
 export declare function walletAccountAt(phrase: string, index: number, password?: string): Promise<WalletAccount>;

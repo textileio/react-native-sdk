@@ -102,6 +102,13 @@ function addThreadLike(blockId) {
     });
 }
 exports.addThreadLike = addThreadLike;
+function addThreadMessage(threadId, body) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const result = yield TextileNode.addThreadMessage(threadId, body); // returns hash
+        return result;
+    });
+}
+exports.addThreadMessage = addThreadMessage;
 function address() {
     return __awaiter(this, void 0, void 0, function* () {
         const result = yield TextileNode.address();
@@ -119,14 +126,16 @@ exports.avatar = avatar;
 function cafeSession(peerId) {
     return __awaiter(this, void 0, void 0, function* () {
         const result = yield TextileNode.cafeSession(peerId);
-        return JSON.parse(result);
+        const buffer = buffer_1.Buffer.from(result, 'base64');
+        return react_native_protobufs_1.CafeSession.decode(buffer);
     });
 }
 exports.cafeSession = cafeSession;
 function cafeSessions() {
     return __awaiter(this, void 0, void 0, function* () {
         const result = yield TextileNode.cafeSessions();
-        return JSON.parse(result);
+        const buffer = buffer_1.Buffer.from(result, 'base64');
+        return react_native_protobufs_1.CafeSessions.decode(buffer);
     });
 }
 exports.cafeSessions = cafeSessions;
@@ -170,7 +179,6 @@ function deregisterCafe(peerId) {
     });
 }
 exports.deregisterCafe = deregisterCafe;
-// TODO: Use this to get image data
 function fileData(hash) {
     return __awaiter(this, void 0, void 0, function* () {
         const result = yield TextileNode.fileData(hash);
@@ -259,7 +267,8 @@ exports.readNotification = readNotification;
 function refreshCafeSession(cafeId) {
     return __awaiter(this, void 0, void 0, function* () {
         const result = yield TextileNode.refreshCafeSession(cafeId);
-        return JSON.parse(result);
+        const buffer = buffer_1.Buffer.from(result, 'base64');
+        return react_native_protobufs_1.CafeSession.decode(buffer);
     });
 }
 exports.refreshCafeSession = refreshCafeSession;
@@ -289,6 +298,12 @@ function setAvatar(id_) {
     });
 }
 exports.setAvatar = setAvatar;
+function setLogLevels(levels) {
+    return __awaiter(this, void 0, void 0, function* () {
+        yield TextileNode.setLogLevels(levels);
+    });
+}
+exports.setLogLevels = setLogLevels;
 function setUsername(username) {
     return __awaiter(this, void 0, void 0, function* () {
         yield TextileNode.setUsername(username);
@@ -307,7 +322,13 @@ function stop() {
     });
 }
 exports.stop = stop;
-// TODO: How to pass undefined values?
+function threadFeed(offset, limit, threadId) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const result = yield TextileNode.threadFeed(offset, limit, threadId);
+        return JSON.parse(result);
+    });
+}
+exports.threadFeed = threadFeed;
 function threadFiles(offset, limit, threadId) {
     return __awaiter(this, void 0, void 0, function* () {
         const result = yield TextileNode.threadFiles(offset, limit, threadId);
@@ -315,6 +336,13 @@ function threadFiles(offset, limit, threadId) {
     });
 }
 exports.threadFiles = threadFiles;
+function threadMessages(offset, limit, threadId) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const result = yield TextileNode.threadMessages(offset, limit, threadId);
+        return JSON.parse(result);
+    });
+}
+exports.threadMessages = threadMessages;
 function threadInfo(threadId) {
     return __awaiter(this, void 0, void 0, function* () {
         const result = yield TextileNode.threadInfo(threadId);
@@ -349,9 +377,9 @@ exports.version = version;
 // MobileWalletAccountAt returns seed and address
 // MobileInitRepo only run one time ever
 // MobileNewTextile
-function initRepo(seed, repoPath, logToDisk) {
+function initRepo(seed, repoPath, logToDisk, debug) {
     return __awaiter(this, void 0, void 0, function* () {
-        return yield TextileNode.initRepo(seed, repoPath, logToDisk);
+        return yield TextileNode.initRepo(seed, repoPath, logToDisk, debug);
     });
 }
 exports.initRepo = initRepo;
@@ -361,9 +389,9 @@ function migrateRepo(repoPath) {
     });
 }
 exports.migrateRepo = migrateRepo;
-function newTextile(repoPath, logLevels) {
+function newTextile(repoPath, debug) {
     return __awaiter(this, void 0, void 0, function* () {
-        yield TextileNode.newTextile(repoPath, logLevels);
+        yield TextileNode.newTextile(repoPath, debug);
     });
 }
 exports.newTextile = newTextile;
