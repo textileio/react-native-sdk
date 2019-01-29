@@ -4,7 +4,6 @@ import { Buffer } from 'buffer'
 import {
   File,
   ExternalInvite,
-  CafeSession,
   ContactInfo,
   ContactInfoQueryResult,
   Overview,
@@ -12,10 +11,22 @@ import {
   ThreadInfo,
   WalletAccount,
   BlockInfo,
+  NotificationInfo,
   ThreadFilesInfo,
-  NotificationInfo
+  ThreadFeedItem,
+  ThreadMessageInfo,
+  LogLevel
 } from './Models'
-import { IMobilePreparedFiles, IDirectory, MobilePreparedFiles, Directory } from '@textile/react-native-protobufs'
+import {
+  IMobilePreparedFiles,
+  ICafeSession,
+  ICafeSessions,
+  IDirectory,
+  MobilePreparedFiles,
+  CafeSession,
+  CafeSessions,
+  Directory
+} from '@textile/react-native-protobufs'
 
 const { TextileNode } = NativeModules
 
@@ -85,6 +96,11 @@ export async function addThreadLike(blockId: string): Promise<string> {
   return result as string
 }
 
+export async function addThreadMessage(threadId: string, body: string): Promise<string> {
+  const result = await TextileNode.addThreadMessage(threadId, body) // returns hash
+  return result as string
+}
+
 export async function address(): Promise<string> {
   const result = await TextileNode.address()
   return result as string
@@ -95,14 +111,16 @@ export async function avatar(): Promise<string | undefined> {
   return result.length > 0 ? result : undefined
 }
 
-export async function cafeSession(peerId: string): Promise<CafeSession> {
+export async function cafeSession(peerId: string): Promise<ICafeSession> {
   const result = await TextileNode.cafeSession(peerId)
-  return JSON.parse(result) as CafeSession
+  const buffer = Buffer.from(result, 'base64')
+  return CafeSession.decode(buffer)
 }
 
-export async function cafeSessions(): Promise<ReadonlyArray<CafeSession>> {
+export async function cafeSessions(): Promise<ICafeSessions> {
   const result = await TextileNode.cafeSessions()
-  return JSON.parse(result) as ReadonlyArray<CafeSession>
+  const buffer = Buffer.from(result, 'base64')
+  return CafeSessions.decode(buffer)
 }
 
 export async function checkCafeMessages(): Promise<void> {
@@ -133,7 +151,6 @@ export async function deregisterCafe(peerId: string): Promise<void> {
   await TextileNode.deregisterCafe(peerId)
 }
 
-// TODO: Use this to get image data
 export async function fileData(hash: string): Promise<FileData> {
   const result = await TextileNode.fileData(hash)
   return JSON.parse(result) as FileData
@@ -195,9 +212,10 @@ export async function readNotification(id_: string): Promise<void> {
   await TextileNode.readNotification(id_)
 }
 
-export async function refreshCafeSession(cafeId: string): Promise<CafeSession> {
+export async function refreshCafeSession(cafeId: string): Promise<ICafeSession> {
   const result = await TextileNode.refreshCafeSession(cafeId)
-  return JSON.parse(result) as CafeSession
+  const buffer = Buffer.from(result, 'base64')
+  return CafeSession.decode(buffer)
 }
 
 export async function registerCafe(peerId: string): Promise<void> {
@@ -218,9 +236,14 @@ export async function setAvatar(id_: string): Promise<void> {
   await TextileNode.setAvatar(id_)
 }
 
+export async function setLogLevels(levels: Map<string, LogLevel>): Promise<void> {
+  await TextileNode.setLogLevels(levels)
+}
+
 export async function setUsername(username: string): Promise<void> {
   await TextileNode.setUsername(username)
 }
+
 export async function start(): Promise<void> {
   await TextileNode.start()
 }
@@ -229,10 +252,19 @@ export async function stop(): Promise<void> {
   await TextileNode.stop()
 }
 
-// TODO: How to pass undefined values?
+export async function threadFeed(offset: string, limit: number, threadId?: string): Promise<ReadonlyArray<ThreadFeedItem>> {
+  const result = await TextileNode.threadFeed(offset, limit, threadId)
+  return JSON.parse(result) as ReadonlyArray<ThreadFeedItem>
+}
+
 export async function threadFiles(offset: string, limit: number, threadId?: string): Promise<ReadonlyArray<ThreadFilesInfo>> {
   const result = await TextileNode.threadFiles(offset, limit, threadId)
   return JSON.parse(result) as ReadonlyArray<ThreadFilesInfo>
+}
+
+export async function threadMessages(offset: string, limit: number, threadId?: string): Promise<ReadonlyArray<ThreadMessageInfo>> {
+  const result = await TextileNode.threadMessages(offset, limit, threadId)
+  return JSON.parse(result) as ReadonlyArray<ThreadMessageInfo>
 }
 
 export async function threadInfo(threadId: string): Promise<ThreadInfo> {
@@ -262,16 +294,16 @@ export async function version(): Promise<string> {
 // MobileInitRepo only run one time ever
 // MobileNewTextile
 
-export async function initRepo(seed: string, repoPath: string, logToDisk: boolean): Promise<void> {
-  return await TextileNode.initRepo(seed, repoPath, logToDisk)
+export async function initRepo(seed: string, repoPath: string, logToDisk: boolean, debug: boolean): Promise<void> {
+  return await TextileNode.initRepo(seed, repoPath, logToDisk, debug)
 }
 
 export async function migrateRepo(repoPath: string): Promise<void> {
   await TextileNode.migrateRepo(repoPath)
 }
 
-export async function newTextile(repoPath: string, logLevels: string): Promise<void> {
-  await TextileNode.newTextile(repoPath, logLevels)
+export async function newTextile(repoPath: string, debug: boolean): Promise<void> {
+  await TextileNode.newTextile(repoPath, debug)
 }
 
 export async function newWallet(wordCount: number): Promise<string> {

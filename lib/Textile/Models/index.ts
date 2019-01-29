@@ -40,6 +40,22 @@ export interface ThreadLikeInfo {
   readonly avatar?: string
 }
 
+export enum ThreadFeedItemType {
+  join = 'join',
+  leave = 'leave',
+  files = 'files',
+  message = 'message'
+}
+
+export interface ThreadFeedItem {
+  readonly block: string
+  readonly type: ThreadFeedItemType
+  readonly join?: ThreadJoinInfo
+  readonly leave?: ThreadLeaveInfo
+  readonly files?: ThreadFilesInfo
+  readonly message?: ThreadMessageInfo
+}
+
 export interface ThreadFilesInfo {
   readonly block: string
   readonly target: string
@@ -52,6 +68,36 @@ export interface ThreadFilesInfo {
   readonly comments: ReadonlyArray<ThreadCommentInfo>
   readonly likes: ReadonlyArray<ThreadLikeInfo>
   readonly threads: ReadonlyArray<string>
+}
+
+export interface ThreadJoinInfo {
+  readonly block: string
+  readonly date: string
+  readonly author_id: string
+  readonly username?: string
+  readonly avatar?: string
+  readonly body: string
+  readonly likes: ReadonlyArray<ThreadLikeInfo>
+}
+
+export interface ThreadLeaveInfo {
+  readonly block: string
+  readonly date: string
+  readonly author_id: string
+  readonly username?: string
+  readonly avatar?: string
+  readonly likes: ReadonlyArray<ThreadLikeInfo>
+}
+
+export interface ThreadMessageInfo {
+  readonly block: string
+  readonly date: string
+  readonly author_id: string
+  readonly username?: string
+  readonly avatar?: string
+  readonly body: string
+  readonly comments: ReadonlyArray<ThreadCommentInfo>
+  readonly likes: ReadonlyArray<ThreadLikeInfo>
 }
 
 export enum BlockType {
@@ -101,7 +147,7 @@ export interface CafeSession {
   readonly id: string
   readonly access: string
   readonly refresh: string
-  readonly expiry: string
+  readonly exp: string
   readonly cafe: Cafe
 }
 
@@ -179,9 +225,16 @@ export interface Node {
 
 export enum ThreadType {
   PRIVATE = 'PRIVATE',
-  READONLY = 'READONLY',
+  READ_ONLY = 'READ_ONLY',
   PUBLIC = 'PUBLIC',
   OPEN = 'OPEN',
+  INVALID = 'INVALID'
+}
+
+export enum ThreadSharing {
+  NOT_SHARED = 'NOT_SHARED',
+  INVITE_ONLY = 'INVITE_ONLY',
+  SHARED = 'SHARED',
   INVALID = 'INVALID'
 }
 
@@ -199,6 +252,8 @@ export interface ThreadInfo {
   readonly schema_id?: string
   readonly initiator: string
   readonly type: ThreadType
+  readonly sharing: ThreadSharing
+  readonly members?: ReadonlyArray<string>
   readonly state: ThreadState
   readonly head?: BlockInfo
   readonly peer_cnt: number
@@ -231,4 +286,13 @@ export interface Update {
   key: string
   name: string
   type: UpdateType
+}
+
+export enum LogLevel {
+  CRITICAL = 'CRITICAL',
+  ERROR = 'ERROR',
+  WARNING = 'WARNING',
+  NOTICE = 'NOTICE',
+  INFO = 'INFO',
+  DEBUG = 'DEBUG'
 }

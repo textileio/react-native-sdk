@@ -231,6 +231,21 @@ public class TextileNode extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
+    public void addThreadMessage(final String threadId, final String body, final Promise promise) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    promise.resolve(node.addThreadMessage(threadId, body));
+                }
+                catch (Exception e) {
+                    promise.reject("addThreadMessage", e);
+                }
+            }
+        });
+    }
+
+    @ReactMethod
     public void address(final Promise promise) {
         executor.execute(new Runnable() {
             @Override
@@ -266,7 +281,9 @@ public class TextileNode extends ReactContextBaseJavaModule {
             @Override
             public void run() {
                 try {
-                    promise.resolve(node.cafeSession(peerId));
+                    byte[] bytes = node.cafeSession(peerId);
+                    String base64 = Base64.encodeToString(bytes, Base64.DEFAULT);
+                    promise.resolve(base64);
                 }
                 catch (Exception e) {
                     promise.reject("cafeSession", e);
@@ -281,7 +298,9 @@ public class TextileNode extends ReactContextBaseJavaModule {
             @Override
             public void run() {
                 try {
-                    promise.resolve(node.cafeSessions());
+                    byte[] bytes = node.cafeSessions();
+                    String base64 = Base64.encodeToString(bytes, Base64.DEFAULT);
+                    promise.resolve(base64);
                 }
                 catch (Exception e) {
                     promise.reject("cafeSessions", e);
@@ -578,12 +597,14 @@ public class TextileNode extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void refreshCafeSession(final String cafeId, final Promise promise) {
+    public void refreshCafeSession(final String peerId, final Promise promise) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
                 try {
-                    promise.resolve(node.refreshCafeSession(cafeId));
+                    byte[] bytes = node.refreshCafeSession(peerId);
+                    String base64 = Base64.encodeToString(bytes, Base64.DEFAULT);
+                    promise.resolve(base64);
                 }
                 catch (Exception e) {
                     promise.reject("refreshCafeSession", e);
@@ -603,6 +624,22 @@ public class TextileNode extends ReactContextBaseJavaModule {
                 }
                 catch (Exception e) {
                     promise.reject("registerCafe", e);
+                }
+            }
+        });
+    }
+
+    @ReactMethod
+    public void removeContact(final String id_, final Promise promise) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    node.removeContact(id_);
+                    promise.resolve(null);
+                }
+                catch (Exception e) {
+                    promise.reject("removeContact", e);
                 }
             }
         });
@@ -655,6 +692,22 @@ public class TextileNode extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
+    public void setLogLevels(final String levels, final Promise promise) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    node.setLogLevels(levels);
+                    promise.resolve(null);
+                }
+                catch (Exception e) {
+                    promise.reject("setLogLevels", e);
+                }
+            }
+        });
+    }
+
+    @ReactMethod
     public void setUsername(final String username, final Promise promise) {
         executor.execute(new Runnable() {
             @Override
@@ -669,8 +722,6 @@ public class TextileNode extends ReactContextBaseJavaModule {
             }
         });
     }
-
-
 
     @ReactMethod
     public void start(final Promise promise) {
@@ -705,6 +756,21 @@ public class TextileNode extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
+    public void threadFeed(final String offset, final Integer limit, final String threadId, final Promise promise) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    promise.resolve(node.threadFeed(offset, limit, threadId));
+                }
+                catch (Exception e) {
+                    promise.reject("threadFeed", e);
+                }
+            }
+        });
+    }
+
+    @ReactMethod
     public void threadFiles(final String offset, final Integer limit, final String threadId, final Promise promise) {
         executor.execute(new Runnable() {
             @Override
@@ -714,6 +780,21 @@ public class TextileNode extends ReactContextBaseJavaModule {
                 }
                 catch (Exception e) {
                     promise.reject("threadFiles", e);
+                }
+            }
+        });
+    }
+
+    @ReactMethod
+    public void threadMessages(final String offset, final Integer limit, final String threadId, final Promise promise) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    promise.resolve(node.threadMessages(offset, limit, threadId));
+                }
+                catch (Exception e) {
+                    promise.reject("threadMessages", e);
                 }
             }
         });
@@ -780,7 +861,7 @@ public class TextileNode extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void initRepo(final String seed, final String repoPath, final Boolean logToDisk, final Promise promise) {
+    public void initRepo(final String seed, final String repoPath, final Boolean logToDisk, final Boolean debug, final Promise promise) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
@@ -789,6 +870,7 @@ public class TextileNode extends ReactContextBaseJavaModule {
                     config.setSeed(seed);
                     config.setRepoPath(repoPath);
                     config.setLogToDisk(logToDisk);
+                    config.setDebug(debug);
                     Mobile.initRepo(config);
                     promise.resolve(null);
                 }
@@ -818,7 +900,7 @@ public class TextileNode extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void newTextile(final String repoPath, final String logLevels, final Promise promise) {
+    public void newTextile(final String repoPath, final Boolean debug, final Promise promise) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
@@ -826,7 +908,7 @@ public class TextileNode extends ReactContextBaseJavaModule {
                     try {
                         RunConfig config = new RunConfig();
                         config.setRepoPath(repoPath);
-                        config.setLogLevels(logLevels);
+                        config.setDebug(debug);
                         node = Mobile.newTextile(config, new Messenger() {
                             @Override
                             public void notify(Event event) {
