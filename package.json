@@ -58,7 +58,7 @@
   },
   "dependencies": {
     "@textile/go-mobile": "1.0.0-rc29",
-    "@textile/react-native-protobufs": "1.0.6",
+    "@textile/react-native-protobufs": "1.1.0",
     "buffer": "^5.2.1",
     "prop-types": "^15.6.2"
   },
