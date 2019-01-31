@@ -227,8 +227,8 @@ export async function refreshCafeSession(peerId: string): Promise<ICafeSession |
   return CafeSession.decode(buffer)
 }
 
-export async function registerCafe(peerId: string): Promise<void> {
-  await TextileNode.registerCafe(peerId)
+export async function registerCafe(peerId: string, token: string): Promise<void> {
+  await TextileNode.registerCafe(peerId, token)
 }
 
 export async function removeThread(id_: string): Promise<string> {

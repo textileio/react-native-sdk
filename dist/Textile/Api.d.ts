@@ -39,7 +39,7 @@ export declare function profile(): Promise<ContactInfo>;
 export declare function readAllNotifications(): Promise<void>;
 export declare function readNotification(id_: string): Promise<void>;
 export declare function refreshCafeSession(peerId: string): Promise<ICafeSession | undefined>;
-export declare function registerCafe(peerId: string): Promise<void>;
+export declare function registerCafe(peerId: string, token: string): Promise<void>;
 export declare function removeThread(id_: string): Promise<string>;
 export declare function seed(): Promise<string>;
 export declare function setAvatar(id_: string): Promise<void>;

@@ -281,9 +281,9 @@ function refreshCafeSession(peerId) {
     });
 }
 exports.refreshCafeSession = refreshCafeSession;
-function registerCafe(peerId) {
+function registerCafe(peerId, token) {
     return __awaiter(this, void 0, void 0, function* () {
-        yield TextileNode.registerCafe(peerId);
+        yield TextileNode.registerCafe(peerId, token);
     });
 }
 exports.registerCafe = registerCafe;
