@@ -57,7 +57,7 @@
     "typescript": "^3.1.1"
   },
   "dependencies": {
-    "@textile/go-mobile": "1.0.0-rc32",
+    "@textile/go-mobile": "1.0.0-rc33",
     "@textile/react-native-protobufs": "1.1.0",
     "buffer": "^5.2.1",
     "prop-types": "^15.6.2"
