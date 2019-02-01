@@ -282,8 +282,12 @@ public class TextileNode extends ReactContextBaseJavaModule {
             public void run() {
                 try {
                     byte[] bytes = node.cafeSession(peerId);
-                    String base64 = Base64.encodeToString(bytes, Base64.DEFAULT);
-                    promise.resolve(base64);
+                    if (bytes != null) {
+                        String base64 = Base64.encodeToString(bytes, Base64.DEFAULT);
+                        promise.resolve(base64);
+                    } else {
+                        promise.resolve("");
+                    }
                 }
                 catch (Exception e) {
                     promise.reject("cafeSession", e);
@@ -299,8 +303,12 @@ public class TextileNode extends ReactContextBaseJavaModule {
             public void run() {
                 try {
                     byte[] bytes = node.cafeSessions();
-                    String base64 = Base64.encodeToString(bytes, Base64.DEFAULT);
-                    promise.resolve(base64);
+                    if (bytes != null) {
+                        String base64 = Base64.encodeToString(bytes, Base64.DEFAULT);
+                        promise.resolve(base64);
+                    } else {
+                        promise.resolve("");
+                    }
                 }
                 catch (Exception e) {
                     promise.reject("cafeSessions", e);
@@ -514,8 +522,12 @@ public class TextileNode extends ReactContextBaseJavaModule {
             public void run() {
                 try {
                     byte[] bytes = node.prepareFiles(path, threadId);
-                    String base64 = Base64.encodeToString(bytes, Base64.DEFAULT);
-                    promise.resolve(base64);
+                    if (bytes != null) {
+                        String base64 = Base64.encodeToString(bytes, Base64.DEFAULT);
+                        promise.resolve(base64);
+                    } else {
+                        promise.resolve("");
+                    }
                 }
                 catch (Exception e) {
                     promise.reject("prepareFiles", e);
@@ -534,8 +546,12 @@ public class TextileNode extends ReactContextBaseJavaModule {
                         @Override
                         public void call(byte[] bytes, Exception e) {
                             if (e == null) {
-                                String base64 = Base64.encodeToString(bytes, Base64.DEFAULT);
-                                promise.resolve(base64);
+                                if (bytes != null) {
+                                    String base64 = Base64.encodeToString(bytes, Base64.DEFAULT);
+                                    promise.resolve(base64);
+                                } else {
+                                    promise.resolve("");
+                                }
                             } else {
                                 promise.reject("prepareFilesAsync", e);
                             }
@@ -603,8 +619,12 @@ public class TextileNode extends ReactContextBaseJavaModule {
             public void run() {
                 try {
                     byte[] bytes = node.refreshCafeSession(peerId);
-                    String base64 = Base64.encodeToString(bytes, Base64.DEFAULT);
-                    promise.resolve(base64);
+                    if (bytes != null) {
+                        String base64 = Base64.encodeToString(bytes, Base64.DEFAULT);
+                        promise.resolve(base64);
+                    } else {
+                        promise.resolve("");
+                    }
                 }
                 catch (Exception e) {
                     promise.reject("refreshCafeSession", e);

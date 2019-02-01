@@ -5,6 +5,9 @@
 android/**/*.settings
 android/**/*.project
 android/**/*.classpath
+example/**/*.settings
+example/**/*.project
+example/**/*.classpath
 
 # OSX
 #
