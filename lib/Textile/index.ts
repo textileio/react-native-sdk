@@ -379,8 +379,8 @@ class Textile {
         await this.updateNodeState(NodeState.stopped)
         cancelled = true // be sure to exit the loop
     }
-
     await BackgroundTimer.stop()
+    // TODO: this might be better in a client provided callback
     await BackgroundFetch.finish(BackgroundFetch.FETCH_RESULT_NEW_DATA)
   }
 }
