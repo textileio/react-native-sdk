@@ -16,7 +16,7 @@ import {
   ThreadFeedItem,
   ThreadMessageInfo,
   LogLevel
-} from './Models'
+} from '../Models'
 import {
   IMobilePreparedFiles,
   ICafeSession,

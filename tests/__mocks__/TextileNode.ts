@@ -8,7 +8,7 @@ import {
     BlockInfo,
     BlockType,
     ContactInfo
-} from '../../lib'
+} from '../../lib/Textile/Models'
 
 export default {
     acceptExternalThreadInvite: jest.fn((id, key): Promise<string> => new Promise((resolve) => {

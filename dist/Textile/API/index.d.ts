@@ -1,4 +1,4 @@
-import { File, ExternalInvite, ContactInfo, ContactInfoQueryResult, Overview, FileData, ThreadInfo, WalletAccount, BlockInfo, NotificationInfo, ThreadFilesInfo, ThreadFeedItem, ThreadMessageInfo, LogLevel } from './Models';
+import { File, ExternalInvite, ContactInfo, ContactInfoQueryResult, Overview, FileData, ThreadInfo, WalletAccount, BlockInfo, NotificationInfo, ThreadFilesInfo, ThreadFeedItem, ThreadMessageInfo, LogLevel } from '../Models';
 import { IMobilePreparedFiles, ICafeSession, ICafeSessions, IDirectory } from '@textile/react-native-protobufs';
 /**
  * Returns the hash of the initial join block. Not the threadId of the final thread created/joined
