@@ -60,6 +60,7 @@ class Textile {
     // Clear on out too if detected to help speed up any startup time
     // Clear all our listeners
     this._nativeEvents.removeAllListeners()
+    // TODO: be sure to limit to only internal listeners (same above)
     DeviceEventEmitter.removeAllListeners()
     if (!this._config.SELF_MANAGE_APP_STATE) {
       AppState.removeEventListener('change', (nextState: AppStateStatus) => {
@@ -92,6 +93,11 @@ class Textile {
       AppState.addEventListener('change', (nextState: AppStateStatus) => {
         TextileEvents.appNextState(nextState)
         this.nextAppState(nextState)
+      })
+    } else {
+      // If user wants to manage app change events, they can fire these events to do so
+      DeviceEventEmitter.addListener('@textile/appNextState', (payload) => {
+        this.nextAppState(payload.nextState)
       })
     }
 
@@ -200,12 +206,12 @@ class Textile {
 
   manageNode = async (previousState: TextileAppStateStatus, newState: TextileAppStateStatus) => {
     this.isInitializedCheck()
-    if (newState === 'active' || newState === 'background' || newState === 'backgroundFromForeground') {
+    if (newState === 'active' || newState === 'background') {
       await TextileEvents.appStateChange(previousState, newState)
       this.createAndStartNode()
-      if (newState === 'background' || newState === 'backgroundFromForeground') {
-        await this.backgroundTaskRace()
-      }
+    }
+    if (newState === 'background' || newState === 'backgroundFromForeground') {
+      await this.backgroundTaskRace()
     }
   }
 

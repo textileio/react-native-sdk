@@ -40,6 +40,15 @@ Library search paths: $(SRCROOT)/../node_modules/@textile/go-mobile/ios
       compile project(':react-native-textile')
   	```
 
+
+### Installing peerDependencies
+
+Beyond `react` and `react-native` the SDK has two peerDependencies that you need to install in your code to make the SDK work properly. Be sure to follow the full installation instructions for each of these, including linking them.
+
+1. [react-native-background-fetch](https://github.com/transistorsoft/react-native-background-fetch)
+2. [react-native-background-timer](https://github.com/ocetnik/react-native-background-timer)
+
+
 ## React Native Boilerplate
 
 To jump right into a working app, see our demo [IPFS boilerplate app](https://github.com/textileio/react-native-boilerplate).
