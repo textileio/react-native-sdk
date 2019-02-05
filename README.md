@@ -9,6 +9,8 @@
 
 `$ react-native link @textile/react-native-sdk`
 
+#### Link textilego in Android
+
 I also need to add `go-mobile` to the search paths of parent project,
 
 ```
@@ -16,12 +18,40 @@ Framework search paths: $(SRCROOT)/../node_modules/@textile/go-mobile/ios
 Library search paths: $(SRCROOT)/../node_modules/@textile/go-mobile/ios
 ```
 
-#### Link textilego in Android
-
-Finally, you need to edit your `android/settings.gradle` file, simply add as the last line,
+You need to edit your `android/settings.gradle` file, simply add as the last line,
 
 `include ':textilego'`
 
+Edit your `android/app/build.gradle` to include `compile project(':textilego')` in your `dependencies` section. Example,
+
+```
+dependencies {
+    compile project(':react-native-background-fetch')
+    compile project(':react-native-background-timer')
+    compile project(':react-native-fs')
+    compile project(':@textile_react-native-sdk')
+    implementation fileTree(dir: "libs", include: ["*.jar"])
+    implementation "com.android.support:appcompat-v7:${rootProject.ext.supportLibVersion}"
+    implementation "com.facebook.react:react-native:+" 
+    compile project(':textilego')
+}
+```
+
+Finally, add a `build.gradle` under the `textilego` folder. Right click on `textilego` -> `New File` -> name it `build.gradle`. Inside build.gradle add, 
+
+```
+configurations.maybeCreate("default")
+artifacts.add("default", file('../../node_modules/@textile/go-mobile/android/mobile.aar'))
+```
+
+Save.
+
+### Installing peerDependencies
+
+Beyond `react` and `react-native` the SDK has two peerDependencies that you need to install in your code to make the SDK work properly. Be sure to follow the full installation instructions for each of these, including linking them.
+
+1. [react-native-background-fetch](https://github.com/transistorsoft/react-native-background-fetch)
+2. [react-native-background-timer](https://github.com/ocetnik/react-native-background-timer)
 
 ### Manual installation
 
@@ -47,14 +77,7 @@ Finally, you need to edit your `android/settings.gradle` file, simply add as the
       compile project(':react-native-textile')
   	```
 
-
-### Installing peerDependencies
-
-Beyond `react` and `react-native` the SDK has two peerDependencies that you need to install in your code to make the SDK work properly. Be sure to follow the full installation instructions for each of these, including linking them.
-
-1. [react-native-background-fetch](https://github.com/transistorsoft/react-native-background-fetch)
-2. [react-native-background-timer](https://github.com/ocetnik/react-native-background-timer)
-
+You need to now finish **Installing peerDependencies** and 
 
 ## React Native Boilerplate
 
