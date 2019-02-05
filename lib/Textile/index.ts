@@ -33,9 +33,7 @@ class Textile {
   _store = new TextileStore()
   _nativeEvents = Events
   _config: TextileConfig = {
-    RELEASE_TYPE: 'development',
-    TEXTILE_CAFE_GATEWAY_URL: '',
-    TEXTILE_CAFE_OVERRIDE: ''
+    RELEASE_TYPE: 'development'
   }
   _initialized = false
 
@@ -157,7 +155,7 @@ class Textile {
         const cafeOverride: string = this._config.TEXTILE_CAFE_OVERRIDE
         if (cafeOverride) {
           await this.api.registerCafe(cafeOverride)
-        } else {
+        } else if (this._config.TEXTILE_CAFE_GATEWAY_URL) {
           await this.discoverAndRegisterCafes()
         }
       }
