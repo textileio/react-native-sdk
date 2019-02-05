@@ -40,29 +40,78 @@ Library search paths: $(SRCROOT)/../node_modules/@textile/go-mobile/ios
       compile project(':react-native-textile')
   	```
 
-## Hello World
+## React Native Boilerplate
+
+To jump right into a working app, see our demo [IPFS boilerplate app](https://github.com/textileio/react-native-boilerplate).
+
+## App Setup
+
+### Stateful APIs
+
+A few of the Textile methods require access to a single instance with stored state. This instance can be wired into your app in one single place and then communicated with over Events. The minimum requirement to wire Textile into your app are:
+
+##### Initialize & setup & teardown the Textile class
 
 ```javascript
-import * as Textile from '@textile/react-native-sdk'
-import RNFS from 'react-native-fs'
+import Textile from '@textile/react-native-sdk';
 
-// Local directory for on-disk storage
-export const REPO_PATH = `${RNFS.DocumentDirectoryPath}/textile-go`
 
-// If directory doesn't exist, create it
-const repoPathExists: boolean = RNFS.exists(REPO_PATH)
-if (!repoPathExists) {
-  RNFS.mkdir(REPO_PATH)
-  // Move all Textile files into our local folder
-  RNFS.readDir(RNFS.DocumentDirectoryPath).then((files) => {
-     for (const file of files) {
-       if (file.path !== REPO_PATH && file.name !== 'RCTAsyncLocalStorage_V1') {
-         RNFS.moveFile(file.path, `${REPO_PATH}/${file.name}`)
-       }
-     }
-  })
+export default class App extends Component<Props> {
+  textile = Textile;
+
+  componentDidMount() {
+    this.textile.setup();
+  }
+  componentWillUnMount() {
+    this.textile.tearDown();
+  }
+
+  render() {
+    return (
+      <View>
+        <Text>Textile</Text>
+      </View>
+    )
+  }
 }
-
-Textile.newTextile(REPO_PATH, 'INFO')
-Textile.start()
 ```
+
+##### Create and start the node
+
+You need to call this event from anyplace in your app in order for the node to start. 
+
+```javascript
+import Textile from '@textile/react-native-sdk';
+
+Textile.createAndStartNode();
+```
+
+##### [Optional] -- Trigger background updates
+
+The node is designed to gracefully disconnect and wind-down tasks when the user backgrounds the containing app. However, some apps may choose to spin the node up in the background in order to sync data or discover new updates. 
+
+You can do this in a background fetch triggered background event
+
+```javascript
+  import Textile from '@textile/react-native-sdk';
+
+  ...
+  setup () {
+    BackgroundFetch.configure({}, () => {
+      Textile.backgroundFetch();
+    }, (error) => {})
+  }
+```
+
+Or yu can do this in a location triggered background event
+
+```javascript
+  import Textile from '@textile/react-native-sdk';
+
+  ...
+  handleNewPosition () {
+    Textile.locationUpdate();
+  }
+```
+
+`backgroundFetch` and `locationUpdate` are stateless APIs and can be run anywhere in your app without having to reference your initialized node. 

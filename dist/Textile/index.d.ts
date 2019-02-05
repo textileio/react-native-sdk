@@ -29,6 +29,7 @@ declare class Textile {
     nodeState: () => Promise<NodeState>;
     getCafeSessions: () => Promise<ReadonlyArray<ICafeSession>>;
     getRefreshedCafeSessions: () => Promise<ReadonlyArray<ICafeSession>>;
+    private handleAppState;
     private shouldRunBackgroundTask;
     private discoverCafes;
     private updateNodeStateError;

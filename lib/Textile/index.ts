@@ -1,4 +1,4 @@
-import { DeviceEventEmitter, AppState } from 'react-native'
+import { AppState, AppStateStatus, DeviceEventEmitter } from 'react-native'
 import {
   DiscoveredCafes,
   TextileAppStateStatus,
@@ -61,6 +61,10 @@ class Textile {
     // Clear all our listeners
     this._nativeEvents.removeAllListeners()
     DeviceEventEmitter.removeAllListeners()
+    AppState.removeEventListener('change', (nextState: AppStateStatus) => {
+      TextileEvents.appNextState(nextState)
+      this.handleAppState(nextState)
+    })
   }
 
   // setup should only be run where the class will remain persistent so that
@@ -82,8 +86,9 @@ class Textile {
       this.createAndStartNode()
     })
 
-    DeviceEventEmitter.addListener('@textile/appNextState', (payload) => {
-      this.nextAppState(payload.nextState)
+    AppState.addEventListener('change', (nextState: AppStateStatus) => {
+      TextileEvents.appNextState(nextState)
+      this.nextAppState(nextState)
     })
 
     this.initializeAppState()
@@ -269,6 +274,12 @@ class Textile {
   }
 
   /* ------ INTERNAL METHODS ----- */
+
+  private handleAppState = (nextState: AppStateStatus) => {
+    // this.nextAppState(nextState)
+    DeviceEventEmitter.emit('@textile/appNextState', {nextState})
+  }
+
   private shouldRunBackgroundTask = async (): Promise<boolean> => {
     const MINIMUM_MINUTES_BETWEEN_TASKS = 10
     const now = Number((new Date()).getTime())

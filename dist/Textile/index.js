@@ -40,9 +40,7 @@ class Textile {
         this._store = new store_1.default();
         this._nativeEvents = Events_1.default;
         this._config = {
-            RELEASE_TYPE: 'development',
-            TEXTILE_CAFE_GATEWAY_URL: '',
-            TEXTILE_CAFE_OVERRIDE: ''
+            RELEASE_TYPE: 'development'
         };
         this._initialized = false;
         this.repoPath = `${react_native_fs_1.default.DocumentDirectoryPath}/textile-go`;
@@ -105,7 +103,7 @@ class Textile {
                     if (cafeOverride) {
                         yield this.api.registerCafe(cafeOverride);
                     }
-                    else {
+                    else if (this._config.TEXTILE_CAFE_GATEWAY_URL) {
                         yield this.discoverAndRegisterCafes();
                     }
                 }
@@ -153,10 +151,7 @@ class Textile {
             }
         });
         this.discoverAndRegisterCafes = () => __awaiter(this, void 0, void 0, function* () {
-            if (!this._initialized) {
-                TextileEvents.nonInitializedError();
-                return;
-            }
+            this.initializeAppState();
             try {
                 const cafes = yield helpers_1.createTimeout(10000, this.discoverCafes());
                 const discoveredCafes = cafes;
@@ -218,6 +213,10 @@ class Textile {
             }
         });
         /* ------ INTERNAL METHODS ----- */
+        this.handleAppState = (nextState) => {
+            // this.nextAppState(nextState)
+            react_native_1.DeviceEventEmitter.emit('@textile/appNextState', { nextState });
+        };
         this.shouldRunBackgroundTask = () => __awaiter(this, void 0, void 0, function* () {
             const MINIMUM_MINUTES_BETWEEN_TASKS = 10;
             const now = Number((new Date()).getTime());
@@ -327,6 +326,9 @@ class Textile {
         // Clear all our listeners
         this._nativeEvents.removeAllListeners();
         react_native_1.DeviceEventEmitter.removeAllListeners();
+        react_native_1.AppState.removeEventListener('change', (nextState) => {
+            this.handleAppState(nextState);
+        });
     }
     // setup should only be run where the class will remain persistent so that
     // listeners will be wired in to one instance only,
@@ -346,7 +348,13 @@ class Textile {
             this.createAndStartNode();
         });
         react_native_1.DeviceEventEmitter.addListener('@textile/appNextState', (payload) => {
-            this.nextAppState(payload.nextState);
+            // this.nextAppState(payload.nextState)
+            console.log('axh got listen', payload.nextState);
+        });
+        react_native_1.AppState.addEventListener('change', (nextState) => {
+            console.log('axh got change', nextState);
+            this.nextAppState(nextState);
+            react_native_1.DeviceEventEmitter.emit('@textile/appNextState', { nextState });
         });
         this.initializeAppState();
         this._initialized = true;

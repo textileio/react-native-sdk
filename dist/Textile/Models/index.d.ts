@@ -1,8 +1,8 @@
 import { AppStateStatus } from 'react-native';
 export interface TextileConfig {
     RELEASE_TYPE: string;
-    TEXTILE_CAFE_GATEWAY_URL: string;
-    TEXTILE_CAFE_OVERRIDE: string;
+    TEXTILE_CAFE_GATEWAY_URL?: string;
+    TEXTILE_CAFE_OVERRIDE?: string;
 }
 export declare enum NodeState {
     'nonexistent' = "nonexistent",
