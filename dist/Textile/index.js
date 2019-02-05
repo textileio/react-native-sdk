@@ -213,10 +213,6 @@ class Textile {
             }
         });
         /* ------ INTERNAL METHODS ----- */
-        this.handleAppState = (nextState) => {
-            // this.nextAppState(nextState)
-            react_native_1.DeviceEventEmitter.emit('@textile/appNextState', { nextState });
-        };
         this.shouldRunBackgroundTask = () => __awaiter(this, void 0, void 0, function* () {
             const MINIMUM_MINUTES_BETWEEN_TASKS = 10;
             const now = Number((new Date()).getTime());
@@ -327,7 +323,8 @@ class Textile {
         this._nativeEvents.removeAllListeners();
         react_native_1.DeviceEventEmitter.removeAllListeners();
         react_native_1.AppState.removeEventListener('change', (nextState) => {
-            this.handleAppState(nextState);
+            TextileEvents.appNextState(nextState);
+            this.nextAppState(nextState);
         });
     }
     // setup should only be run where the class will remain persistent so that
@@ -347,14 +344,9 @@ class Textile {
         react_native_1.DeviceEventEmitter.addListener('@textile/createAndStartNode', (payload) => {
             this.createAndStartNode();
         });
-        react_native_1.DeviceEventEmitter.addListener('@textile/appNextState', (payload) => {
-            // this.nextAppState(payload.nextState)
-            console.log('axh got listen', payload.nextState);
-        });
         react_native_1.AppState.addEventListener('change', (nextState) => {
-            console.log('axh got change', nextState);
+            TextileEvents.appNextState(nextState);
             this.nextAppState(nextState);
-            react_native_1.DeviceEventEmitter.emit('@textile/appNextState', { nextState });
         });
         this.initializeAppState();
         this._initialized = true;

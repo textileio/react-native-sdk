@@ -63,7 +63,7 @@ class Textile {
     DeviceEventEmitter.removeAllListeners()
     AppState.removeEventListener('change', (nextState: AppStateStatus) => {
       TextileEvents.appNextState(nextState)
-      this.handleAppState(nextState)
+      this.nextAppState(nextState)
     })
   }
 
@@ -274,11 +274,6 @@ class Textile {
   }
 
   /* ------ INTERNAL METHODS ----- */
-
-  private handleAppState = (nextState: AppStateStatus) => {
-    // this.nextAppState(nextState)
-    DeviceEventEmitter.emit('@textile/appNextState', {nextState})
-  }
 
   private shouldRunBackgroundTask = async (): Promise<boolean> => {
     const MINIMUM_MINUTES_BETWEEN_TASKS = 10
