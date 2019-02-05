@@ -152,9 +152,9 @@ class Textile {
 
       const sessions: ICafeSessions = await this.api.cafeSessions()
       if (!sessions || !sessions.values || sessions.values.length < 1) {
-        const cafeOverride: string = this._config.TEXTILE_CAFE_OVERRIDE
+        const cafeOverride = this._config.TEXTILE_CAFE_OVERRIDE
         if (cafeOverride) {
-          await this.api.registerCafe(cafeOverride)
+          await this.api.registerCafe(cafeOverride as string)
         } else if (this._config.TEXTILE_CAFE_GATEWAY_URL) {
           await this.discoverAndRegisterCafes()
         }
@@ -201,10 +201,7 @@ class Textile {
   }
 
   discoverAndRegisterCafes = async () => {
-    if (!this._initialized) {
-      TextileEvents.nonInitializedError()
-      return
-    }
+    this.initializeAppState()
     try {
       const cafes = await createTimeout(10000, this.discoverCafes())
       const discoveredCafes = cafes as DiscoveredCafes
