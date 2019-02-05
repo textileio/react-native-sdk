@@ -94,11 +94,6 @@ class Textile {
         TextileEvents.appNextState(nextState)
         this.nextAppState(nextState)
       })
-    } else {
-      // If user wants to manage app change events, they can fire these events to do so
-      DeviceEventEmitter.addListener('@textile/appNextState', (payload) => {
-        this.nextAppState(payload.nextState)
-      })
     }
 
     this.initializeAppState()
@@ -206,8 +201,10 @@ class Textile {
 
   manageNode = async (previousState: TextileAppStateStatus, newState: TextileAppStateStatus) => {
     this.isInitializedCheck()
-    if (newState === 'active' || newState === 'background') {
+    if (newState === 'active' || newState === 'background' || newState === 'backgroundFromForeground') {
       await TextileEvents.appStateChange(previousState, newState)
+    }
+    if (newState === 'active' || newState === 'background') {
       this.createAndStartNode()
     }
     if (newState === 'background' || newState === 'backgroundFromForeground') {
@@ -377,7 +374,9 @@ class Textile {
         // enter stopping sequence
         foregroundEvent.remove() // remove our event listener
         TextileEvents.stopNodeAfterDelayFinishing()
+        await this.updateNodeState(NodeState.stopping)
         await this.stopNode() // stop the node
+        await this.updateNodeState(NodeState.stopped)
         cancelled = true // be sure to exit the loop
     }
 
