@@ -16,6 +16,13 @@ Framework search paths: $(SRCROOT)/../node_modules/@textile/go-mobile/ios
 Library search paths: $(SRCROOT)/../node_modules/@textile/go-mobile/ios
 ```
 
+#### Link textilego in Android
+
+Finally, you need to edit your `android/settings.gradle` file, simply add as the last line,
+
+`include ':textilego'`
+
+
 ### Manual installation
 
 #### iOS

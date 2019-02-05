@@ -142,12 +142,12 @@ class Textile {
         });
         this.manageNode = (previousState, newState) => __awaiter(this, void 0, void 0, function* () {
             this.isInitializedCheck();
-            if (newState === 'active' || newState === 'background' || newState === 'backgroundFromForeground') {
+            if (newState === 'active' || newState === 'background') {
                 yield TextileEvents.appStateChange(previousState, newState);
                 this.createAndStartNode();
-                if (newState === 'background' || newState === 'backgroundFromForeground') {
-                    yield this.backgroundTaskRace();
-                }
+            }
+            if (newState === 'background' || newState === 'backgroundFromForeground') {
+                yield this.backgroundTaskRace();
             }
         });
         this.discoverAndRegisterCafes = () => __awaiter(this, void 0, void 0, function* () {
@@ -321,11 +321,14 @@ class Textile {
         // Clear on out too if detected to help speed up any startup time
         // Clear all our listeners
         this._nativeEvents.removeAllListeners();
+        // TODO: be sure to limit to only internal listeners (same above)
         react_native_1.DeviceEventEmitter.removeAllListeners();
-        react_native_1.AppState.removeEventListener('change', (nextState) => {
-            TextileEvents.appNextState(nextState);
-            this.nextAppState(nextState);
-        });
+        if (!this._config.SELF_MANAGE_APP_STATE) {
+            react_native_1.AppState.removeEventListener('change', (nextState) => {
+                TextileEvents.appNextState(nextState);
+                this.nextAppState(nextState);
+            });
+        }
     }
     // setup should only be run where the class will remain persistent so that
     // listeners will be wired in to one instance only,
@@ -344,10 +347,18 @@ class Textile {
         react_native_1.DeviceEventEmitter.addListener('@textile/createAndStartNode', (payload) => {
             this.createAndStartNode();
         });
-        react_native_1.AppState.addEventListener('change', (nextState) => {
-            TextileEvents.appNextState(nextState);
-            this.nextAppState(nextState);
-        });
+        if (!this._config.SELF_MANAGE_APP_STATE) {
+            react_native_1.AppState.addEventListener('change', (nextState) => {
+                TextileEvents.appNextState(nextState);
+                this.nextAppState(nextState);
+            });
+        }
+        else {
+            // If user wants to manage app change events, they can fire these events to do so
+            react_native_1.DeviceEventEmitter.addListener('@textile/appNextState', (payload) => {
+                this.nextAppState(payload.nextState);
+            });
+        }
         this.initializeAppState();
         this._initialized = true;
     }
