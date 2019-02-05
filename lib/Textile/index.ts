@@ -61,10 +61,12 @@ class Textile {
     // Clear all our listeners
     this._nativeEvents.removeAllListeners()
     DeviceEventEmitter.removeAllListeners()
-    AppState.removeEventListener('change', (nextState: AppStateStatus) => {
-      TextileEvents.appNextState(nextState)
-      this.nextAppState(nextState)
-    })
+    if (!this._config.SELF_MANAGE_APP_STATE) {
+      AppState.removeEventListener('change', (nextState: AppStateStatus) => {
+        TextileEvents.appNextState(nextState)
+        this.nextAppState(nextState)
+      })
+    }
   }
 
   // setup should only be run where the class will remain persistent so that
@@ -86,10 +88,12 @@ class Textile {
       this.createAndStartNode()
     })
 
-    AppState.addEventListener('change', (nextState: AppStateStatus) => {
-      TextileEvents.appNextState(nextState)
-      this.nextAppState(nextState)
-    })
+    if (!this._config.SELF_MANAGE_APP_STATE) {
+      AppState.addEventListener('change', (nextState: AppStateStatus) => {
+        TextileEvents.appNextState(nextState)
+        this.nextAppState(nextState)
+      })
+    }
 
     this.initializeAppState()
 

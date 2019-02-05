@@ -4,16 +4,6 @@ import TextileNode from './__mocks__/TextileNode'
 import AsyncStorage from './__mocks__/AsyncStorage'
 import AppState from './__mocks__/AppState'
 
-// import {NativeModules} from 'react-native';
-
-// Custom mock APIs for native TextileNode
-// jest.mock('NativeModules', () => {
-//     return {
-//         TextileNode 
-//     }
-// })
-
-
 import DeviceEvent from './__mocks__/DeviceEvent'
 import NativeEvent from './__mocks__/NativeEvent'
 
@@ -30,18 +20,8 @@ jest.mock('react-native', () => {
       select: jest.fn(() => new NativeEvent())
     },
     NativeEventEmitter: NativeEvent
-    // eventEmitter: jest.fn()
   }
 })
-
-// jest.mock('@textile/react-native-sdk', () => {
-//   return {
-//       eventEmitter: jest.fn(),
-//       Events: new NativeEvent()
-//   }
-// })
-
-
 
 /* tslint:disable:no-empty */
 jest.mock('react-native-background-timer', () => {})
