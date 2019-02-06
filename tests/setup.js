@@ -24,8 +24,17 @@ jest.mock('react-native', () => {
 })
 
 /* tslint:disable:no-empty */
-jest.mock('react-native-background-timer', () => {})
-jest.mock('react-native-background-fetch', () => {})
+jest.mock('react-native-background-timer', () => {
+  return {
+    start: jest.fn(),
+    stop: jest.fn()
+  }
+})
+jest.mock('react-native-background-fetch', () => {
+  return {
+    finish:  jest.fn()
+  }
+})
 
 jest.mock('react-native-fs', () => {
   return {

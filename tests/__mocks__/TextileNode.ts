@@ -66,6 +66,9 @@ export default {
           }
         resolve(JSON.stringify(mockBlockInfo))
     })),
+    checkCafeMessages: jest.fn((): Promise<void> => new Promise((resolve) => {
+        resolve()
+    })),
     profile: jest.fn((): Promise<string> => new Promise((resolve) => {
         const mockProfile: ContactInfo = {
             id: 'id',

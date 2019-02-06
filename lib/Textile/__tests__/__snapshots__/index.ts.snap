@@ -1,3 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`rn textile state functions startup sequence 1`] = `undefined`;
+exports[`rn textile Textile lifecycle should run as expected creates node successfully 1`] = `undefined`;
+
+exports[`rn textile Textile lifecycle should run as expected shuts down successfully 1`] = `undefined`;
+
+exports[`rn textile Textile lifecycle should run as expected shuts down successfully 2`] = `true`;
+
+exports[`rn textile state functions should error when not initialized starts successfully 1`] = `undefined`;

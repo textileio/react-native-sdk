@@ -172,6 +172,9 @@ class Textile {
     while already running. Do we need the same check to ensure it doesn't happen here?
     */
     this.isInitializedCheck()
+
+    const debug = this._config.RELEASE_TYPE !== 'production'
+
     try {
 
       await this.createNode()
@@ -227,6 +230,7 @@ class Textile {
   // Primarily an internal function
   manageNode = async (previousState: TextileAppStateStatus, newState: TextileAppStateStatus) => {
     this.isInitializedCheck()
+    await this._store.setAppState(newState)
     if (newState === 'active' || newState === 'background' || newState === 'backgroundFromForeground') {
       await TextileEvents.appStateChange(previousState, newState)
     }
@@ -347,7 +351,6 @@ class Textile {
   }
   private appStateChange = async (previousState: TextileAppStateStatus, nextState: TextileAppStateStatus) => {
     this.isInitializedCheck()
-    await this._store.setAppState(nextState)
     await this.manageNode(previousState, nextState)
   }
   private updateNodeState = async (state: NodeState) => {
@@ -360,7 +363,7 @@ class Textile {
   private stopNode = async () => {
     await this.updateNodeState(NodeState.stopping)
     await this.api.stop()
-    this._store.setNodeOnline(false)
+    await this._store.setNodeOnline(false)
     await this.updateNodeState(NodeState.stopped)
   }
 
