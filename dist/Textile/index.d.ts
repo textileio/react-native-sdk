@@ -21,6 +21,7 @@ declare class Textile {
     initializeAppState: () => Promise<void>;
     startBackgroundTask: () => Promise<void>;
     createAndStartNode: () => Promise<void>;
+    shutDown: () => Promise<void>;
     manageNode: (previousState: TextileAppStateStatus, newState: TextileAppStateStatus) => Promise<void>;
     discoverAndRegisterCafes: () => Promise<void>;
     isInitialized: () => boolean;

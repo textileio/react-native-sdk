@@ -90,9 +90,19 @@ class Textile {
     })
 
     if (!this._config.SELF_MANAGE_APP_STATE) {
+      // SDK automatically detects app state changes manages the node
       AppState.addEventListener('change', (nextState: AppStateStatus) => {
         TextileEvents.appNextState(nextState)
         this.nextAppState(nextState)
+      })
+    } else {
+      // Alternatively, the developer can trigger changes manually via an notifyAppStateChange event
+      DeviceEventEmitter.addListener('@textile/notifyAppStateChange', (payload) => {
+        if (!payload || !payload.nextState) {
+          return
+        }
+        TextileEvents.appNextState(payload.nextState)
+        this.nextAppState(payload.nextState)
       })
     }
 
@@ -140,22 +150,32 @@ class Textile {
       await this.appStateChange(currentState, 'background')
     }
   }
+
+  // Simply create the node, useful only if you want to create in advance of starting
+  createNode = async () => {
+    this.isInitializedCheck()
+    const debug = this._config.RELEASE_TYPE !== 'production'
+    await this.updateNodeState(NodeState.creating)
+    const needsMigration = await this.migration.requiresFileMigration(this.repoPath)
+    if (needsMigration) {
+      await this.migration.runFileMigration(this.repoPath)
+    }
+    await this.api.newTextile(this.repoPath, debug)
+
+    await this.updateNodeState(NodeState.created)
+  }
+
+  // Start the node, create it if it doesn't exist. Safe to call on every start.
   createAndStartNode = async () => {
     // TODO
     /* In redux/saga world, we did a // yield call(() => task.done) to ensure this wasn't called
     while already running. Do we need the same check to ensure it doesn't happen here?
     */
     this.isInitializedCheck()
-    const debug = this._config.RELEASE_TYPE !== 'production'
     try {
-      await this.updateNodeState(NodeState.creating)
-      const needsMigration = await this.migration.requiresFileMigration(this.repoPath)
-      if (needsMigration) {
-        await this.migration.runFileMigration(this.repoPath)
-      }
-      await this.api.newTextile(this.repoPath, debug)
 
-      await this.updateNodeState(NodeState.created)
+      await this.createNode()
+
       await this.updateNodeState(NodeState.starting)
 
       await this.api.start()
@@ -199,6 +219,12 @@ class Textile {
     }
   }
 
+  // Useful if an app wishes to shut down the node
+  shutDown = async () => {
+    await this.stopNode()
+  }
+
+  // Primarily an internal function
   manageNode = async (previousState: TextileAppStateStatus, newState: TextileAppStateStatus) => {
     this.isInitializedCheck()
     if (newState === 'active' || newState === 'background' || newState === 'backgroundFromForeground') {
@@ -281,7 +307,6 @@ class Textile {
   }
 
   /* ------ INTERNAL METHODS ----- */
-
   private shouldRunBackgroundTask = async (): Promise<boolean> => {
     const MINIMUM_MINUTES_BETWEEN_TASKS = 10
     const now = Number((new Date()).getTime())
@@ -332,12 +357,11 @@ class Textile {
   }
 
   /* ----- PRIVATE - EVENT EMITTERS ----- */
-
   private stopNode = async () => {
-    this._store.setNodeOnline(false)
-    this._store.setNodeState({state: NodeState.stopping})
+    await this.updateNodeState(NodeState.stopping)
     await this.api.stop()
-    this._store.setNodeState({state: NodeState.stopped})
+    this._store.setNodeOnline(false)
+    await this.updateNodeState(NodeState.stopped)
   }
 
   private backgroundTaskRace = async () => {
@@ -374,9 +398,7 @@ class Textile {
         // enter stopping sequence
         foregroundEvent.remove() // remove our event listener
         TextileEvents.stopNodeAfterDelayFinishing()
-        await this.updateNodeState(NodeState.stopping)
         await this.stopNode() // stop the node
-        await this.updateNodeState(NodeState.stopped)
         cancelled = true // be sure to exit the loop
     }
     await BackgroundTimer.stop()

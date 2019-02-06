@@ -140,10 +140,15 @@ class Textile {
                 }
             }
         });
+        this.shutDown = () => __awaiter(this, void 0, void 0, function* () {
+            yield this.stopNode();
+        });
         this.manageNode = (previousState, newState) => __awaiter(this, void 0, void 0, function* () {
             this.isInitializedCheck();
-            if (newState === 'active' || newState === 'background') {
+            if (newState === 'active' || newState === 'background' || newState === 'backgroundFromForeground') {
                 yield TextileEvents.appStateChange(previousState, newState);
+            }
+            if (newState === 'active' || newState === 'background') {
                 this.createAndStartNode();
             }
             if (newState === 'background' || newState === 'backgroundFromForeground') {
@@ -261,10 +266,10 @@ class Textile {
         });
         /* ----- PRIVATE - EVENT EMITTERS ----- */
         this.stopNode = () => __awaiter(this, void 0, void 0, function* () {
-            this._store.setNodeOnline(false);
-            this._store.setNodeState({ state: Models_1.NodeState.stopping });
+            yield this.updateNodeState(Models_1.NodeState.stopping);
             yield this.api.stop();
-            this._store.setNodeState({ state: Models_1.NodeState.stopped });
+            this._store.setNodeOnline(false);
+            yield this.updateNodeState(Models_1.NodeState.stopped);
         });
         this.backgroundTaskRace = () => __awaiter(this, void 0, void 0, function* () {
             // This race cancels whichever effect looses the race, so a foreground event will cancel stopping the node
@@ -301,6 +306,7 @@ class Textile {
                 cancelled = true; // be sure to exit the loop
             }
             yield react_native_background_timer_1.default.stop();
+            // TODO: this might be better in a client provided callback
             yield react_native_background_fetch_1.default.finish(react_native_background_fetch_1.default.FETCH_RESULT_NEW_DATA);
         });
         if (options.debug) {
@@ -351,12 +357,6 @@ class Textile {
             react_native_1.AppState.addEventListener('change', (nextState) => {
                 TextileEvents.appNextState(nextState);
                 this.nextAppState(nextState);
-            });
-        }
-        else {
-            // If user wants to manage app change events, they can fire these events to do so
-            react_native_1.DeviceEventEmitter.addListener('@textile/appNextState', (payload) => {
-                this.nextAppState(payload.nextState);
             });
         }
         this.initializeAppState();
