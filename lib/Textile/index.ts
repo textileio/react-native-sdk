@@ -18,7 +18,6 @@ import BackgroundFetch from 'react-native-background-fetch'
 import RNFS from 'react-native-fs'
 
 import { ICafeSessions, ICafeSession } from '@textile/react-native-protobufs'
-import { node } from 'prop-types';
 
 const packageFile = require('./../../package.json')
 export const VERSION = packageFile.version
