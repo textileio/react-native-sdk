@@ -80,6 +80,19 @@ class Textile {
                 yield this.appStateChange(currentState, 'background');
             }
         });
+        // Simply create the node, useful only if you want to create in advance of starting
+        this.createNode = () => __awaiter(this, void 0, void 0, function* () {
+            this.isInitializedCheck();
+            const debug = this._config.RELEASE_TYPE !== 'production';
+            yield this.updateNodeState(Models_1.NodeState.creating);
+            const needsMigration = yield this.migration.requiresFileMigration(this.repoPath);
+            if (needsMigration) {
+                yield this.migration.runFileMigration(this.repoPath);
+            }
+            yield this.api.newTextile(this.repoPath, debug);
+            yield this.updateNodeState(Models_1.NodeState.created);
+        });
+        // Start the node, create it if it doesn't exist. Safe to call on every start.
         this.createAndStartNode = () => __awaiter(this, void 0, void 0, function* () {
             // TODO
             /* In redux/saga world, we did a // yield call(() => task.done) to ensure this wasn't called
@@ -88,13 +101,7 @@ class Textile {
             this.isInitializedCheck();
             const debug = this._config.RELEASE_TYPE !== 'production';
             try {
-                yield this.updateNodeState(Models_1.NodeState.creating);
-                const needsMigration = yield this.migration.requiresFileMigration(this.repoPath);
-                if (needsMigration) {
-                    yield this.migration.runFileMigration(this.repoPath);
-                }
-                yield this.api.newTextile(this.repoPath, debug);
-                yield this.updateNodeState(Models_1.NodeState.created);
+                yield this.createNode();
                 yield this.updateNodeState(Models_1.NodeState.starting);
                 yield this.api.start();
                 const sessions = yield this.api.cafeSessions();
@@ -140,11 +147,14 @@ class Textile {
                 }
             }
         });
+        // Useful if an app wishes to shut down the node
         this.shutDown = () => __awaiter(this, void 0, void 0, function* () {
             yield this.stopNode();
         });
+        // Primarily an internal function
         this.manageNode = (previousState, newState) => __awaiter(this, void 0, void 0, function* () {
             this.isInitializedCheck();
+            yield this._store.setAppState(newState);
             if (newState === 'active' || newState === 'background' || newState === 'backgroundFromForeground') {
                 yield TextileEvents.appStateChange(previousState, newState);
             }
@@ -256,7 +266,6 @@ class Textile {
         });
         this.appStateChange = (previousState, nextState) => __awaiter(this, void 0, void 0, function* () {
             this.isInitializedCheck();
-            yield this._store.setAppState(nextState);
             yield this.manageNode(previousState, nextState);
         });
         this.updateNodeState = (state) => __awaiter(this, void 0, void 0, function* () {
@@ -268,7 +277,7 @@ class Textile {
         this.stopNode = () => __awaiter(this, void 0, void 0, function* () {
             yield this.updateNodeState(Models_1.NodeState.stopping);
             yield this.api.stop();
-            this._store.setNodeOnline(false);
+            yield this._store.setNodeOnline(false);
             yield this.updateNodeState(Models_1.NodeState.stopped);
         });
         this.backgroundTaskRace = () => __awaiter(this, void 0, void 0, function* () {
@@ -354,9 +363,20 @@ class Textile {
             this.createAndStartNode();
         });
         if (!this._config.SELF_MANAGE_APP_STATE) {
+            // SDK automatically detects app state changes manages the node
             react_native_1.AppState.addEventListener('change', (nextState) => {
                 TextileEvents.appNextState(nextState);
                 this.nextAppState(nextState);
+            });
+        }
+        else {
+            // Alternatively, the developer can trigger changes manually via an notifyAppStateChange event
+            react_native_1.DeviceEventEmitter.addListener('@textile/notifyAppStateChange', (payload) => {
+                if (!payload || !payload.nextState) {
+                    return;
+                }
+                TextileEvents.appNextState(payload.nextState);
+                this.nextAppState(payload.nextState);
             });
         }
         this.initializeAppState();
