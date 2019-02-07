@@ -8,7 +8,7 @@ import {
     BlockInfo,
     BlockType,
     ContactInfo
-} from '../../lib'
+} from '../../lib/Textile/Models'
 
 export default {
     acceptExternalThreadInvite: jest.fn((id, key): Promise<string> => new Promise((resolve) => {
@@ -65,6 +65,9 @@ export default {
             parents: []
           }
         resolve(JSON.stringify(mockBlockInfo))
+    })),
+    checkCafeMessages: jest.fn((): Promise<void> => new Promise((resolve) => {
+        resolve()
     })),
     profile: jest.fn((): Promise<string> => new Promise((resolve) => {
         const mockProfile: ContactInfo = {
