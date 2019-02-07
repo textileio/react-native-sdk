@@ -17,7 +17,8 @@ export enum NodeState {
   'stopped' = 'stopped', // Node has been explicitly stopped, different than created
   'creatingWallet' = 'creatingWallet',
   'derivingAccount' = 'derivingAccount',
-  'initializingRepo' = 'initializingRepo'
+  'initializingRepo' = 'initializingRepo',
+  'postMigration' = 'postMigration'
 }
 
 export interface DiscoveredCafe {

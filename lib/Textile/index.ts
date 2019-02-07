@@ -18,6 +18,7 @@ import BackgroundFetch from 'react-native-background-fetch'
 import RNFS from 'react-native-fs'
 
 import { ICafeSessions, ICafeSession } from '@textile/react-native-protobufs'
+import { node } from 'prop-types';
 
 const packageFile = require('./../../package.json')
 export const VERSION = packageFile.version
@@ -114,7 +115,7 @@ class Textile {
   isInitializedCheck = () => {
     if (!this._initialized) {
       TextileEvents.nonInitializedError()
-      throw new Error('Attempt to call a Textile instance method on an uninitialized instance')
+      console.error('@textile/react-native-sdk: Attempt to call a Textile instance method on an uninitialized instance')
     }
   }
 
@@ -153,7 +154,6 @@ class Textile {
 
   // Simply create the node, useful only if you want to create in advance of starting
   createNode = async () => {
-    this.isInitializedCheck()
     const debug = this._config.RELEASE_TYPE !== 'production'
     await this.updateNodeState(NodeState.creating)
     const needsMigration = await this.migration.requiresFileMigration(this.repoPath)
@@ -175,6 +175,16 @@ class Textile {
 
     const debug = this._config.RELEASE_TYPE !== 'production'
 
+    const prevState = await this._store.getNodeState()
+    // if the known state isn't stopped, nonexistent, or in error... don't try to create it
+    if (prevState && !(
+          prevState.state === NodeState.stopped ||
+          prevState.state === NodeState.nonexistent ||
+          prevState.state === NodeState.initializingRepo ||
+          prevState.state === NodeState.postMigration ||
+          prevState.error)) {
+      return
+    }
     try {
 
       await this.createNode()
@@ -201,6 +211,7 @@ class Textile {
           await this.api.migrateRepo(this.repoPath)
           // store the fact there is a pending migration in the preferences redux persisted state
           TextileEvents.migrationNeeded()
+          await this.updateNodeState(NodeState.postMigration)
           // call the create/start sequence again
           TextileEvents.createAndStartNode()
         } else if (error.message === INIT_NEEDED_ERROR) {
@@ -341,7 +352,6 @@ class Textile {
     await this._store.setNodeState({state, error: error.message})
   }
   private nextAppState = async (nextState: TextileAppStateStatus) => {
-    this.isInitializedCheck()
     const previousState = await this.appState()
         // const currentState = this.store.getState().textileNode.appState
     const newState: TextileAppStateStatus = nextState === 'background' && (previousState === 'active' || previousState === 'inactive') ? 'backgroundFromForeground' : nextState
@@ -350,11 +360,13 @@ class Textile {
     }
   }
   private appStateChange = async (previousState: TextileAppStateStatus, nextState: TextileAppStateStatus) => {
-    this.isInitializedCheck()
     await this.manageNode(previousState, nextState)
   }
   private updateNodeState = async (state: NodeState) => {
-    this.isInitializedCheck()
+    const pastState = await this._store.getNodeState()
+    if (pastState && pastState.state === state) {
+      return
+    }
     await this._store.setNodeState({state})
     TextileEvents.newNodeState(state)
   }
@@ -406,11 +418,11 @@ class Textile {
           cancelled = true // be sure to exit the loop
       }
     } finally {
+      // TODO: this might be better in a client provided callback
+      await BackgroundFetch.finish(BackgroundFetch.FETCH_RESULT_NEW_DATA)
       // Tells iOS that we are done with our background task so it's okay to suspend us
       await BackgroundTimer.stop()
     }
-    // TODO: this might be better in a client provided callback
-    await BackgroundFetch.finish(BackgroundFetch.FETCH_RESULT_NEW_DATA)
   }
 }
 

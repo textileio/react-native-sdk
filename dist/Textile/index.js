@@ -47,7 +47,7 @@ class Textile {
         this.isInitializedCheck = () => {
             if (!this._initialized) {
                 TextileEvents.nonInitializedError();
-                throw new Error('Attempt to call a Textile instance method on an uninitialized instance');
+                console.error('@textile/react-native-sdk: Attempt to call a Textile instance method on an uninitialized instance');
             }
         };
         /* ---- STATE BASED METHODS ----- */
@@ -82,7 +82,6 @@ class Textile {
         });
         // Simply create the node, useful only if you want to create in advance of starting
         this.createNode = () => __awaiter(this, void 0, void 0, function* () {
-            this.isInitializedCheck();
             const debug = this._config.RELEASE_TYPE !== 'production';
             yield this.updateNodeState(Models_1.NodeState.creating);
             const needsMigration = yield this.migration.requiresFileMigration(this.repoPath);
@@ -100,6 +99,15 @@ class Textile {
             */
             this.isInitializedCheck();
             const debug = this._config.RELEASE_TYPE !== 'production';
+            const prevState = yield this._store.getNodeState();
+            // if the known state isn't stopped, nonexistent, or in error... don't try to create it
+            if (prevState && !(prevState.state === Models_1.NodeState.stopped ||
+                prevState.state === Models_1.NodeState.nonexistent ||
+                prevState.state === Models_1.NodeState.initializingRepo ||
+                prevState.state === Models_1.NodeState.postMigration ||
+                prevState.error)) {
+                return;
+            }
             try {
                 yield this.createNode();
                 yield this.updateNodeState(Models_1.NodeState.starting);
@@ -124,6 +132,7 @@ class Textile {
                         yield this.api.migrateRepo(this.repoPath);
                         // store the fact there is a pending migration in the preferences redux persisted state
                         TextileEvents.migrationNeeded();
+                        yield this.updateNodeState(Models_1.NodeState.postMigration);
                         // call the create/start sequence again
                         TextileEvents.createAndStartNode();
                     }
@@ -256,7 +265,6 @@ class Textile {
             yield this._store.setNodeState({ state, error: error.message });
         });
         this.nextAppState = (nextState) => __awaiter(this, void 0, void 0, function* () {
-            this.isInitializedCheck();
             const previousState = yield this.appState();
             // const currentState = this.store.getState().textileNode.appState
             const newState = nextState === 'background' && (previousState === 'active' || previousState === 'inactive') ? 'backgroundFromForeground' : nextState;
@@ -265,11 +273,13 @@ class Textile {
             }
         });
         this.appStateChange = (previousState, nextState) => __awaiter(this, void 0, void 0, function* () {
-            this.isInitializedCheck();
             yield this.manageNode(previousState, nextState);
         });
         this.updateNodeState = (state) => __awaiter(this, void 0, void 0, function* () {
-            this.isInitializedCheck();
+            const pastState = yield this._store.getNodeState();
+            if (pastState && pastState.state === state) {
+                return;
+            }
             yield this._store.setNodeState({ state });
             TextileEvents.newNodeState(state);
         });
@@ -286,37 +296,42 @@ class Textile {
             // Using the race effect, if we get a foreground event while we're waiting
             // to stop the node, cancel the stop and let it keep running
             yield react_native_background_timer_1.default.start();
-            const ms = 20000;
-            let cancelled = false;
-            const foregroundEvent = react_native_1.DeviceEventEmitter.addListener('@textile/appNextState', (payload) => {
-                if (payload.nextState === 'active' && !cancelled) {
-                    TextileEvents.stopNodeAfterDelayCancelled();
-                    cancelled = true;
-                }
-            });
-            cancelSequence: while (!cancelled) {
-                TextileEvents.stopNodeAfterDelayStarting();
-                yield this.api.checkCafeMessages(); // do a quick check for new messages
-                yield helpers_1.delay(ms / 2);
-                if (cancelled) { // cancelled by event, so abort sequence
+            try {
+                const ms = 20000;
+                let cancelled = false;
+                const foregroundEvent = react_native_1.DeviceEventEmitter.addListener('@textile/appNextState', (payload) => {
+                    if (payload.nextState === 'active' && !cancelled) {
+                        TextileEvents.stopNodeAfterDelayCancelled();
+                        cancelled = true;
+                    }
+                });
+                cancelSequence: while (!cancelled) {
+                    TextileEvents.stopNodeAfterDelayStarting();
+                    yield this.api.checkCafeMessages(); // do a quick check for new messages
+                    yield helpers_1.delay(ms / 2);
+                    if (cancelled) { // cancelled by event, so abort sequence
+                        foregroundEvent.remove(); // remove our event listener
+                        break cancelSequence;
+                    }
+                    yield this.api.checkCafeMessages();
+                    yield helpers_1.delay(ms / 2);
+                    if (cancelled) { // cancelled by event, so abort sequence
+                        foregroundEvent.remove(); // remove our event listener
+                        break cancelSequence;
+                    }
+                    // enter stopping sequence
                     foregroundEvent.remove(); // remove our event listener
-                    break cancelSequence;
+                    TextileEvents.stopNodeAfterDelayFinishing();
+                    yield this.stopNode(); // stop the node
+                    cancelled = true; // be sure to exit the loop
                 }
-                yield this.api.checkCafeMessages();
-                yield helpers_1.delay(ms / 2);
-                if (cancelled) { // cancelled by event, so abort sequence
-                    foregroundEvent.remove(); // remove our event listener
-                    break cancelSequence;
-                }
-                // enter stopping sequence
-                foregroundEvent.remove(); // remove our event listener
-                TextileEvents.stopNodeAfterDelayFinishing();
-                yield this.stopNode(); // stop the node
-                cancelled = true; // be sure to exit the loop
             }
-            yield react_native_background_timer_1.default.stop();
-            // TODO: this might be better in a client provided callback
-            yield react_native_background_fetch_1.default.finish(react_native_background_fetch_1.default.FETCH_RESULT_NEW_DATA);
+            finally {
+                // TODO: this might be better in a client provided callback
+                yield react_native_background_fetch_1.default.finish(react_native_background_fetch_1.default.FETCH_RESULT_NEW_DATA);
+                // Tells iOS that we are done with our background task so it's okay to suspend us
+                yield react_native_background_timer_1.default.stop();
+            }
         });
         if (options.debug) {
             this._debug = true;

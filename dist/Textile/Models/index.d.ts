@@ -15,7 +15,8 @@ export declare enum NodeState {
     'stopped' = "stopped",
     'creatingWallet' = "creatingWallet",
     'derivingAccount' = "derivingAccount",
-    'initializingRepo' = "initializingRepo"
+    'initializingRepo' = "initializingRepo",
+    'postMigration' = "postMigration"
 }
 export interface DiscoveredCafe {
     readonly peer: string;
