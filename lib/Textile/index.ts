@@ -373,38 +373,42 @@ class Textile {
     // Using the race effect, if we get a foreground event while we're waiting
     // to stop the node, cancel the stop and let it keep running
     await BackgroundTimer.start()
-    const ms = 20000
-    let cancelled = false
+    try {
+      const ms = 20000
+      let cancelled = false
 
-    const foregroundEvent = DeviceEventEmitter.addListener('@textile/appNextState', (payload) => {
-      if (payload.nextState === 'active' && !cancelled) {
-        TextileEvents.stopNodeAfterDelayCancelled()
-        cancelled = true
+      const foregroundEvent = DeviceEventEmitter.addListener('@textile/appNextState', (payload) => {
+        if (payload.nextState === 'active' && !cancelled) {
+          TextileEvents.stopNodeAfterDelayCancelled()
+          cancelled = true
+        }
+      })
+
+      cancelSequence:
+      while (!cancelled) {
+          TextileEvents.stopNodeAfterDelayStarting()
+          await this.api.checkCafeMessages() // do a quick check for new messages
+          await delay(ms / 2)
+          if (cancelled) { // cancelled by event, so abort sequence
+            foregroundEvent.remove() // remove our event listener
+            break cancelSequence
+          }
+          await this.api.checkCafeMessages()
+          await delay(ms / 2)
+          if (cancelled) { // cancelled by event, so abort sequence
+            foregroundEvent.remove() // remove our event listener
+            break cancelSequence
+          }
+          // enter stopping sequence
+          foregroundEvent.remove() // remove our event listener
+          TextileEvents.stopNodeAfterDelayFinishing()
+          await this.stopNode() // stop the node
+          cancelled = true // be sure to exit the loop
       }
-    })
-
-    cancelSequence:
-    while (!cancelled) {
-        TextileEvents.stopNodeAfterDelayStarting()
-        await this.api.checkCafeMessages() // do a quick check for new messages
-        await delay(ms / 2)
-        if (cancelled) { // cancelled by event, so abort sequence
-          foregroundEvent.remove() // remove our event listener
-          break cancelSequence
-        }
-        await this.api.checkCafeMessages()
-        await delay(ms / 2)
-        if (cancelled) { // cancelled by event, so abort sequence
-          foregroundEvent.remove() // remove our event listener
-          break cancelSequence
-        }
-        // enter stopping sequence
-        foregroundEvent.remove() // remove our event listener
-        TextileEvents.stopNodeAfterDelayFinishing()
-        await this.stopNode() // stop the node
-        cancelled = true // be sure to exit the loop
+    } finally {
+      // Tells iOS that we are done with our background task so it's okay to suspend us
+      await BackgroundTimer.stop()
     }
-    await BackgroundTimer.stop()
     // TODO: this might be better in a client provided callback
     await BackgroundFetch.finish(BackgroundFetch.FETCH_RESULT_NEW_DATA)
   }
