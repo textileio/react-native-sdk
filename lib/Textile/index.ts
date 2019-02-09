@@ -104,30 +104,32 @@ class Textile extends API {
   }
 
   initializeAppState = async () => {
+    // Clear storage to fresh state
+    await this._store.clear()
+
+    const defaultAppState = 'unknown' as TextileAppStateStatus
+
+    let queriedAppState = this.getCurrentState()
+    while (queriedAppState.match(/unknown/)) {
+      await delay(10)
+      queriedAppState = await this.getCurrentState()
+    }
+    // Setup our within sdk listeners
+    this._nativeEvents.addListener('onOnline', this.onOnlineCallback)
+
+    DeviceEventEmitter.addListener('@textile/createAndStartNode', this.createAndStartNodeCallback)
+
+    // Mark as initialized
+    this._initialized = true
 
     try {
-      // Clear storage to fresh state
-      await this._store.clear()
-
-      const defaultAppState = 'unknown' as TextileAppStateStatus
-
-      let queriedAppState = this.getCurrentState()
-      while (queriedAppState.match(/unknown/)) {
-        await delay(10)
-        queriedAppState = await this.getCurrentState()
-      }
-
-      // Setup our within sdk listeners
-      this._nativeEvents.addListener('onOnline', this.onOnlineCallback)
-
-      DeviceEventEmitter.addListener('@textile/createAndStartNode', this.createAndStartNodeCallback)
-
-      // Mark as initialized
-      this._initialized = true
-
       // Begin first node startup cycle
       await this.manageNode(defaultAppState, queriedAppState)
 
+    } catch (error) {
+      await this.updateNodeStateError(error)
+    } finally {
+      // try to keep our app going...
       let missedAppState = this.getCurrentState()
       while (missedAppState.match(/unknown/)) {
         await delay(10)
@@ -150,8 +152,6 @@ class Textile extends API {
         TextileEvents.appNextState(currentAppState)
         this.nextAppState(currentAppState)
       }
-    } catch (error) {
-      await this.updateNodeStateError(error)
     }
   }
 
