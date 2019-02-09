@@ -179,11 +179,8 @@ class Textile extends API {
     // if the known state isn't stopped, nonexistent, or in error... don't try to create it
     if (
       prevState && (
-        !prevState.error &&
-        prevState.state !== NodeState.stopped &&
-        prevState.state !== NodeState.nonexistent &&
-        prevState.state !== NodeState.walletInitSuccess &&
-        prevState.state !== NodeState.postMigration
+        prevState.state === NodeState.starting ||
+        prevState.state === NodeState.started
       )) {
       return
     }
