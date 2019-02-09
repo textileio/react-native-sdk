@@ -4,6 +4,6 @@ exports[`rn textile Textile lifecycle should run as expected creates node succes
 
 exports[`rn textile Textile lifecycle should run as expected shuts down successfully 1`] = `undefined`;
 
-exports[`rn textile Textile lifecycle should run as expected shuts down successfully 2`] = `true`;
+exports[`rn textile Textile lifecycle should run as expected shuts down successfully 2`] = `false`;
 
 exports[`rn textile state functions should error when not initialized starts successfully 1`] = `undefined`;
