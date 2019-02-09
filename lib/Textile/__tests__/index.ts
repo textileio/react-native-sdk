@@ -27,10 +27,10 @@ describe('rn textile', () => {
     it('creates node successfully', async () => {
       await expect(Textile.createAndStartNode()).resolves.toMatchSnapshot()
       await expect(Textile.appState()).resolves.toEqual('active')
-      await expect(Textile.nodeOnline()).resolves.toEqual(true)
+      await expect(Textile.nodeOnline()).resolves.toEqual(false)
     })
     it('shuts down successfully', async () => {
-      await expect(Textile.nodeOnline()).resolves.toEqual(true)
+      await expect(Textile.nodeOnline()).resolves.toEqual(false)
       await expect(Textile.shutDown()).resolves.toMatchSnapshot()
       await expect(Textile.nodeState()).resolves.toEqual('stopped')
       await expect(Textile.nodeOnline()).resolves.toMatchSnapshot()
