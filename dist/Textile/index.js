@@ -63,41 +63,46 @@ class Textile extends API_1.default {
             return currentAppState || 'unknown';
         };
         this.initializeAppState = () => __awaiter(this, void 0, void 0, function* () {
-            // Clear storage to fresh state
-            yield this._store.clear();
-            const defaultAppState = 'unknown';
-            let queriedAppState = this.getCurrentState();
-            while (queriedAppState.match(/unknown/)) {
-                yield helpers_1.delay(10);
-                queriedAppState = yield this.getCurrentState();
+            try {
+                // Clear storage to fresh state
+                yield this._store.clear();
+                const defaultAppState = 'unknown';
+                let queriedAppState = this.getCurrentState();
+                while (queriedAppState.match(/unknown/)) {
+                    yield helpers_1.delay(10);
+                    queriedAppState = yield this.getCurrentState();
+                }
+                // Setup our within sdk listeners
+                this._nativeEvents.addListener('onOnline', this.onOnlineCallback);
+                react_native_1.DeviceEventEmitter.addListener('@textile/createAndStartNode', this.createAndStartNodeCallback);
+                // Mark as initialized
+                this._initialized = true;
+                // Begin first node startup cycle
+                yield this.manageNode(defaultAppState, queriedAppState);
+                let missedAppState = this.getCurrentState();
+                while (missedAppState.match(/unknown/)) {
+                    yield helpers_1.delay(10);
+                    missedAppState = yield this.getCurrentState();
+                }
+                // Create listeners for app state change to start/stop node
+                if (this._config.SELF_MANAGE_APP_STATE) {
+                    // NOT DEFAULT, the developer can trigger changes manually via an notifyAppStateChange event
+                    react_native_1.DeviceEventEmitter.addListener('@textile/notifyAppStateChange', this.notifyAppStateChangeCallback);
+                }
+                else {
+                    // DEFAULT: SDK automatically detects app state changes manages the node
+                    react_native_1.AppState.addEventListener('change', this.nextStateCallback);
+                }
+                // There was a missed state change while we were in the startup sequence
+                if (missedAppState !== queriedAppState) {
+                    const currentAppState = this.getCurrentState();
+                    // we should be safe to fire a duplicate here anyway...
+                    TextileEvents.appNextState(currentAppState);
+                    this.nextAppState(currentAppState);
+                }
             }
-            // Setup our within sdk listeners
-            this._nativeEvents.addListener('onOnline', this.onOnlineCallback);
-            react_native_1.DeviceEventEmitter.addListener('@textile/createAndStartNode', this.createAndStartNodeCallback);
-            // Mark as initialized
-            this._initialized = true;
-            // Begin first node startup cycle
-            yield this.manageNode(defaultAppState, queriedAppState);
-            let missedAppState = this.getCurrentState();
-            while (missedAppState.match(/unknown/)) {
-                yield helpers_1.delay(10);
-                missedAppState = yield this.getCurrentState();
-            }
-            // Create listeners for app state change to start/stop node
-            if (this._config.SELF_MANAGE_APP_STATE) {
-                // NOT DEFAULT, the developer can trigger changes manually via an notifyAppStateChange event
-                react_native_1.DeviceEventEmitter.addListener('@textile/notifyAppStateChange', this.notifyAppStateChangeCallback);
-            }
-            else {
-                // DEFAULT: SDK automatically detects app state changes manages the node
-                react_native_1.AppState.addEventListener('change', this.nextStateCallback);
-            }
-            // There was a missed state change while we were in the startup sequence
-            if (missedAppState !== queriedAppState) {
-                const currentAppState = this.getCurrentState();
-                // we should be safe to fire a duplicate here anyway...
-                TextileEvents.appNextState(currentAppState);
-                this.nextAppState(currentAppState);
+            catch (error) {
+                yield this.updateNodeStateError(error);
             }
         });
         this.startBackgroundTask = () => __awaiter(this, void 0, void 0, function* () {
@@ -315,10 +320,15 @@ class Textile extends API_1.default {
             yield this._store.setNodeState({ state, error: error.message });
         });
         this.nextAppState = (nextState) => __awaiter(this, void 0, void 0, function* () {
-            const previousState = yield this.appState();
-            const newState = nextState === 'background' && (previousState === 'active' || previousState === 'inactive') ? 'backgroundFromForeground' : nextState;
-            if (newState !== previousState || newState === 'background') {
-                yield this.manageNode(previousState, newState);
+            try {
+                const previousState = yield this.appState();
+                const newState = nextState === 'background' && (previousState === 'active' || previousState === 'inactive') ? 'backgroundFromForeground' : nextState;
+                if (newState !== previousState || newState === 'background') {
+                    yield this.manageNode(previousState, newState);
+                }
+            }
+            catch (error) {
+                yield this.updateNodeStateError(error);
             }
         });
         this.updateNodeState = (state) => __awaiter(this, void 0, void 0, function* () {

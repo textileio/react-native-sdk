@@ -105,49 +105,53 @@ class Textile extends API {
 
   initializeAppState = async () => {
 
-    // Clear storage to fresh state
-    await this._store.clear()
+    try {
+      // Clear storage to fresh state
+      await this._store.clear()
 
-    const defaultAppState = 'unknown' as TextileAppStateStatus
+      const defaultAppState = 'unknown' as TextileAppStateStatus
 
-    let queriedAppState = this.getCurrentState()
-    while (queriedAppState.match(/unknown/)) {
-      await delay(10)
-      queriedAppState = await this.getCurrentState()
-    }
+      let queriedAppState = this.getCurrentState()
+      while (queriedAppState.match(/unknown/)) {
+        await delay(10)
+        queriedAppState = await this.getCurrentState()
+      }
 
-    // Setup our within sdk listeners
-    this._nativeEvents.addListener('onOnline', this.onOnlineCallback)
+      // Setup our within sdk listeners
+      this._nativeEvents.addListener('onOnline', this.onOnlineCallback)
 
-    DeviceEventEmitter.addListener('@textile/createAndStartNode', this.createAndStartNodeCallback)
+      DeviceEventEmitter.addListener('@textile/createAndStartNode', this.createAndStartNodeCallback)
 
-    // Mark as initialized
-    this._initialized = true
+      // Mark as initialized
+      this._initialized = true
 
-    // Begin first node startup cycle
-    await this.manageNode(defaultAppState, queriedAppState)
+      // Begin first node startup cycle
+      await this.manageNode(defaultAppState, queriedAppState)
 
-    let missedAppState = this.getCurrentState()
-    while (missedAppState.match(/unknown/)) {
-      await delay(10)
-      missedAppState = await this.getCurrentState()
-    }
+      let missedAppState = this.getCurrentState()
+      while (missedAppState.match(/unknown/)) {
+        await delay(10)
+        missedAppState = await this.getCurrentState()
+      }
 
-    // Create listeners for app state change to start/stop node
-    if (this._config.SELF_MANAGE_APP_STATE) {
-      // NOT DEFAULT, the developer can trigger changes manually via an notifyAppStateChange event
-      DeviceEventEmitter.addListener('@textile/notifyAppStateChange', this.notifyAppStateChangeCallback)
-    } else {
-      // DEFAULT: SDK automatically detects app state changes manages the node
-      AppState.addEventListener('change', this.nextStateCallback)
-    }
+      // Create listeners for app state change to start/stop node
+      if (this._config.SELF_MANAGE_APP_STATE) {
+        // NOT DEFAULT, the developer can trigger changes manually via an notifyAppStateChange event
+        DeviceEventEmitter.addListener('@textile/notifyAppStateChange', this.notifyAppStateChangeCallback)
+      } else {
+        // DEFAULT: SDK automatically detects app state changes manages the node
+        AppState.addEventListener('change', this.nextStateCallback)
+      }
 
-    // There was a missed state change while we were in the startup sequence
-    if (missedAppState !== queriedAppState) {
-      const currentAppState = this.getCurrentState()
-      // we should be safe to fire a duplicate here anyway...
-      TextileEvents.appNextState(currentAppState)
-      this.nextAppState(currentAppState)
+      // There was a missed state change while we were in the startup sequence
+      if (missedAppState !== queriedAppState) {
+        const currentAppState = this.getCurrentState()
+        // we should be safe to fire a duplicate here anyway...
+        TextileEvents.appNextState(currentAppState)
+        this.nextAppState(currentAppState)
+      }
+    } catch (error) {
+      await this.updateNodeStateError(error)
     }
   }
 
@@ -384,12 +388,16 @@ class Textile extends API {
     await this._store.setNodeState({state, error: error.message})
   }
   private nextAppState = async (nextState: AppStateStatus) => {
-    const previousState = await this.appState()
-    const newState: TextileAppStateStatus = nextState === 'background' && (
-        previousState === 'active' || previousState === 'inactive'
-    ) ? 'backgroundFromForeground' : nextState
-    if (newState !== previousState || newState === 'background') {
-      await this.manageNode(previousState, newState)
+    try {
+      const previousState = await this.appState()
+      const newState: TextileAppStateStatus = nextState === 'background' && (
+          previousState === 'active' || previousState === 'inactive'
+      ) ? 'backgroundFromForeground' : nextState
+      if (newState !== previousState || newState === 'background') {
+        await this.manageNode(previousState, newState)
+      }
+    } catch (error) {
+      await this.updateNodeStateError(error)
     }
   }
 
