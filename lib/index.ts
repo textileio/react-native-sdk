@@ -9,4 +9,4 @@ export { Textile, API }
 
 export * from './Textile/Models'
 
-export default Textile
+export default new Textile({})

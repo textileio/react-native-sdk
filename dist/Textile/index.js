@@ -47,6 +47,19 @@ class Textile extends API_1.default {
         this._listeners = {};
         this._initialized = false;
         this.repoPath = `${react_native_fs_1.default.DocumentDirectoryPath}/textile-go`;
+        // setup should only be run where the class will remain persistent so that
+        // listeners will be wired in to one instance only,
+        this.setup = (config) => {
+            // if config provided, set it
+            if (config) {
+                this._config = config;
+            }
+            this.initializeAppState().then(() => {
+                if (this._debug) {
+                    console.info('@textile/react-native-sdk setup complete');
+                }
+            });
+        };
         this.isInitializedCheck = () => {
             if (!this._initialized) {
                 TextileEvents.nonInitializedError();
@@ -419,14 +432,5 @@ class Textile extends API_1.default {
             react_native_1.AppState.removeEventListener('change', this.nextStateCallback);
         }
     }
-    // setup should only be run where the class will remain persistent so that
-    // listeners will be wired in to one instance only,
-    setup(config) {
-        // if config provided, set it
-        if (config) {
-            this._config = config;
-        }
-        this.initializeAppState();
-    }
 }
-exports.default = new Textile({});
+exports.default = Textile;

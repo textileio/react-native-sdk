@@ -21,7 +21,7 @@ declare class Textile extends API {
     backgroundFetch(): void;
     locationUpdate(): void;
     tearDown(): void;
-    setup(config?: TextileConfig): void;
+    setup: (config?: TextileConfig | undefined) => void;
     isInitializedCheck: () => void;
     getCurrentState: () => AppStateStatus;
     initializeAppState: () => Promise<void>;
@@ -49,5 +49,4 @@ declare class Textile extends API {
     private stopNode;
     private backgroundTaskRace;
 }
-declare const _default: Textile;
-export default _default;
+export default Textile;

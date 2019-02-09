@@ -24,4 +24,4 @@ exports.API = API;
 const Textile_1 = __importDefault(require("./Textile"));
 exports.Textile = Textile_1.default;
 __export(require("./Textile/Models"));
-exports.default = Textile_1.default;
+exports.default = new Textile_1.default({});

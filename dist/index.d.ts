@@ -5,4 +5,5 @@ import * as API from './Textile/API';
 import Textile from './Textile';
 export { Textile, API };
 export * from './Textile/Models';
-export default Textile;
+declare const _default: Textile;
+export default _default;
