@@ -60,9 +60,9 @@ class Textile extends API_1.default {
             return currentAppState || 'unknown';
         };
         this.initializeAppState = () => __awaiter(this, void 0, void 0, function* () {
-            const defaultAppState = 'default';
+            const defaultAppState = 'unknown';
             let queriedAppState = this.getCurrentState();
-            while (queriedAppState.match(/default|unknown/)) {
+            while (queriedAppState.match(/unknown/)) {
                 yield helpers_1.delay(10);
                 queriedAppState = yield this.getCurrentState();
             }
@@ -102,10 +102,11 @@ class Textile extends API_1.default {
             const debug = this._config.RELEASE_TYPE !== 'production';
             const prevState = yield this._store.getNodeState();
             // if the known state isn't stopped, nonexistent, or in error... don't try to create it
-            if (!prevState.error || !(prevState.state === Models_1.NodeState.stopped ||
-                prevState.state === Models_1.NodeState.nonexistent ||
-                prevState.state === Models_1.NodeState.walletInitSuccess ||
-                prevState.state === Models_1.NodeState.postMigration)) {
+            if (prevState && (!prevState.error &&
+                prevState.state !== Models_1.NodeState.stopped &&
+                prevState.state !== Models_1.NodeState.nonexistent &&
+                prevState.state !== Models_1.NodeState.walletInitSuccess &&
+                prevState.state !== Models_1.NodeState.postMigration)) {
                 return;
             }
             try {
@@ -264,12 +265,11 @@ class Textile extends API_1.default {
         });
         this.updateNodeStateError = (error) => __awaiter(this, void 0, void 0, function* () {
             const storedState = yield this._store.getNodeState();
-            yield this._store.setNodeState({ state: storedState.state, error: error.message });
+            const state = storedState && storedState.state || Models_1.NodeState.nonexistent;
+            yield this._store.setNodeState({ state, error: error.message });
         });
         this.nextAppState = (nextState) => __awaiter(this, void 0, void 0, function* () {
             const previousState = yield this.appState();
-            const nodeState = yield this.nodeState();
-            // const currentState = this.store.getState().textileNode.appState
             const newState = nextState === 'background' && (previousState === 'active' || previousState === 'inactive') ? 'backgroundFromForeground' : nextState;
             if (newState !== previousState || newState === 'background') {
                 yield this.manageNode(previousState, newState);
@@ -277,7 +277,7 @@ class Textile extends API_1.default {
         });
         this.updateNodeState = (state) => __awaiter(this, void 0, void 0, function* () {
             const pastState = yield this._store.getNodeState();
-            if (!pastState.error && pastState.state === state) {
+            if (pastState && !pastState.error && pastState.state === state) {
                 return;
             }
             yield this._store.setNodeState({ state });

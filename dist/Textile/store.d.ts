@@ -8,7 +8,7 @@ export default class TextileStore {
     getLastBackgroundEvent: () => Promise<number | void>;
     getAppState: () => Promise<void | "active" | "background" | "inactive" | "unknown" | "backgroundFromForeground">;
     getNodeOnline: () => Promise<boolean | void>;
-    getNodeState: () => Promise<StoredNodeState>;
+    getNodeState: () => Promise<void | StoredNodeState>;
     setLastBackgroundEvent: () => Promise<number | void>;
     setAppState: (newState: TextileAppStateStatus) => Promise<void>;
     setNodeOnline: (online: boolean) => Promise<void>;
