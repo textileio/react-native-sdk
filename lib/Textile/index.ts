@@ -127,10 +127,10 @@ class Textile extends API {
   }
 
   initializeAppState = async () => {
-    const defaultAppState = 'default' as TextileAppStateStatus
+    const defaultAppState = 'unknown' as TextileAppStateStatus
 
     let queriedAppState = this.getCurrentState()
-    while (queriedAppState.match(/default|unknown/)) {
+    while (queriedAppState.match(/unknown/)) {
       await delay(10)
       queriedAppState = await this.getCurrentState()
     }
@@ -177,11 +177,14 @@ class Textile extends API {
 
     const prevState = await this._store.getNodeState()
     // if the known state isn't stopped, nonexistent, or in error... don't try to create it
-    if (!prevState.error || !(
-          prevState.state === NodeState.stopped ||
-          prevState.state === NodeState.nonexistent ||
-          prevState.state === NodeState.walletInitSuccess ||
-          prevState.state === NodeState.postMigration)) {
+    if (
+      prevState && (
+        !prevState.error &&
+        prevState.state !== NodeState.stopped &&
+        prevState.state !== NodeState.nonexistent &&
+        prevState.state !== NodeState.walletInitSuccess &&
+        prevState.state !== NodeState.postMigration
+      )) {
       return
     }
     try {
@@ -350,12 +353,11 @@ class Textile extends API {
 
   private updateNodeStateError = async (error: Error) => {
     const storedState = await this._store.getNodeState()
-    await this._store.setNodeState({state: storedState.state, error: error.message})
+    const state = storedState && storedState.state || NodeState.nonexistent
+    await this._store.setNodeState({state, error: error.message})
   }
   private nextAppState = async (nextState: TextileAppStateStatus) => {
     const previousState = await this.appState()
-    const nodeState = await this.nodeState()
-        // const currentState = this.store.getState().textileNode.appState
     const newState: TextileAppStateStatus = nextState === 'background' && (
         previousState === 'active' || previousState === 'inactive'
     ) ? 'backgroundFromForeground' : nextState
@@ -366,7 +368,7 @@ class Textile extends API {
 
   private updateNodeState = async (state: NodeState) => {
     const pastState = await this._store.getNodeState()
-    if (!pastState.error && pastState.state === state) {
+    if (pastState && !pastState.error && pastState.state === state) {
       return
     }
     await this._store.setNodeState({state})
