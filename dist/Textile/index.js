@@ -44,12 +44,15 @@ class Textile extends API_1.default {
         this._config = {
             RELEASE_TYPE: 'development'
         };
+        this._listeners = {};
         this._initialized = false;
         this.repoPath = `${react_native_fs_1.default.DocumentDirectoryPath}/textile-go`;
         this.isInitializedCheck = () => {
             if (!this._initialized) {
                 TextileEvents.nonInitializedError();
-                console.error('@textile/react-native-sdk: Attempt to call a Textile instance method on an uninitialized instance');
+                if (this._debug) {
+                    console.error('@textile/react-native-sdk: Attempt to call a Textile instance method on an uninitialized instance');
+                }
             }
         };
         /* ---- STATE BASED METHODS ----- */
@@ -67,33 +70,32 @@ class Textile extends API_1.default {
                 queriedAppState = yield this.getCurrentState();
             }
             // Setup our within sdk listeners
-            this._nativeEvents.addListener('onOnline', () => {
-                this._store.setNodeOnline(true);
-            });
-            react_native_1.DeviceEventEmitter.addListener('@textile/createAndStartNode', (payload) => {
-                this.createAndStartNode();
-            });
+            this._nativeEvents.addListener('onOnline', this.onOnlineCallback);
+            react_native_1.DeviceEventEmitter.addListener('@textile/createAndStartNode', this.createAndStartNodeCallback);
             // Mark as initialized
             this._initialized = true;
             // Begin first node startup cycle
             yield this.manageNode(defaultAppState, queriedAppState);
+            let missedAppState = this.getCurrentState();
+            while (missedAppState.match(/unknown/)) {
+                yield helpers_1.delay(10);
+                missedAppState = yield this.getCurrentState();
+            }
             // Create listeners for app state change to start/stop node
-            if (!this._config.SELF_MANAGE_APP_STATE) {
-                // SDK automatically detects app state changes manages the node
-                react_native_1.AppState.addEventListener('change', (nextState) => {
-                    TextileEvents.appNextState(nextState);
-                    this.nextAppState(nextState);
-                });
+            if (this._config.SELF_MANAGE_APP_STATE) {
+                // NOT DEFAULT, the developer can trigger changes manually via an notifyAppStateChange event
+                react_native_1.DeviceEventEmitter.addListener('@textile/notifyAppStateChange', this.notifyAppStateChangeCallback);
             }
             else {
-                // Alternatively, the developer can trigger changes manually via an notifyAppStateChange event
-                react_native_1.DeviceEventEmitter.addListener('@textile/notifyAppStateChange', (payload) => {
-                    if (!payload || !payload.nextState) {
-                        return;
-                    }
-                    TextileEvents.appNextState(payload.nextState);
-                    this.nextAppState(payload.nextState);
-                });
+                // DEFAULT: SDK automatically detects app state changes manages the node
+                react_native_1.AppState.addEventListener('change', this.nextStateCallback);
+            }
+            // There was a missed state change while we were in the startup sequence
+            if (missedAppState !== queriedAppState) {
+                const currentAppState = this.getCurrentState();
+                // we should be safe to fire a duplicate here anyway...
+                TextileEvents.appNextState(currentAppState);
+                this.nextAppState(currentAppState);
             }
         });
         this.startBackgroundTask = () => __awaiter(this, void 0, void 0, function* () {
@@ -266,6 +268,23 @@ class Textile extends API_1.default {
             }
         });
         /* ------ INTERNAL METHODS ----- */
+        this.onOnlineCallback = () => {
+            this._store.setNodeOnline(true);
+        };
+        this.notifyAppStateChangeCallback = (payload) => {
+            if (!payload || !payload.nextState) {
+                return;
+            }
+            TextileEvents.appNextState(payload.nextState);
+            this.nextAppState(payload.nextState);
+        };
+        this.createAndStartNodeCallback = () => {
+            this.createAndStartNode();
+        };
+        this.nextStateCallback = (nextState) => {
+            TextileEvents.appNextState(nextState);
+            this.nextAppState(nextState);
+        };
         this.shouldRunBackgroundTask = () => __awaiter(this, void 0, void 0, function* () {
             const MINIMUM_MINUTES_BETWEEN_TASKS = 10;
             const now = Number((new Date()).getTime());
@@ -361,7 +380,9 @@ class Textile extends API_1.default {
         if (options.debug) {
             this._debug = true;
         }
-        console.info('Initializing @textile/react-native-sdk v. ' + exports.VERSION);
+        if (this._debug) {
+            console.info('Initializing @textile/react-native-sdk v. ' + exports.VERSION);
+        }
     }
     /* ---- Functions to wire into app ------ */
     backgroundFetch() {
@@ -374,14 +395,13 @@ class Textile extends API_1.default {
     tearDown() {
         // Clear on out too if detected to help speed up any startup time
         // Clear all our listeners
-        this._nativeEvents.removeAllListeners();
-        // TODO: be sure to limit to only internal listeners (same above)
-        react_native_1.DeviceEventEmitter.removeAllListeners();
-        if (!this._config.SELF_MANAGE_APP_STATE) {
-            react_native_1.AppState.removeEventListener('change', (nextState) => {
-                TextileEvents.appNextState(nextState);
-                this.nextAppState(nextState);
-            });
+        this._nativeEvents.removeListener('onOnline', this.onOnlineCallback);
+        react_native_1.DeviceEventEmitter.removeListener('@textile/createAndStartNode', this.createAndStartNodeCallback);
+        if (this._config.SELF_MANAGE_APP_STATE) {
+            react_native_1.DeviceEventEmitter.removeListener('@textile/notifyAppStateChange', this.notifyAppStateChangeCallback);
+        }
+        else {
+            react_native_1.AppState.removeEventListener('change', this.nextStateCallback);
         }
     }
     // setup should only be run where the class will remain persistent so that
