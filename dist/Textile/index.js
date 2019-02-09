@@ -60,6 +60,13 @@ class Textile extends API_1.default {
                 }
             });
         };
+        this.asyncSetup = (config) => __awaiter(this, void 0, void 0, function* () {
+            // if config provided, set it
+            if (config) {
+                this._config = config;
+            }
+            return this.initializeAppState();
+        });
         this.isInitializedCheck = () => {
             if (!this._initialized) {
                 TextileEvents.nonInitializedError();

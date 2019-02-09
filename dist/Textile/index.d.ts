@@ -22,6 +22,7 @@ declare class Textile extends API {
     locationUpdate(): void;
     tearDown(): void;
     setup: (config?: TextileConfig | undefined) => void;
+    asyncSetup: (config?: TextileConfig | undefined) => Promise<void>;
     isInitializedCheck: () => void;
     getCurrentState: () => AppStateStatus;
     initializeAppState: () => Promise<void>;

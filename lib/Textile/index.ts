@@ -89,6 +89,15 @@ class Textile extends API {
     })
   }
 
+  asyncSetup = async (config?: TextileConfig) => {
+    // if config provided, set it
+    if (config) {
+      this._config = config
+    }
+
+    return this.initializeAppState()
+  }
+
   isInitializedCheck = () => {
     if (!this._initialized) {
       TextileEvents.nonInitializedError()
