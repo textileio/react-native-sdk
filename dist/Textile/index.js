@@ -66,6 +66,7 @@ class Textile extends API_1.default {
                 yield helpers_1.delay(10);
                 queriedAppState = yield this.getCurrentState();
             }
+            this._initialized = true;
             yield this.manageNode(defaultAppState, queriedAppState);
         });
         this.startBackgroundTask = () => __awaiter(this, void 0, void 0, function* () {
@@ -102,11 +103,8 @@ class Textile extends API_1.default {
             const debug = this._config.RELEASE_TYPE !== 'production';
             const prevState = yield this._store.getNodeState();
             // if the known state isn't stopped, nonexistent, or in error... don't try to create it
-            if (prevState && (!prevState.error &&
-                prevState.state !== Models_1.NodeState.stopped &&
-                prevState.state !== Models_1.NodeState.nonexistent &&
-                prevState.state !== Models_1.NodeState.walletInitSuccess &&
-                prevState.state !== Models_1.NodeState.postMigration)) {
+            if (prevState && (prevState.state === Models_1.NodeState.starting ||
+                prevState.state === Models_1.NodeState.started)) {
                 return;
             }
             try {
@@ -394,7 +392,6 @@ class Textile extends API_1.default {
             });
         }
         this.initializeAppState();
-        this._initialized = true;
     }
 }
 exports.default = new Textile({});

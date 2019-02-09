@@ -106,8 +106,6 @@ class Textile extends API {
     }
 
     this.initializeAppState()
-
-    this._initialized = true
   }
 
   isInitializedCheck = () => {
@@ -134,6 +132,8 @@ class Textile extends API {
       await delay(10)
       queriedAppState = await this.getCurrentState()
     }
+
+    this._initialized = true
 
     await this.manageNode(defaultAppState, queriedAppState)
   }
