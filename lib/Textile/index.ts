@@ -17,7 +17,7 @@ import BackgroundTimer from 'react-native-background-timer'
 import BackgroundFetch from 'react-native-background-fetch'
 import RNFS from 'react-native-fs'
 
-import { ICafeSessions, ICafeSession } from '@textile/react-native-protobufs'
+import { ICafeSession } from '@textile/react-native-protobufs'
 
 const packageFile = require('./../../package.json')
 export const VERSION = packageFile.version
