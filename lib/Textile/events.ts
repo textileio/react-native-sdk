@@ -58,9 +58,6 @@ export function stopNodeAfterDelayComplete () {
 export function appStateChange (previousState: string, newState: string) {
   DeviceEventEmitter.emit(keys.appStateChange, {previousState, newState})
 }
-export function newErrorMessage (error: string) {
-  DeviceEventEmitter.emit(keys.newErrorMessage, {error})
-}
 
 export function updateProfile () {
   DeviceEventEmitter.emit(keys.updateProfile)

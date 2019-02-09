@@ -63,6 +63,8 @@ class Textile extends API_1.default {
             return currentAppState || 'unknown';
         };
         this.initializeAppState = () => __awaiter(this, void 0, void 0, function* () {
+            // Clear storage to fresh state
+            yield this._store.clear();
             const defaultAppState = 'unknown';
             let queriedAppState = this.getCurrentState();
             while (queriedAppState.match(/unknown/)) {
@@ -411,9 +413,6 @@ class Textile extends API_1.default {
         if (config) {
             this._config = config;
         }
-        // Clear storage to fresh state
-        this._store.clear();
-        // Clear state on setup
         this.initializeAppState();
     }
 }

@@ -26,7 +26,6 @@ export declare function stopNodeAfterDelayCancelled(): void;
 export declare function stopNodeAfterDelayFinishing(): void;
 export declare function stopNodeAfterDelayComplete(): void;
 export declare function appStateChange(previousState: string, newState: string): void;
-export declare function newErrorMessage(error: string): void;
 export declare function updateProfile(): void;
 export declare function walletInitSuccess(): void;
 export declare function setRecoveryPhrase(recoveryPhrase: string): void;

@@ -81,9 +81,6 @@ class Textile extends API {
     if (config) {
       this._config = config
     }
-    // Clear storage to fresh state
-    this._store.clear()
-    // Clear state on setup
 
     this.initializeAppState()
   }
@@ -107,6 +104,10 @@ class Textile extends API {
   }
 
   initializeAppState = async () => {
+
+    // Clear storage to fresh state
+    await this._store.clear()
+
     const defaultAppState = 'unknown' as TextileAppStateStatus
 
     let queriedAppState = this.getCurrentState()

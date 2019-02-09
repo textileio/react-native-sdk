@@ -58,10 +58,6 @@ function appStateChange(previousState, newState) {
     react_native_1.DeviceEventEmitter.emit(exports.keys.appStateChange, { previousState, newState });
 }
 exports.appStateChange = appStateChange;
-function newErrorMessage(error) {
-    react_native_1.DeviceEventEmitter.emit(exports.keys.newErrorMessage, { error });
-}
-exports.newErrorMessage = newErrorMessage;
 function updateProfile() {
     react_native_1.DeviceEventEmitter.emit(exports.keys.updateProfile);
 }
