@@ -7,6 +7,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 var __importStar = (this && this.__importStar) || function (mod) {
     if (mod && mod.__esModule) return mod;
     var result = {};
@@ -14,13 +17,10 @@ var __importStar = (this && this.__importStar) || function (mod) {
     result["default"] = mod;
     return result;
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 const react_native_1 = require("react-native");
 const Models_1 = require("./Models");
-const API = __importStar(require("./API"));
+const API_1 = __importDefault(require("./API"));
 const store_1 = __importDefault(require("./store"));
 const Events_1 = __importDefault(require("../Events"));
 const migration_1 = __importDefault(require("./migration"));
@@ -33,8 +33,10 @@ const packageFile = require('./../../package.json');
 exports.VERSION = packageFile.version;
 const MIGRATION_NEEDED_ERROR = 'repo needs migration';
 const INIT_NEEDED_ERROR = 'repo does not exist, initialization is required';
-class Textile {
+class Textile extends API_1.default {
     constructor(options) {
+        super();
+        // Temp instance of the app's redux store while I remove deps to it
         this.migration = new migration_1.default();
         this._debug = false;
         this._store = new store_1.default();
@@ -88,7 +90,7 @@ class Textile {
             if (needsMigration) {
                 yield this.migration.runFileMigration(this.repoPath);
             }
-            yield this.api.newTextile(this.repoPath, debug);
+            yield this.newTextile(this.repoPath, debug);
             yield this.updateNodeState(Models_1.NodeState.created);
         });
         // Start the node, create it if it doesn't exist. Safe to call on every start.
@@ -111,12 +113,12 @@ class Textile {
             try {
                 yield this.createNode();
                 yield this.updateNodeState(Models_1.NodeState.starting);
-                yield this.api.start();
-                const sessions = yield this.api.cafeSessions();
+                yield this.start();
+                const sessions = yield this.cafeSessions();
                 if (!sessions || !sessions.values || sessions.values.length < 1) {
                     const cafeOverride = this._config.TEXTILE_CAFE_OVERRIDE;
                     if (cafeOverride) {
-                        yield this.api.registerCafe(cafeOverride);
+                        yield this.registerCafe(cafeOverride);
                     }
                     else if (this._config.TEXTILE_CAFE_GATEWAY_URL) {
                         yield this.discoverAndRegisterCafes();
@@ -129,7 +131,7 @@ class Textile {
                 try {
                     if (error.message === MIGRATION_NEEDED_ERROR) {
                         // instruct the node to export data to files
-                        yield this.api.migrateRepo(this.repoPath);
+                        yield this.migrateRepo(this.repoPath);
                         // store the fact there is a pending migration in the preferences redux persisted state
                         TextileEvents.migrationNeeded();
                         yield this.updateNodeState(Models_1.NodeState.postMigration);
@@ -138,12 +140,12 @@ class Textile {
                     }
                     else if (error.message === INIT_NEEDED_ERROR) {
                         yield this.updateNodeState(Models_1.NodeState.creatingWallet);
-                        const recoveryPhrase = yield this.api.newWallet(12);
+                        const recoveryPhrase = yield this.newWallet(12);
                         TextileEvents.setRecoveryPhrase(recoveryPhrase);
                         yield this.updateNodeState(Models_1.NodeState.derivingAccount);
-                        const walletAccount = yield this.api.walletAccountAt(recoveryPhrase, 0);
+                        const walletAccount = yield this.walletAccountAt(recoveryPhrase, 0);
                         yield this.updateNodeState(Models_1.NodeState.initializingRepo);
-                        yield this.api.initRepo(walletAccount.seed, this.repoPath, true, debug);
+                        yield this.initRepo(walletAccount.seed, this.repoPath, true, debug);
                         TextileEvents.createAndStartNode();
                         TextileEvents.walletInitSuccess();
                     }
@@ -179,8 +181,8 @@ class Textile {
             try {
                 const cafes = yield helpers_1.createTimeout(10000, this.discoverCafes());
                 const discoveredCafes = cafes;
-                yield this.api.registerCafe(discoveredCafes.primary.url);
-                yield this.api.registerCafe(discoveredCafes.secondary.url);
+                yield this.registerCafe(discoveredCafes.primary.url);
+                yield this.registerCafe(discoveredCafes.secondary.url);
             }
             catch (error) {
                 // When this happens, you should retry the discover and register...
@@ -209,7 +211,7 @@ class Textile {
         });
         // Client should use this once account is onboarded to register with Cafe
         this.getCafeSessions = () => __awaiter(this, void 0, void 0, function* () {
-            const sessions = yield this.api.cafeSessions();
+            const sessions = yield this.cafeSessions();
             if (!sessions) {
                 return [];
             }
@@ -223,7 +225,7 @@ class Textile {
         });
         // Client should use this if cafe sessions are detected as expired
         this.getRefreshedCafeSessions = () => __awaiter(this, void 0, void 0, function* () {
-            const sessions = yield this.api.cafeSessions();
+            const sessions = yield this.cafeSessions();
             if (!sessions) {
                 return [];
             }
@@ -232,7 +234,9 @@ class Textile {
                 return [];
             }
             else {
-                const refreshedValues = yield Promise.all(values.map((session) => __awaiter(this, void 0, void 0, function* () { return yield this.api.refreshCafeSession(session.id); })));
+                const refreshedValues = yield Promise.all(values
+                    .map((session) => __awaiter(this, void 0, void 0, function* () { return yield this.refreshCafeSession(session.id); }))
+                    .filter((session) => session !== undefined));
                 return refreshedValues;
             }
         });
@@ -286,7 +290,7 @@ class Textile {
         /* ----- PRIVATE - EVENT EMITTERS ----- */
         this.stopNode = () => __awaiter(this, void 0, void 0, function* () {
             yield this.updateNodeState(Models_1.NodeState.stopping);
-            yield this.api.stop();
+            yield this.stop();
             yield this._store.setNodeOnline(false);
             yield this.updateNodeState(Models_1.NodeState.stopped);
         });
@@ -307,13 +311,13 @@ class Textile {
                 });
                 cancelSequence: while (!cancelled) {
                     TextileEvents.stopNodeAfterDelayStarting();
-                    yield this.api.checkCafeMessages(); // do a quick check for new messages
+                    yield this.checkCafeMessages(); // do a quick check for new messages
                     yield helpers_1.delay(ms / 2);
                     if (cancelled) { // cancelled by event, so abort sequence
                         foregroundEvent.remove(); // remove our event listener
                         break cancelSequence;
                     }
-                    yield this.api.checkCafeMessages();
+                    yield this.checkCafeMessages();
                     yield helpers_1.delay(ms / 2);
                     if (cancelled) { // cancelled by event, so abort sequence
                         foregroundEvent.remove(); // remove our event listener
@@ -336,7 +340,6 @@ class Textile {
         if (options.debug) {
             this._debug = true;
         }
-        this.api = API;
         console.info('Initializing @textile/react-native-sdk v. ' + exports.VERSION);
     }
     /* ---- Functions to wire into app ------ */

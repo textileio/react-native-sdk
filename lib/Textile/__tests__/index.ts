@@ -11,11 +11,6 @@ describe('rn textile', () => {
     })
   })
   describe('state functions should error when not initialized', () => {
-    it('thows an error', async () => {
-      expect(Textile.isInitialized()).toEqual(false)
-      // Methods that require state should throw error if not initialized
-      await expect(Textile.createAndStartNode()).rejects.toThrowError()
-    })
     it('starts successfully', async () => {
       expect(Textile.setup()).toMatchSnapshot()
       expect(Textile.isInitialized()).toEqual(true)

@@ -8,7 +8,7 @@ export default class TextileStore {
     peerId: '@textile/peerId',
     sdkVersion: '@textile/sdkVersion',
     nodeOnline: '@textile/nodeOnline',
-    nodeState: '@textile/nodeOnline',
+    nodeState: '@textile/nodeState',
     lastBackgroundEvent: '@textile/lastBackgroundEvent'
   }
   clear = async () => {

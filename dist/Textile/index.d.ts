@@ -1,10 +1,10 @@
 import { TextileAppStateStatus, TextileOptions, NodeState, TextileConfig } from './Models';
+import API from './API';
 import TextileStore from './store';
 import TextileMigration from './migration';
 import { ICafeSession } from '@textile/react-native-protobufs';
 export declare const VERSION: any;
-declare class Textile {
-    api: any;
+declare class Textile extends API {
     migration: TextileMigration;
     _debug: boolean;
     _store: TextileStore;

@@ -7,7 +7,7 @@ import {
   NodeState,
   TextileConfig
 } from './Models'
-import * as API from './API'
+import API from './API'
 import TextileStore from './store'
 import Events from '../Events'
 import TextileMigration from './migration'
@@ -25,9 +25,8 @@ export const VERSION = packageFile.version
 const MIGRATION_NEEDED_ERROR = 'repo needs migration'
 const INIT_NEEDED_ERROR = 'repo does not exist, initialization is required'
 
-class Textile {
+class Textile extends API {
   // Temp instance of the app's redux store while I remove deps to it
-  api: any
   migration = new TextileMigration()
   _debug = false
   _store = new TextileStore()
@@ -40,10 +39,10 @@ class Textile {
   repoPath = `${RNFS.DocumentDirectoryPath}/textile-go`
 
   constructor(options: TextileOptions) {
+    super()
     if (options.debug) {
       this._debug = true
     }
-    this.api = API
     console.info('Initializing @textile/react-native-sdk v. ' + VERSION)
   }
 
@@ -159,7 +158,7 @@ class Textile {
     if (needsMigration) {
       await this.migration.runFileMigration(this.repoPath)
     }
-    await this.api.newTextile(this.repoPath, debug)
+    await this.newTextile(this.repoPath, debug)
 
     await this.updateNodeState(NodeState.created)
   }
@@ -190,13 +189,13 @@ class Textile {
 
       await this.updateNodeState(NodeState.starting)
 
-      await this.api.start()
+      await this.start()
 
-      const sessions: ICafeSessions = await this.api.cafeSessions()
+      const sessions = await this.cafeSessions()
       if (!sessions || !sessions.values || sessions.values.length < 1) {
         const cafeOverride = this._config.TEXTILE_CAFE_OVERRIDE
         if (cafeOverride) {
-          await this.api.registerCafe(cafeOverride as string)
+          await this.registerCafe(cafeOverride as string)
         } else if (this._config.TEXTILE_CAFE_GATEWAY_URL) {
           await this.discoverAndRegisterCafes()
         }
@@ -207,7 +206,7 @@ class Textile {
       try {
         if (error.message === MIGRATION_NEEDED_ERROR) {
           // instruct the node to export data to files
-          await this.api.migrateRepo(this.repoPath)
+          await this.migrateRepo(this.repoPath)
           // store the fact there is a pending migration in the preferences redux persisted state
           TextileEvents.migrationNeeded()
           await this.updateNodeState(NodeState.postMigration)
@@ -215,12 +214,12 @@ class Textile {
           TextileEvents.createAndStartNode()
         } else if (error.message === INIT_NEEDED_ERROR) {
           await this.updateNodeState(NodeState.creatingWallet)
-          const recoveryPhrase: string = await this.api.newWallet(12)
+          const recoveryPhrase: string = await this.newWallet(12)
           TextileEvents.setRecoveryPhrase(recoveryPhrase)
           await this.updateNodeState(NodeState.derivingAccount)
-          const walletAccount: WalletAccount = await this.api.walletAccountAt(recoveryPhrase, 0)
+          const walletAccount: WalletAccount = await this.walletAccountAt(recoveryPhrase, 0)
           await this.updateNodeState(NodeState.initializingRepo)
-          await this.api.initRepo(walletAccount.seed, this.repoPath, true, debug)
+          await this.initRepo(walletAccount.seed, this.repoPath, true, debug)
           TextileEvents.createAndStartNode()
           TextileEvents.walletInitSuccess()
         } else {
@@ -257,8 +256,8 @@ class Textile {
     try {
       const cafes = await createTimeout(10000, this.discoverCafes())
       const discoveredCafes = cafes as DiscoveredCafes
-      await this.api.registerCafe(discoveredCafes.primary.url)
-      await this.api.registerCafe(discoveredCafes.secondary.url)
+      await this.registerCafe(discoveredCafes.primary.url)
+      await this.registerCafe(discoveredCafes.secondary.url)
     } catch (error) {
       // When this happens, you should retry the discover and register...
       TextileEvents.newError('cafeDiscoveryError', 'cafe discovery timed out, internet connection needed')
@@ -291,7 +290,7 @@ class Textile {
 
   // Client should use this once account is onboarded to register with Cafe
   getCafeSessions = async (): Promise<ReadonlyArray<ICafeSession>> => {
-    const sessions: Readonly<ICafeSessions> = await this.api.cafeSessions()
+    const sessions = await this.cafeSessions()
     if (!sessions) {
       return []
     }
@@ -305,7 +304,7 @@ class Textile {
 
   // Client should use this if cafe sessions are detected as expired
   getRefreshedCafeSessions = async (): Promise<ReadonlyArray<ICafeSession>> => {
-    const sessions: Readonly<ICafeSessions> = await this.api.cafeSessions()
+    const sessions = await this.cafeSessions()
     if (!sessions) {
       return []
     }
@@ -314,7 +313,9 @@ class Textile {
       return []
     } else {
       const refreshedValues: ReadonlyArray<ICafeSession> = await Promise.all(
-        values.map(async (session) => await this.api.refreshCafeSession(session.id!))
+        values
+          .map(async (session) => await this.refreshCafeSession(session.id!))
+          .filter((session) => session !== undefined) as ReadonlyArray<ICafeSession>
       )
       return refreshedValues
     }
@@ -373,7 +374,7 @@ class Textile {
   /* ----- PRIVATE - EVENT EMITTERS ----- */
   private stopNode = async () => {
     await this.updateNodeState(NodeState.stopping)
-    await this.api.stop()
+    await this.stop()
     await this._store.setNodeOnline(false)
     await this.updateNodeState(NodeState.stopped)
   }
@@ -398,13 +399,13 @@ class Textile {
       cancelSequence:
       while (!cancelled) {
           TextileEvents.stopNodeAfterDelayStarting()
-          await this.api.checkCafeMessages() // do a quick check for new messages
+          await this.checkCafeMessages() // do a quick check for new messages
           await delay(ms / 2)
           if (cancelled) { // cancelled by event, so abort sequence
             foregroundEvent.remove() // remove our event listener
             break cancelSequence
           }
-          await this.api.checkCafeMessages()
+          await this.checkCafeMessages()
           await delay(ms / 2)
           if (cancelled) { // cancelled by event, so abort sequence
             foregroundEvent.remove() // remove our event listener
