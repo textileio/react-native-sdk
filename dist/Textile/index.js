@@ -66,8 +66,35 @@ class Textile extends API_1.default {
                 yield helpers_1.delay(10);
                 queriedAppState = yield this.getCurrentState();
             }
+            // Setup our within sdk listeners
+            this._nativeEvents.addListener('onOnline', () => {
+                this._store.setNodeOnline(true);
+            });
+            react_native_1.DeviceEventEmitter.addListener('@textile/createAndStartNode', (payload) => {
+                this.createAndStartNode();
+            });
+            // Mark as initialized
             this._initialized = true;
+            // Begin first node startup cycle
             yield this.manageNode(defaultAppState, queriedAppState);
+            // Create listeners for app state change to start/stop node
+            if (!this._config.SELF_MANAGE_APP_STATE) {
+                // SDK automatically detects app state changes manages the node
+                react_native_1.AppState.addEventListener('change', (nextState) => {
+                    TextileEvents.appNextState(nextState);
+                    this.nextAppState(nextState);
+                });
+            }
+            else {
+                // Alternatively, the developer can trigger changes manually via an notifyAppStateChange event
+                react_native_1.DeviceEventEmitter.addListener('@textile/notifyAppStateChange', (payload) => {
+                    if (!payload || !payload.nextState) {
+                        return;
+                    }
+                    TextileEvents.appNextState(payload.nextState);
+                    this.nextAppState(payload.nextState);
+                });
+            }
         });
         this.startBackgroundTask = () => __awaiter(this, void 0, void 0, function* () {
             const shouldRun = yield this.shouldRunBackgroundTask();
@@ -367,30 +394,6 @@ class Textile extends API_1.default {
         // Clear storage to fresh state
         this._store.clear();
         // Clear state on setup
-        // Setup our within sdk listeners
-        this._nativeEvents.addListener('onOnline', () => {
-            this._store.setNodeOnline(true);
-        });
-        react_native_1.DeviceEventEmitter.addListener('@textile/createAndStartNode', (payload) => {
-            this.createAndStartNode();
-        });
-        if (!this._config.SELF_MANAGE_APP_STATE) {
-            // SDK automatically detects app state changes manages the node
-            react_native_1.AppState.addEventListener('change', (nextState) => {
-                TextileEvents.appNextState(nextState);
-                this.nextAppState(nextState);
-            });
-        }
-        else {
-            // Alternatively, the developer can trigger changes manually via an notifyAppStateChange event
-            react_native_1.DeviceEventEmitter.addListener('@textile/notifyAppStateChange', (payload) => {
-                if (!payload || !payload.nextState) {
-                    return;
-                }
-                TextileEvents.appNextState(payload.nextState);
-                this.nextAppState(payload.nextState);
-            });
-        }
         this.initializeAppState();
     }
 }

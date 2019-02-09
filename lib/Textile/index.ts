@@ -79,31 +79,6 @@ class Textile extends API {
     // Clear storage to fresh state
     this._store.clear()
     // Clear state on setup
-    // Setup our within sdk listeners
-    this._nativeEvents.addListener('onOnline', () => {
-      this._store.setNodeOnline(true)
-    })
-
-    DeviceEventEmitter.addListener('@textile/createAndStartNode', (payload) => {
-      this.createAndStartNode()
-    })
-
-    if (!this._config.SELF_MANAGE_APP_STATE) {
-      // SDK automatically detects app state changes manages the node
-      AppState.addEventListener('change', (nextState: AppStateStatus) => {
-        TextileEvents.appNextState(nextState)
-        this.nextAppState(nextState)
-      })
-    } else {
-      // Alternatively, the developer can trigger changes manually via an notifyAppStateChange event
-      DeviceEventEmitter.addListener('@textile/notifyAppStateChange', (payload) => {
-        if (!payload || !payload.nextState) {
-          return
-        }
-        TextileEvents.appNextState(payload.nextState)
-        this.nextAppState(payload.nextState)
-      })
-    }
 
     this.initializeAppState()
   }
@@ -133,9 +108,39 @@ class Textile extends API {
       queriedAppState = await this.getCurrentState()
     }
 
+    // Setup our within sdk listeners
+    this._nativeEvents.addListener('onOnline', () => {
+      this._store.setNodeOnline(true)
+    })
+
+    DeviceEventEmitter.addListener('@textile/createAndStartNode', (payload) => {
+      this.createAndStartNode()
+    })
+
+    // Mark as initialized
     this._initialized = true
 
+    // Begin first node startup cycle
     await this.manageNode(defaultAppState, queriedAppState)
+
+    // Create listeners for app state change to start/stop node
+    if (!this._config.SELF_MANAGE_APP_STATE) {
+      // SDK automatically detects app state changes manages the node
+      AppState.addEventListener('change', (nextState: AppStateStatus) => {
+        TextileEvents.appNextState(nextState)
+        this.nextAppState(nextState)
+      })
+    } else {
+      // Alternatively, the developer can trigger changes manually via an notifyAppStateChange event
+      DeviceEventEmitter.addListener('@textile/notifyAppStateChange', (payload) => {
+        if (!payload || !payload.nextState) {
+          return
+        }
+        TextileEvents.appNextState(payload.nextState)
+        this.nextAppState(payload.nextState)
+      })
+    }
+
   }
 
   startBackgroundTask = async () => {
