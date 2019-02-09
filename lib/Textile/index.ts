@@ -48,7 +48,9 @@ class Textile extends API {
     if (options.debug) {
       this._debug = true
     }
-    console.info('Initializing @textile/react-native-sdk v. ' + VERSION)
+    if (this._debug) {
+      console.info('Initializing @textile/react-native-sdk v. ' + VERSION)
+    }
   }
 
   /* ---- Functions to wire into app ------ */
@@ -89,7 +91,9 @@ class Textile extends API {
   isInitializedCheck = () => {
     if (!this._initialized) {
       TextileEvents.nonInitializedError()
-      console.error('@textile/react-native-sdk: Attempt to call a Textile instance method on an uninitialized instance')
+      if (this._debug) {
+        console.error('@textile/react-native-sdk: Attempt to call a Textile instance method on an uninitialized instance')
+      }
     }
   }
 
