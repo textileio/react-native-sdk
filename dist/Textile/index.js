@@ -55,19 +55,18 @@ class Textile extends API_1.default {
         /* ---- STATE BASED METHODS ----- */
         //  All methods here should only be called as the result of a sequenced kicked off
         //  By an event and detected by the persistent instance that executed setup()
+        this.getCurrentState = () => {
+            const currentAppState = react_native_1.AppState.currentState;
+            return currentAppState || 'unknown';
+        };
         this.initializeAppState = () => __awaiter(this, void 0, void 0, function* () {
             const defaultAppState = 'default';
-            // if for some reason initialized will ever be called from a non-blank state (?), we need the below
-            // const storedState = await this._store.getAppState()
-            // let defaultAppState = 'default' as TextileAppStateStatus
-            // if (storedState) {
-            //   defaultAppState = JSON.parse(storedState) as TextileAppStateStatus
-            // }
-            // wait just a moment in case we beat native state
-            yield helpers_1.delay(10);
-            const currentAppState = react_native_1.AppState.currentState;
-            const queriedAppState = currentAppState || 'unknown';
-            yield this.appStateChange(defaultAppState, queriedAppState);
+            let queriedAppState = this.getCurrentState();
+            while (queriedAppState.match(/default|unknown/)) {
+                yield helpers_1.delay(10);
+                queriedAppState = yield this.getCurrentState();
+            }
+            yield this.manageNode(defaultAppState, queriedAppState);
         });
         this.startBackgroundTask = () => __awaiter(this, void 0, void 0, function* () {
             const shouldRun = yield this.shouldRunBackgroundTask();
@@ -75,11 +74,11 @@ class Textile extends API_1.default {
                 return;
             }
             yield this._store.setLastBackgroundEvent();
-            const currentState = yield this.appState();
+            const currentState = this.getCurrentState();
             // const currentState = yield select(TextileNodeSelectors.appState)
             // ensure we don't cause things in foreground
-            if (currentState === 'background' || currentState === 'backgroundFromForeground') {
-                yield this.appStateChange(currentState, 'background');
+            if (currentState === 'background') {
+                yield this.nextAppState(currentState);
             }
         });
         // Simply create the node, useful only if you want to create in advance of starting
@@ -270,14 +269,12 @@ class Textile extends API_1.default {
         });
         this.nextAppState = (nextState) => __awaiter(this, void 0, void 0, function* () {
             const previousState = yield this.appState();
+            const nodeState = yield this.nodeState();
             // const currentState = this.store.getState().textileNode.appState
             const newState = nextState === 'background' && (previousState === 'active' || previousState === 'inactive') ? 'backgroundFromForeground' : nextState;
             if (newState !== previousState || newState === 'background') {
-                yield this.appStateChange(previousState, newState);
+                yield this.manageNode(previousState, newState);
             }
-        });
-        this.appStateChange = (previousState, nextState) => __awaiter(this, void 0, void 0, function* () {
-            yield this.manageNode(previousState, nextState);
         });
         this.updateNodeState = (state) => __awaiter(this, void 0, void 0, function* () {
             const pastState = yield this._store.getNodeState();

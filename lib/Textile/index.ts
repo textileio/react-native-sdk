@@ -121,19 +121,21 @@ class Textile extends API {
   //  All methods here should only be called as the result of a sequenced kicked off
   //  By an event and detected by the persistent instance that executed setup()
 
+  getCurrentState = () => {
+    const currentAppState = AppState.currentState
+    return currentAppState || 'unknown'
+  }
+
   initializeAppState = async () => {
     const defaultAppState = 'default' as TextileAppStateStatus
-    // if for some reason initialized will ever be called from a non-blank state (?), we need the below
-    // const storedState = await this._store.getAppState()
-    // let defaultAppState = 'default' as TextileAppStateStatus
-    // if (storedState) {
-    //   defaultAppState = JSON.parse(storedState) as TextileAppStateStatus
-    // }
-    // wait just a moment in case we beat native state
-    await delay(10)
-    const currentAppState = AppState.currentState
-    const queriedAppState = currentAppState || 'unknown'
-    await this.appStateChange(defaultAppState, queriedAppState)
+
+    let queriedAppState = this.getCurrentState()
+    while (queriedAppState.match(/default|unknown/)) {
+      await delay(10)
+      queriedAppState = await this.getCurrentState()
+    }
+
+    await this.manageNode(defaultAppState, queriedAppState)
   }
 
   startBackgroundTask = async () => {
@@ -142,11 +144,11 @@ class Textile extends API {
       return
     }
     await this._store.setLastBackgroundEvent()
-    const currentState = await this.appState()
+    const currentState = this.getCurrentState()
     // const currentState = yield select(TextileNodeSelectors.appState)
     // ensure we don't cause things in foreground
-    if (currentState === 'background' || currentState === 'backgroundFromForeground') {
-      await this.appStateChange(currentState, 'background')
+    if (currentState === 'background') {
+      await this.nextAppState(currentState)
     }
   }
 
@@ -353,15 +355,16 @@ class Textile extends API {
   }
   private nextAppState = async (nextState: TextileAppStateStatus) => {
     const previousState = await this.appState()
+    const nodeState = await this.nodeState()
         // const currentState = this.store.getState().textileNode.appState
-    const newState: TextileAppStateStatus = nextState === 'background' && (previousState === 'active' || previousState === 'inactive') ? 'backgroundFromForeground' : nextState
+    const newState: TextileAppStateStatus = nextState === 'background' && (
+        previousState === 'active' || previousState === 'inactive'
+    ) ? 'backgroundFromForeground' : nextState
     if (newState !== previousState || newState === 'background') {
-      await this.appStateChange(previousState, newState)
+      await this.manageNode(previousState, newState)
     }
   }
-  private appStateChange = async (previousState: TextileAppStateStatus, nextState: TextileAppStateStatus) => {
-    await this.manageNode(previousState, nextState)
-  }
+
   private updateNodeState = async (state: NodeState) => {
     const pastState = await this._store.getNodeState()
     if (pastState && pastState.state === state) {

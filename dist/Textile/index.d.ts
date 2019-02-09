@@ -1,3 +1,4 @@
+import { AppStateStatus } from 'react-native';
 import { TextileAppStateStatus, TextileOptions, NodeState, TextileConfig } from './Models';
 import API from './API';
 import TextileStore from './store';
@@ -18,6 +19,7 @@ declare class Textile extends API {
     tearDown(): void;
     setup(config?: TextileConfig): void;
     isInitializedCheck: () => void;
+    getCurrentState: () => AppStateStatus;
     initializeAppState: () => Promise<void>;
     startBackgroundTask: () => Promise<void>;
     createNode: () => Promise<void>;
@@ -35,7 +37,6 @@ declare class Textile extends API {
     private discoverCafes;
     private updateNodeStateError;
     private nextAppState;
-    private appStateChange;
     private updateNodeState;
     private stopNode;
     private backgroundTaskRace;
