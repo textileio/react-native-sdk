@@ -25,6 +25,9 @@ export const VERSION = packageFile.version
 const MIGRATION_NEEDED_ERROR = 'repo needs migration'
 const INIT_NEEDED_ERROR = 'repo does not exist, initialization is required'
 
+interface TextileEventListeners {
+  appState?: string
+}
 class Textile extends API {
   // Temp instance of the app's redux store while I remove deps to it
   migration = new TextileMigration()
@@ -33,6 +36,8 @@ class Textile extends API {
   _nativeEvents = Events
   _config: TextileConfig = {
     RELEASE_TYPE: 'development'
+  }
+  _listeners: TextileEventListeners = {
   }
   _initialized = false
 
@@ -58,14 +63,12 @@ class Textile extends API {
   tearDown() {
     // Clear on out too if detected to help speed up any startup time
     // Clear all our listeners
-    this._nativeEvents.removeAllListeners()
-    // TODO: be sure to limit to only internal listeners (same above)
-    DeviceEventEmitter.removeAllListeners()
-    if (!this._config.SELF_MANAGE_APP_STATE) {
-      AppState.removeEventListener('change', (nextState: AppStateStatus) => {
-        TextileEvents.appNextState(nextState)
-        this.nextAppState(nextState)
-      })
+    this._nativeEvents.removeListener('onOnline', this.onOnlineCallback)
+    DeviceEventEmitter.removeListener('@textile/createAndStartNode', this.createAndStartNodeCallback)
+    if (this._config.SELF_MANAGE_APP_STATE) {
+      DeviceEventEmitter.removeListener('@textile/notifyAppStateChange', this.notifyAppStateChangeCallback)
+    } else {
+      AppState.removeEventListener('change', this.nextStateCallback)
     }
   }
 
@@ -109,13 +112,9 @@ class Textile extends API {
     }
 
     // Setup our within sdk listeners
-    this._nativeEvents.addListener('onOnline', () => {
-      this._store.setNodeOnline(true)
-    })
+    this._nativeEvents.addListener('onOnline', this.onOnlineCallback)
 
-    DeviceEventEmitter.addListener('@textile/createAndStartNode', (payload) => {
-      this.createAndStartNode()
-    })
+    DeviceEventEmitter.addListener('@textile/createAndStartNode', this.createAndStartNodeCallback)
 
     // Mark as initialized
     this._initialized = true
@@ -123,24 +122,28 @@ class Textile extends API {
     // Begin first node startup cycle
     await this.manageNode(defaultAppState, queriedAppState)
 
-    // Create listeners for app state change to start/stop node
-    if (!this._config.SELF_MANAGE_APP_STATE) {
-      // SDK automatically detects app state changes manages the node
-      AppState.addEventListener('change', (nextState: AppStateStatus) => {
-        TextileEvents.appNextState(nextState)
-        this.nextAppState(nextState)
-      })
-    } else {
-      // Alternatively, the developer can trigger changes manually via an notifyAppStateChange event
-      DeviceEventEmitter.addListener('@textile/notifyAppStateChange', (payload) => {
-        if (!payload || !payload.nextState) {
-          return
-        }
-        TextileEvents.appNextState(payload.nextState)
-        this.nextAppState(payload.nextState)
-      })
+    let missedAppState = this.getCurrentState()
+    while (missedAppState.match(/unknown/)) {
+      await delay(10)
+      missedAppState = await this.getCurrentState()
     }
 
+    // Create listeners for app state change to start/stop node
+    if (this._config.SELF_MANAGE_APP_STATE) {
+      // NOT DEFAULT, the developer can trigger changes manually via an notifyAppStateChange event
+      DeviceEventEmitter.addListener('@textile/notifyAppStateChange', this.notifyAppStateChangeCallback)
+    } else {
+      // DEFAULT: SDK automatically detects app state changes manages the node
+      AppState.addEventListener('change', this.nextStateCallback)
+    }
+
+    // There was a missed state change while we were in the startup sequence
+    if (missedAppState !== queriedAppState) {
+      const currentAppState = this.getCurrentState()
+      // we should be safe to fire a duplicate here anyway...
+      TextileEvents.appNextState(currentAppState)
+      this.nextAppState(currentAppState)
+    }
   }
 
   startBackgroundTask = async () => {
@@ -329,6 +332,23 @@ class Textile extends API {
   }
 
   /* ------ INTERNAL METHODS ----- */
+  private onOnlineCallback = () => {
+    this._store.setNodeOnline(true)
+  }
+  private notifyAppStateChangeCallback = (payload: {nextState: AppStateStatus}) => {
+    if (!payload || !payload.nextState) {
+      return
+    }
+    TextileEvents.appNextState(payload.nextState)
+    this.nextAppState(payload.nextState)
+  }
+  private createAndStartNodeCallback = () => {
+    this.createAndStartNode()
+  }
+  private nextStateCallback = (nextState: AppStateStatus) => {
+    TextileEvents.appNextState(nextState)
+    this.nextAppState(nextState)
+  }
   private shouldRunBackgroundTask = async (): Promise<boolean> => {
     const MINIMUM_MINUTES_BETWEEN_TASKS = 10
     const now = Number((new Date()).getTime())
@@ -358,7 +378,7 @@ class Textile extends API {
     const state = storedState && storedState.state || NodeState.nonexistent
     await this._store.setNodeState({state, error: error.message})
   }
-  private nextAppState = async (nextState: TextileAppStateStatus) => {
+  private nextAppState = async (nextState: AppStateStatus) => {
     const previousState = await this.appState()
     const newState: TextileAppStateStatus = nextState === 'background' && (
         previousState === 'active' || previousState === 'inactive'
