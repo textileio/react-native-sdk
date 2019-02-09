@@ -16,6 +16,7 @@ export declare enum NodeState {
     'creatingWallet' = "creatingWallet",
     'derivingAccount' = "derivingAccount",
     'initializingRepo' = "initializingRepo",
+    'walletInitSuccess' = "walletInitSuccess",
     'postMigration' = "postMigration"
 }
 export interface DiscoveredCafe {

@@ -177,12 +177,11 @@ class Textile extends API {
 
     const prevState = await this._store.getNodeState()
     // if the known state isn't stopped, nonexistent, or in error... don't try to create it
-    if (prevState && !(
+    if (!prevState.error || !(
           prevState.state === NodeState.stopped ||
           prevState.state === NodeState.nonexistent ||
-          prevState.state === NodeState.initializingRepo ||
-          prevState.state === NodeState.postMigration ||
-          prevState.error)) {
+          prevState.state === NodeState.walletInitSuccess ||
+          prevState.state === NodeState.postMigration)) {
       return
     }
     try {
@@ -222,8 +221,9 @@ class Textile extends API {
           const walletAccount: WalletAccount = await this.walletAccountAt(recoveryPhrase, 0)
           await this.updateNodeState(NodeState.initializingRepo)
           await this.initRepo(walletAccount.seed, this.repoPath, true, debug)
-          TextileEvents.createAndStartNode()
+          await this.updateNodeState(NodeState.walletInitSuccess)
           TextileEvents.walletInitSuccess()
+          TextileEvents.createAndStartNode()
         } else {
           await this.updateNodeStateError(error)
         }
@@ -350,8 +350,7 @@ class Textile extends API {
 
   private updateNodeStateError = async (error: Error) => {
     const storedState = await this._store.getNodeState()
-    const state = storedState ? storedState.state : NodeState.nonexistent
-    await this._store.setNodeState({state, error: error.message})
+    await this._store.setNodeState({state: storedState.state, error: error.message})
   }
   private nextAppState = async (nextState: TextileAppStateStatus) => {
     const previousState = await this.appState()
@@ -367,7 +366,7 @@ class Textile extends API {
 
   private updateNodeState = async (state: NodeState) => {
     const pastState = await this._store.getNodeState()
-    if (pastState && pastState.state === state) {
+    if (!pastState.error && pastState.state === state) {
       return
     }
     await this._store.setNodeState({state})

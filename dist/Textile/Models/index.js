@@ -12,6 +12,7 @@ var NodeState;
     NodeState["creatingWallet"] = "creatingWallet";
     NodeState["derivingAccount"] = "derivingAccount";
     NodeState["initializingRepo"] = "initializingRepo";
+    NodeState["walletInitSuccess"] = "walletInitSuccess";
     NodeState["postMigration"] = "postMigration";
 })(NodeState = exports.NodeState || (exports.NodeState = {}));
 var ThreadFeedItemType;

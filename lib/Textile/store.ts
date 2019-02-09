@@ -1,5 +1,5 @@
 import {AsyncStorage} from 'react-native'
-import { StoredNodeState, TextileAppStateStatus } from './Models'
+import { StoredNodeState, TextileAppStateStatus, NodeState } from './Models'
 
 export default class TextileStore {
   keys: {[key: string]: string} = {
@@ -40,12 +40,14 @@ export default class TextileStore {
     }
     return
   }
-  getNodeState = async (): Promise<StoredNodeState | void> => {
+  getNodeState = async (): Promise<StoredNodeState> => {
     const result = await AsyncStorage.getItem(this.keys.nodeState)
     if (result) {
       return JSON.parse(result) as StoredNodeState
     }
-    return
+    return {
+      state: NodeState.nonexistent
+    }
   }
 
   setLastBackgroundEvent = async (): Promise<number | void> => {

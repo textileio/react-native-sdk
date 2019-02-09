@@ -102,11 +102,10 @@ class Textile extends API_1.default {
             const debug = this._config.RELEASE_TYPE !== 'production';
             const prevState = yield this._store.getNodeState();
             // if the known state isn't stopped, nonexistent, or in error... don't try to create it
-            if (prevState && !(prevState.state === Models_1.NodeState.stopped ||
+            if (!prevState.error || !(prevState.state === Models_1.NodeState.stopped ||
                 prevState.state === Models_1.NodeState.nonexistent ||
-                prevState.state === Models_1.NodeState.initializingRepo ||
-                prevState.state === Models_1.NodeState.postMigration ||
-                prevState.error)) {
+                prevState.state === Models_1.NodeState.walletInitSuccess ||
+                prevState.state === Models_1.NodeState.postMigration)) {
                 return;
             }
             try {
@@ -145,8 +144,9 @@ class Textile extends API_1.default {
                         const walletAccount = yield this.walletAccountAt(recoveryPhrase, 0);
                         yield this.updateNodeState(Models_1.NodeState.initializingRepo);
                         yield this.initRepo(walletAccount.seed, this.repoPath, true, debug);
-                        TextileEvents.createAndStartNode();
+                        yield this.updateNodeState(Models_1.NodeState.walletInitSuccess);
                         TextileEvents.walletInitSuccess();
+                        TextileEvents.createAndStartNode();
                     }
                     else {
                         yield this.updateNodeStateError(error);
@@ -264,8 +264,7 @@ class Textile extends API_1.default {
         });
         this.updateNodeStateError = (error) => __awaiter(this, void 0, void 0, function* () {
             const storedState = yield this._store.getNodeState();
-            const state = storedState ? storedState.state : Models_1.NodeState.nonexistent;
-            yield this._store.setNodeState({ state, error: error.message });
+            yield this._store.setNodeState({ state: storedState.state, error: error.message });
         });
         this.nextAppState = (nextState) => __awaiter(this, void 0, void 0, function* () {
             const previousState = yield this.appState();
@@ -278,7 +277,7 @@ class Textile extends API_1.default {
         });
         this.updateNodeState = (state) => __awaiter(this, void 0, void 0, function* () {
             const pastState = yield this._store.getNodeState();
-            if (pastState && pastState.state === state) {
+            if (!pastState.error && pastState.state === state) {
                 return;
             }
             yield this._store.setNodeState({ state });

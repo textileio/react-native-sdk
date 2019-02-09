@@ -18,6 +18,7 @@ export enum NodeState {
   'creatingWallet' = 'creatingWallet',
   'derivingAccount' = 'derivingAccount',
   'initializingRepo' = 'initializingRepo',
+  'walletInitSuccess' = 'walletInitSuccess',
   'postMigration' = 'postMigration'
 }
 

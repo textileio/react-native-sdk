@@ -9,6 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const react_native_1 = require("react-native");
+const Models_1 = require("./Models");
 class TextileStore {
     constructor() {
         this.keys = {
@@ -54,7 +55,9 @@ class TextileStore {
             if (result) {
                 return JSON.parse(result);
             }
-            return;
+            return {
+                state: Models_1.NodeState.nonexistent
+            };
         });
         this.setLastBackgroundEvent = () => __awaiter(this, void 0, void 0, function* () {
             // store epoch in milliseconds
