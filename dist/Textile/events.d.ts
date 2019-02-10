@@ -14,10 +14,12 @@ export declare const keys: {
     migrationNeeded: string;
     setRecoveryPhrase: string;
     walletInitSuccess: string;
+    backgroundTask: string;
     error: string;
 };
 export declare function newError(message: string, type: string): void;
 export declare function nonInitializedError(): void;
+export declare function backgroundTask(): void;
 export declare function newNodeState(state: NodeState): void;
 export declare function createAndStartNode(): void;
 export declare function startNodeFinished(): void;

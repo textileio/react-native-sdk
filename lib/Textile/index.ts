@@ -64,6 +64,7 @@ class Textile extends API {
     // Clear on out too if detected to help speed up any startup time
     // Clear all our listeners
     this._nativeEvents.removeListener('onOnline', this.onOnlineCallback)
+    DeviceEventEmitter.removeListener('@textile/backgroundTask', this.backgroundTaskCallback)
     DeviceEventEmitter.removeListener('@textile/createAndStartNode', this.createAndStartNodeCallback)
     if (this._config.SELF_MANAGE_APP_STATE) {
       DeviceEventEmitter.removeListener('@textile/notifyAppStateChange', this.notifyAppStateChangeCallback)
@@ -117,6 +118,8 @@ class Textile extends API {
 
     // DeviceEventEmitter.addListener('@textile/createAndStartNode', this.createAndStartNodeCallback)
 
+    DeviceEventEmitter.addListener('@textile/backgroundTask', this.backgroundTaskCallback)
+
     // Mark as initialized
     this._initialized = true
 
@@ -160,10 +163,9 @@ class Textile extends API {
     }
     await this._store.setLastBackgroundEvent()
     const currentState = this.getCurrentState()
-    // const currentState = yield select(TextileNodeSelectors.appState)
     // ensure we don't cause things in foreground
     if (currentState === 'background') {
-      await this.nextAppState(currentState)
+      TextileEvents.backgroundTask()
     }
   }
 
@@ -341,6 +343,10 @@ class Textile extends API {
   }
 
   /* ------ INTERNAL METHODS ----- */
+  private backgroundTaskCallback = async () => {
+    TextileEvents.appNextState('background')
+    await this.nextAppState('background')
+  }
   private onOnlineCallback = () => {
     this._store.setNodeOnline(true)
   }

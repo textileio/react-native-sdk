@@ -81,6 +81,7 @@ class Textile extends API_1.default {
             // Setup our within sdk listeners
             this._nativeEvents.addListener('onOnline', this.onOnlineCallback);
             // DeviceEventEmitter.addListener('@textile/createAndStartNode', this.createAndStartNodeCallback)
+            react_native_1.DeviceEventEmitter.addListener('@textile/backgroundTask', this.backgroundTaskCallback);
             // Mark as initialized
             this._initialized = true;
             try {
@@ -122,10 +123,9 @@ class Textile extends API_1.default {
             }
             yield this._store.setLastBackgroundEvent();
             const currentState = this.getCurrentState();
-            // const currentState = yield select(TextileNodeSelectors.appState)
             // ensure we don't cause things in foreground
             if (currentState === 'background') {
-                yield this.nextAppState(currentState);
+                TextileEvents.backgroundTask();
             }
         });
         // Simply create the node, useful only if you want to create in advance of starting
@@ -287,6 +287,10 @@ class Textile extends API_1.default {
             }
         });
         /* ------ INTERNAL METHODS ----- */
+        this.backgroundTaskCallback = () => __awaiter(this, void 0, void 0, function* () {
+            TextileEvents.appNextState('background');
+            yield this.nextAppState('background');
+        });
         this.onOnlineCallback = () => {
             this._store.setNodeOnline(true);
         };
@@ -420,6 +424,7 @@ class Textile extends API_1.default {
         // Clear on out too if detected to help speed up any startup time
         // Clear all our listeners
         this._nativeEvents.removeListener('onOnline', this.onOnlineCallback);
+        react_native_1.DeviceEventEmitter.removeListener('@textile/backgroundTask', this.backgroundTaskCallback);
         react_native_1.DeviceEventEmitter.removeListener('@textile/createAndStartNode', this.createAndStartNodeCallback);
         if (this._config.SELF_MANAGE_APP_STATE) {
             react_native_1.DeviceEventEmitter.removeListener('@textile/notifyAppStateChange', this.notifyAppStateChangeCallback);

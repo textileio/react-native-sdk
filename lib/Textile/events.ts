@@ -18,6 +18,7 @@ export const keys = {
   migrationNeeded: '@textile/migrationNeeded',
   setRecoveryPhrase: '@textile/setRecoveryPhrase',
   walletInitSuccess: '@textile/walletInitSuccess',
+  backgroundTask: '@textile/backgroundTask',
   error: '@textile/error'
 }
 
@@ -27,6 +28,9 @@ export function newError(message: string, type: string) {
 
 export function nonInitializedError() {
   newError('nonInitializedError', 'Error: Attempt to use a Textile method reserved for an initialized instance.')
+}
+export function backgroundTask () {
+  DeviceEventEmitter.emit(keys.backgroundTask)
 }
 
 export function newNodeState (state: NodeState) {

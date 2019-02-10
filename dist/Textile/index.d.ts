@@ -37,6 +37,7 @@ declare class Textile extends API {
     nodeState: () => Promise<NodeState>;
     getCafeSessions: () => Promise<ReadonlyArray<ICafeSession>>;
     getRefreshedCafeSessions: () => Promise<ReadonlyArray<ICafeSession>>;
+    private backgroundTaskCallback;
     private onOnlineCallback;
     private notifyAppStateChangeCallback;
     private createAndStartNodeCallback;
