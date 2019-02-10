@@ -125,7 +125,7 @@ class Textile extends API {
       await this.manageNode(defaultAppState, queriedAppState)
 
     } catch (error) {
-      await this.updateNodeStateError(error)
+      TextileEvents.newError(error.message, 'manageNode')
     } finally {
       // try to keep our app going...
       let missedAppState = this.getCurrentState()
@@ -240,9 +240,11 @@ class Textile extends API {
           TextileEvents.walletInitSuccess()
           await this.createAndStartNode()
         } else {
+          TextileEvents.newError(error.message, 'startNodeError')
           await this.updateNodeStateError(error)
         }
       } catch (error) {
+        TextileEvents.newError(error.message, 'startNodeError')
         await this.updateNodeStateError(error)
       }
     }
@@ -277,7 +279,7 @@ class Textile extends API {
       await this.registerCafe(discoveredCafes.secondary.url)
     } catch (error) {
       // When this happens, you should retry the discover and register...
-      TextileEvents.newError('cafeDiscoveryError', 'cafe discovery timed out, internet connection needed')
+      TextileEvents.newError('cafe discovery timed out, internet connection needed', 'cafeDiscoveryError')
     }
   }
 
@@ -395,7 +397,7 @@ class Textile extends API {
         await this.manageNode(previousState, newState)
       }
     } catch (error) {
-      await this.updateNodeStateError(error)
+      TextileEvents.newError(error.message, 'nextAppState')
     }
   }
 

@@ -88,7 +88,7 @@ class Textile extends API_1.default {
                 yield this.manageNode(defaultAppState, queriedAppState);
             }
             catch (error) {
-                yield this.updateNodeStateError(error);
+                TextileEvents.newError(error.message, 'manageNode');
             }
             finally {
                 // try to keep our app going...
@@ -194,10 +194,12 @@ class Textile extends API_1.default {
                         yield this.createAndStartNode();
                     }
                     else {
+                        TextileEvents.newError(error.message, 'startNodeError');
                         yield this.updateNodeStateError(error);
                     }
                 }
                 catch (error) {
+                    TextileEvents.newError(error.message, 'startNodeError');
                     yield this.updateNodeStateError(error);
                 }
             }
@@ -230,7 +232,7 @@ class Textile extends API_1.default {
             }
             catch (error) {
                 // When this happens, you should retry the discover and register...
-                TextileEvents.newError('cafeDiscoveryError', 'cafe discovery timed out, internet connection needed');
+                TextileEvents.newError('cafe discovery timed out, internet connection needed', 'cafeDiscoveryError');
             }
         });
         /* ----- STATE FREE PUBLIC SELECTORS ----- */
@@ -338,7 +340,7 @@ class Textile extends API_1.default {
                 }
             }
             catch (error) {
-                yield this.updateNodeStateError(error);
+                TextileEvents.newError(error.message, 'nextAppState');
             }
         });
         this.updateNodeState = (state) => __awaiter(this, void 0, void 0, function* () {
