@@ -18,7 +18,7 @@ describe('rn events', () => {
         expect(payload.previousState).toBe('background')
         expect(payload.newState).toBe('active')
       }
-      DeviceEventEmitter.addListener(TextileEvents.keys.appStateChange, callback)
+      DeviceEventEmitter.addListener(TextileEvents.publicEvents.appStateChange, callback)
       TextileEvents.appStateChange('background', 'active')
     })
   })
