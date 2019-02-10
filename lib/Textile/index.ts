@@ -11,7 +11,7 @@ import API from './API'
 import TextileStore from './store'
 import NativeEvents from '../NativeEvents'
 import TextileMigration from './migration'
-import * as TextileEvents from './events'
+import Events, * as TextileEvents from './events'
 import { createTimeout, delay } from './helpers'
 import BackgroundTimer from 'react-native-background-timer'
 import BackgroundFetch from 'react-native-background-fetch'
@@ -30,7 +30,7 @@ export function BackgroundTask () {
 }
 
 class Textile extends API {
-  // Temp instance of the app's redux store while I remove deps to it
+  events = new Events()
   migration = new TextileMigration()
   _debug = false
   _store = new TextileStore()

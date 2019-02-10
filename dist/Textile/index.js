@@ -24,7 +24,7 @@ const API_1 = __importDefault(require("./API"));
 const store_1 = __importDefault(require("./store"));
 const NativeEvents_1 = __importDefault(require("../NativeEvents"));
 const migration_1 = __importDefault(require("./migration"));
-const TextileEvents = __importStar(require("./events"));
+const events_1 = __importStar(require("./events")), TextileEvents = events_1;
 const helpers_1 = require("./helpers");
 const react_native_background_timer_1 = __importDefault(require("react-native-background-timer"));
 const react_native_background_fetch_1 = __importDefault(require("react-native-background-fetch"));
@@ -40,7 +40,7 @@ exports.BackgroundTask = BackgroundTask;
 class Textile extends API_1.default {
     constructor(options) {
         super();
-        // Temp instance of the app's redux store while I remove deps to it
+        this.events = new events_1.default();
         this.migration = new migration_1.default();
         this._debug = false;
         this._store = new store_1.default();

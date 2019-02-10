@@ -3,10 +3,12 @@ import { TextileAppStateStatus, TextileOptions, NodeState, TextileConfig } from 
 import API from './API';
 import TextileStore from './store';
 import TextileMigration from './migration';
+import Events from './events';
 import { ICafeSession } from '@textile/react-native-protobufs';
 export declare const VERSION: any;
 export declare function BackgroundTask(): void;
 declare class Textile extends API {
+    events: Events;
     migration: TextileMigration;
     _debug: boolean;
     _store: TextileStore;
