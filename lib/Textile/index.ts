@@ -344,7 +344,6 @@ class Textile extends API {
   }
 
   private onOnlineCallback = () => {
-    TextileEvents.nodeOnline(true)
     this._store.setNodeOnline(true)
   }
   private notifyAppStateChangeCallback = (payload: {nextState: AppStateStatus}) => {
@@ -418,7 +417,6 @@ class Textile extends API {
     await this.updateNodeState(NodeState.stopping)
     await this.stop()
     await this._store.setNodeOnline(false)
-    TextileEvents.nodeOnline(false)
     await this.updateNodeState(NodeState.stopped)
   }
 

@@ -302,7 +302,6 @@ class Textile extends API_1.default {
             }
         });
         this.onOnlineCallback = () => {
-            TextileEvents.nodeOnline(true);
             this._store.setNodeOnline(true);
         };
         this.notifyAppStateChangeCallback = (payload) => {
@@ -371,7 +370,6 @@ class Textile extends API_1.default {
             yield this.updateNodeState(Models_1.NodeState.stopping);
             yield this.stop();
             yield this._store.setNodeOnline(false);
-            TextileEvents.nodeOnline(false);
             yield this.updateNodeState(Models_1.NodeState.stopped);
         });
         this.backgroundTaskRace = () => __awaiter(this, void 0, void 0, function* () {

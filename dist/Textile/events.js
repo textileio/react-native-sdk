@@ -1,6 +1,10 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const react_native_1 = require("react-native");
+const NativeEvents_1 = __importDefault(require("../NativeEvents"));
 exports.publicEvents = {
     newNodeState: '@textile/shared/newNodeState',
     createAndStartNode: '@textile/shared/createAndStartNode',
@@ -17,9 +21,26 @@ exports.publicEvents = {
     setRecoveryPhrase: '@textile/shared/setRecoveryPhrase',
     walletInitSuccess: '@textile/shared/walletInitSuccess',
     backgroundTask: '@textile/shared/backgroundTask',
-    nodeOnline: '@textile/shared/nodeOnline',
-    error: '@textile/shared/error'
+    error: '@textile/shared/error',
+    // NATIVE EVENTS
+    newLocalPhoto: 'newLocalPhoto',
+    onThreadUpdate: 'onThreadUpdate',
+    onThreadAdded: 'onThreadAdded',
+    onThreadRemoved: 'onThreadRemoved',
+    onNotification: 'onNotification',
+    onAccountPeerAdded: 'onAccountPeerAdded',
+    onAccountPeerRemoved: 'onAccountPeerRemoved'
 };
+const nativeEvents = [
+    'newLocalPhoto',
+    'newLocalPhoto',
+    'onThreadUpdate',
+    'onThreadAdded',
+    'onThreadRemoved',
+    'onNotification',
+    'onAccountPeerAdded',
+    'onAccountPeerRemoved'
+];
 // Keys used only inside the SDK, not to be modified by the client
 exports.privateEvents = {
     backgroundTask: '@textile/internal/backgroundTask',
@@ -93,32 +114,40 @@ function appNextState(nextState) {
     react_native_1.DeviceEventEmitter.emit(exports.publicEvents.appNextState, { nextState });
 }
 exports.appNextState = appNextState;
-function nodeOnline(online) {
-    react_native_1.DeviceEventEmitter.emit(exports.publicEvents.nodeOnline, { online });
-}
-exports.nodeOnline = nodeOnline;
 class Events {
     constructor() {
-        this.deviceEvents = [];
+        this.subscriptions = [];
         this.addListener = (type, listener, context) => {
             if (Object.keys(exports.publicEvents).indexOf(type) >= 0) {
-                const event = react_native_1.DeviceEventEmitter.addListener(exports.publicEvents[type], listener, context);
-                this.deviceEvents.push(event);
-                return event;
+                if (nativeEvents.indexOf(type) >= 0) {
+                    const event = NativeEvents_1.default.addListener(type, listener);
+                    this.subscriptions.push(event);
+                    return event;
+                }
+                else {
+                    const event = react_native_1.DeviceEventEmitter.addListener(exports.publicEvents[type], listener, context);
+                    this.subscriptions.push(event);
+                    return event;
+                }
             }
             throw new Error(`@textile/react-native-sdk: no event type: ${type}`);
         };
         this.removeListener = (type, listener) => {
             if (Object.keys(exports.publicEvents).indexOf(type) >= 0) {
-                react_native_1.DeviceEventEmitter.removeListener(exports.publicEvents[type], listener);
+                if (nativeEvents.indexOf(type) >= 0) {
+                    NativeEvents_1.default.removeListener(type, listener);
+                }
+                else {
+                    react_native_1.DeviceEventEmitter.removeListener(exports.publicEvents[type], listener);
+                }
             }
             throw new Error(`@textile/react-native-sdk: no event type: ${type}`);
         };
         this.removeAllListeners = () => {
-            for (const subscription of this.deviceEvents) {
+            for (const subscription of this.subscriptions) {
                 subscription.remove();
             }
-            this.deviceEvents = [];
+            this.subscriptions = [];
         };
     }
 }

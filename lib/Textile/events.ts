@@ -2,6 +2,7 @@ import {
   DeviceEventEmitter, EmitterSubscription
 } from 'react-native'
 import { NodeState, TextileAppStateStatus } from './Models'
+import NativeEvents from '../NativeEvents'
 
 // subscription keys that can be joined/left by client
 export type TextileEvents = 'newNodeState' |
@@ -20,7 +21,15 @@ export type TextileEvents = 'newNodeState' |
                             'walletInitSuccess' |
                             'backgroundTask' |
                             'nodeOnline' |
-                            'error'
+                            'error' |
+                            'newLocalPhoto' |
+                            'newLocalPhoto' |
+                            'onThreadUpdate' |
+                            'onThreadAdded' |
+                            'onThreadRemoved' |
+                            'onNotification' |
+                            'onAccountPeerAdded' |
+                            'onAccountPeerRemoved'
 
 export const publicEvents: {[key: string]: string} = {
   newNodeState: '@textile/shared/newNodeState',
@@ -38,9 +47,26 @@ export const publicEvents: {[key: string]: string} = {
   setRecoveryPhrase: '@textile/shared/setRecoveryPhrase',
   walletInitSuccess: '@textile/shared/walletInitSuccess',
   backgroundTask: '@textile/shared/backgroundTask',
-  nodeOnline: '@textile/shared/nodeOnline',
-  error: '@textile/shared/error'
+  error: '@textile/shared/error',
+  // NATIVE EVENTS
+  newLocalPhoto: 'newLocalPhoto',
+  onThreadUpdate: 'onThreadUpdate',
+  onThreadAdded: 'onThreadAdded',
+  onThreadRemoved: 'onThreadRemoved',
+  onNotification: 'onNotification',
+  onAccountPeerAdded: 'onAccountPeerAdded',
+  onAccountPeerRemoved: 'onAccountPeerRemoved'
 }
+
+const nativeEvents: TextileEvents[] = [
+  'newLocalPhoto',
+  'newLocalPhoto',
+  'onThreadUpdate',
+  'onThreadAdded',
+  'onThreadRemoved',
+  'onNotification',
+  'onAccountPeerAdded',
+  'onAccountPeerRemoved']
 
 // Keys used only inside the SDK, not to be modified by the client
 export const privateEvents: {[key: string]: string} = {
@@ -111,35 +137,41 @@ export function appNextState (nextState: string) {
   DeviceEventEmitter.emit(publicEvents.appNextState, {nextState})
 }
 
-export function nodeOnline (online: boolean) {
-  DeviceEventEmitter.emit(publicEvents.nodeOnline, {online})
-}
-
 class Events {
 
-  deviceEvents: EmitterSubscription[] = []
+  subscriptions: EmitterSubscription[] = []
 
   addListener = (type: TextileEvents, listener: (data: any) => void, context?: any): EmitterSubscription => {
     if (Object.keys(publicEvents).indexOf(type) >= 0) {
-      const event = DeviceEventEmitter.addListener(publicEvents[type as string], listener, context)
-      this.deviceEvents.push(event)
-      return event
+      if (nativeEvents.indexOf(type) >= 0) {
+        const event = NativeEvents.addListener(type, listener)
+        this.subscriptions.push(event)
+        return event
+      } else {
+        const event = DeviceEventEmitter.addListener(publicEvents[type as string], listener, context)
+        this.subscriptions.push(event)
+        return event
+      }
     }
     throw new Error(`@textile/react-native-sdk: no event type: ${type}`)
   }
 
   removeListener = (type: TextileEvents, listener: (data: any) => void) => {
     if (Object.keys(publicEvents).indexOf(type) >= 0) {
-      DeviceEventEmitter.removeListener(publicEvents[type as string], listener)
+      if (nativeEvents.indexOf(type) >= 0) {
+        NativeEvents.removeListener(type, listener)
+      } else {
+        DeviceEventEmitter.removeListener(publicEvents[type as string], listener)
+      }
     }
     throw new Error(`@textile/react-native-sdk: no event type: ${type}`)
   }
 
   removeAllListeners = () => {
-    for (const subscription of this.deviceEvents) {
+    for (const subscription of this.subscriptions) {
       subscription.remove()
     }
-    this.deviceEvents = []
+    this.subscriptions = []
   }
 }
 
