@@ -169,7 +169,7 @@ class Textile extends API {
 
   // Simply create the node, useful only if you want to create in advance of starting
   createNode = async () => {
-    const debug = !this._config.RELEASE_TYPE || this._config.RELEASE_TYPE !== 'production'
+    const debug = !this._config.RELEASE_TYPE || this._config.RELEASE_TYPE === 'development'
     await this.updateNodeState(NodeState.creating)
     const needsMigration = await this.migration.requiresFileMigration(this.repoPath)
     if (needsMigration) {
