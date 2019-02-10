@@ -76,20 +76,7 @@ class Textile extends API {
 
   // setup should only be run where the class will remain persistent so that
   // listeners will be wired in to one instance only,
-  setup = (config?: TextileConfig) => {
-    // if config provided, set it
-    if (config) {
-      this._config = config
-    }
-
-    this.initializeAppState().then(() => {
-      if (this._debug) {
-        console.info('@textile/react-native-sdk setup complete')
-      }
-    })
-  }
-
-  asyncSetup = async (config?: TextileConfig) => {
+  setup = async (config?: TextileConfig) => {
     // if config provided, set it
     if (config) {
       this._config = config

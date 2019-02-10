@@ -49,18 +49,7 @@ class Textile extends API_1.default {
         this.repoPath = `${react_native_fs_1.default.DocumentDirectoryPath}/textile-go`;
         // setup should only be run where the class will remain persistent so that
         // listeners will be wired in to one instance only,
-        this.setup = (config) => {
-            // if config provided, set it
-            if (config) {
-                this._config = config;
-            }
-            this.initializeAppState().then(() => {
-                if (this._debug) {
-                    console.info('@textile/react-native-sdk setup complete');
-                }
-            });
-        };
-        this.asyncSetup = (config) => __awaiter(this, void 0, void 0, function* () {
+        this.setup = (config) => __awaiter(this, void 0, void 0, function* () {
             // if config provided, set it
             if (config) {
                 this._config = config;
