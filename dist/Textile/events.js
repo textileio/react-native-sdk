@@ -55,7 +55,7 @@ function stopNodeAfterDelayComplete() {
 }
 exports.stopNodeAfterDelayComplete = stopNodeAfterDelayComplete;
 function appStateChange(previousState, newState) {
-    react_native_1.DeviceEventEmitter.emit(exports.keys.appStateChange, { previousState, newState });
+    react_native_1.DeviceEventEmitter.emit(exports.keys.appStateChange, { previousState: previousState, newState: newState });
 }
 exports.appStateChange = appStateChange;
 function updateProfile() {

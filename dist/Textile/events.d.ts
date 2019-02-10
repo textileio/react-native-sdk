@@ -1,4 +1,4 @@
-import { NodeState } from './Models';
+import { NodeState, TextileAppStateStatus } from './Models';
 export declare const keys: {
     newNodeState: string;
     createAndStartNode: string;
@@ -25,7 +25,7 @@ export declare function stopNodeAfterDelayStarting(): void;
 export declare function stopNodeAfterDelayCancelled(): void;
 export declare function stopNodeAfterDelayFinishing(): void;
 export declare function stopNodeAfterDelayComplete(): void;
-export declare function appStateChange(previousState: string, newState: string): void;
+export declare function appStateChange(previousState: TextileAppStateStatus, newState: TextileAppStateStatus): void;
 export declare function updateProfile(): void;
 export declare function walletInitSuccess(): void;
 export declare function setRecoveryPhrase(recoveryPhrase: string): void;

@@ -1,7 +1,7 @@
 import {
   DeviceEventEmitter
 } from 'react-native'
-import { NodeState } from './Models'
+import { NodeState, TextileAppStateStatus } from './Models'
 
 export const keys = {
   newNodeState: '@textile/newNodeState',
@@ -55,8 +55,8 @@ export function stopNodeAfterDelayFinishing () {
 export function stopNodeAfterDelayComplete () {
   DeviceEventEmitter.emit(keys.stopNodeAfterDelayComplete)
 }
-export function appStateChange (previousState: string, newState: string) {
-  DeviceEventEmitter.emit(keys.appStateChange, {previousState, newState})
+export function appStateChange (previousState: TextileAppStateStatus, newState: TextileAppStateStatus) {
+  DeviceEventEmitter.emit(keys.appStateChange, {previousState: previousState as string, newState: newState as string})
 }
 
 export function updateProfile () {

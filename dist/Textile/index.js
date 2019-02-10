@@ -216,7 +216,7 @@ class Textile extends API_1.default {
                 yield TextileEvents.appStateChange(previousState, newState);
             }
             if (newState === 'active' || newState === 'background') {
-                this.createAndStartNode();
+                yield this.createAndStartNode();
             }
             if (newState === 'background' || newState === 'backgroundFromForeground') {
                 yield this.backgroundTaskRace();

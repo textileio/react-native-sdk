@@ -263,7 +263,7 @@ class Textile extends API {
       await TextileEvents.appStateChange(previousState, newState)
     }
     if (newState === 'active' || newState === 'background') {
-      this.createAndStartNode()
+      await this.createAndStartNode()
     }
     if (newState === 'background' || newState === 'backgroundFromForeground') {
       await this.backgroundTaskRace()
