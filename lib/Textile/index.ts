@@ -115,7 +115,7 @@ class Textile extends API {
     // Setup our within sdk listeners
     this._nativeEvents.addListener('onOnline', this.onOnlineCallback)
 
-    DeviceEventEmitter.addListener('@textile/createAndStartNode', this.createAndStartNodeCallback)
+    // DeviceEventEmitter.addListener('@textile/createAndStartNode', this.createAndStartNodeCallback)
 
     // Mark as initialized
     this._initialized = true
@@ -188,7 +188,7 @@ class Textile extends API {
     */
     this.isInitializedCheck()
 
-    const debug = this._config.RELEASE_TYPE !== 'production'
+    const debug = !this._config.RELEASE_TYPE || this._config.RELEASE_TYPE !== 'production'
 
     const prevState = await this._store.getNodeState()
     // if the known state isn't stopped, nonexistent, or in error... don't try to create it
@@ -227,7 +227,7 @@ class Textile extends API {
           TextileEvents.migrationNeeded()
           await this.updateNodeState(NodeState.postMigration)
           // call the create/start sequence again
-          TextileEvents.createAndStartNode()
+          await this.createAndStartNode()
         } else if (error.message === INIT_NEEDED_ERROR) {
           await this.updateNodeState(NodeState.creatingWallet)
           const recoveryPhrase: string = await this.newWallet(12)
@@ -238,7 +238,7 @@ class Textile extends API {
           await this.initRepo(walletAccount.seed, this.repoPath, true, debug)
           await this.updateNodeState(NodeState.walletInitSuccess)
           TextileEvents.walletInitSuccess()
-          TextileEvents.createAndStartNode()
+          await this.createAndStartNode()
         } else {
           await this.updateNodeStateError(error)
         }
@@ -269,7 +269,7 @@ class Textile extends API {
   }
 
   discoverAndRegisterCafes = async () => {
-    this.initializeAppState()
+    this.isInitializedCheck()
     try {
       const cafes = await createTimeout(10000, this.discoverCafes())
       const discoveredCafes = cafes as DiscoveredCafes

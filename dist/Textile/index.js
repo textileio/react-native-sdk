@@ -80,7 +80,7 @@ class Textile extends API_1.default {
             }
             // Setup our within sdk listeners
             this._nativeEvents.addListener('onOnline', this.onOnlineCallback);
-            react_native_1.DeviceEventEmitter.addListener('@textile/createAndStartNode', this.createAndStartNodeCallback);
+            // DeviceEventEmitter.addListener('@textile/createAndStartNode', this.createAndStartNodeCallback)
             // Mark as initialized
             this._initialized = true;
             try {
@@ -130,7 +130,7 @@ class Textile extends API_1.default {
         });
         // Simply create the node, useful only if you want to create in advance of starting
         this.createNode = () => __awaiter(this, void 0, void 0, function* () {
-            const debug = !this._config.RELEASE_TYPE || this._config.RELEASE_TYPE !== 'production';
+            const debug = !this._config.RELEASE_TYPE || this._config.RELEASE_TYPE === 'development';
             yield this.updateNodeState(Models_1.NodeState.creating);
             const needsMigration = yield this.migration.requiresFileMigration(this.repoPath);
             if (needsMigration) {
@@ -146,7 +146,7 @@ class Textile extends API_1.default {
             while already running. Do we need the same check to ensure it doesn't happen here?
             */
             this.isInitializedCheck();
-            const debug = this._config.RELEASE_TYPE !== 'production';
+            const debug = !this._config.RELEASE_TYPE || this._config.RELEASE_TYPE !== 'production';
             const prevState = yield this._store.getNodeState();
             // if the known state isn't stopped, nonexistent, or in error... don't try to create it
             if (prevState && (prevState.state === Models_1.NodeState.starting ||
@@ -179,7 +179,7 @@ class Textile extends API_1.default {
                         TextileEvents.migrationNeeded();
                         yield this.updateNodeState(Models_1.NodeState.postMigration);
                         // call the create/start sequence again
-                        TextileEvents.createAndStartNode();
+                        yield this.createAndStartNode();
                     }
                     else if (error.message === INIT_NEEDED_ERROR) {
                         yield this.updateNodeState(Models_1.NodeState.creatingWallet);
@@ -191,7 +191,7 @@ class Textile extends API_1.default {
                         yield this.initRepo(walletAccount.seed, this.repoPath, true, debug);
                         yield this.updateNodeState(Models_1.NodeState.walletInitSuccess);
                         TextileEvents.walletInitSuccess();
-                        TextileEvents.createAndStartNode();
+                        yield this.createAndStartNode();
                     }
                     else {
                         yield this.updateNodeStateError(error);
@@ -221,7 +221,7 @@ class Textile extends API_1.default {
             }
         });
         this.discoverAndRegisterCafes = () => __awaiter(this, void 0, void 0, function* () {
-            this.initializeAppState();
+            this.isInitializedCheck();
             try {
                 const cafes = yield helpers_1.createTimeout(10000, this.discoverCafes());
                 const discoveredCafes = cafes;
