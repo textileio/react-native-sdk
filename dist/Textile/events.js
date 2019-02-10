@@ -23,6 +23,7 @@ exports.publicEvents = {
     backgroundTask: '@textile/shared/backgroundTask',
     error: '@textile/shared/error',
     // NATIVE EVENTS
+    onOnline: 'onOnline',
     newLocalPhoto: 'newLocalPhoto',
     onThreadUpdate: 'onThreadUpdate',
     onThreadAdded: 'onThreadAdded',

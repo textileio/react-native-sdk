@@ -22,6 +22,7 @@ export type TextileEvents = 'newNodeState' |
                             'backgroundTask' |
                             'nodeOnline' |
                             'error' |
+                            'onOnline' |
                             'newLocalPhoto' |
                             'newLocalPhoto' |
                             'onThreadUpdate' |
@@ -49,6 +50,7 @@ export const publicEvents: {[key: string]: string} = {
   backgroundTask: '@textile/shared/backgroundTask',
   error: '@textile/shared/error',
   // NATIVE EVENTS
+  onOnline: 'onOnline',
   newLocalPhoto: 'newLocalPhoto',
   onThreadUpdate: 'onThreadUpdate',
   onThreadAdded: 'onThreadAdded',

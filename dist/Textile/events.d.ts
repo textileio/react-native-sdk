@@ -1,6 +1,6 @@
 import { EmitterSubscription } from 'react-native';
 import { NodeState, TextileAppStateStatus } from './Models';
-export declare type TextileEvents = 'newNodeState' | 'createAndStartNode' | 'startNodeFinished' | 'stopNodeAfterDelayStarting' | 'stopNodeAfterDelayCancelled' | 'stopNodeAfterDelayFinishing' | 'stopNodeAfterDelayComplete' | 'appStateChange' | 'updateProfile' | 'newErrorMessage' | 'appNextState' | 'migrationNeeded' | 'setRecoveryPhrase' | 'walletInitSuccess' | 'backgroundTask' | 'nodeOnline' | 'error' | 'newLocalPhoto' | 'newLocalPhoto' | 'onThreadUpdate' | 'onThreadAdded' | 'onThreadRemoved' | 'onNotification' | 'onAccountPeerAdded' | 'onAccountPeerRemoved';
+export declare type TextileEvents = 'newNodeState' | 'createAndStartNode' | 'startNodeFinished' | 'stopNodeAfterDelayStarting' | 'stopNodeAfterDelayCancelled' | 'stopNodeAfterDelayFinishing' | 'stopNodeAfterDelayComplete' | 'appStateChange' | 'updateProfile' | 'newErrorMessage' | 'appNextState' | 'migrationNeeded' | 'setRecoveryPhrase' | 'walletInitSuccess' | 'backgroundTask' | 'nodeOnline' | 'error' | 'onOnline' | 'newLocalPhoto' | 'newLocalPhoto' | 'onThreadUpdate' | 'onThreadAdded' | 'onThreadRemoved' | 'onNotification' | 'onAccountPeerAdded' | 'onAccountPeerRemoved';
 export declare const publicEvents: {
     [key: string]: string;
 };
