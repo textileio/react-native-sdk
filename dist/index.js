@@ -20,6 +20,6 @@ const API = __importStar(require("./Textile/API"));
 exports.API = API;
 const Textile_1 = __importStar(require("./Textile"));
 exports.Textile = Textile_1.default;
-exports.newBackgroundTask = Textile_1.newBackgroundTask;
+exports.BackgroundTask = Textile_1.BackgroundTask;
 __export(require("./Textile/Models"));
 exports.default = new Textile_1.default({});

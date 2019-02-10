@@ -33,10 +33,10 @@ const packageFile = require('./../../package.json');
 exports.VERSION = packageFile.version;
 const MIGRATION_NEEDED_ERROR = 'repo needs migration';
 const INIT_NEEDED_ERROR = 'repo does not exist, initialization is required';
-function newBackgroundTask() {
+function BackgroundTask() {
     TextileEvents.backgroundTask();
 }
-exports.newBackgroundTask = newBackgroundTask;
+exports.BackgroundTask = BackgroundTask;
 class Textile extends API_1.default {
     constructor(options) {
         super();

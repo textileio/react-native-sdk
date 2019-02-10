@@ -3,9 +3,9 @@ export { default as CameraRoll } from './CameraRoll'
 export { default as Protobufs } from '@textile/react-native-protobufs'
 
 import * as API from './Textile/API'
-import Textile, {newBackgroundTask} from './Textile'
+import Textile, {BackgroundTask} from './Textile'
 
-export { Textile, API, newBackgroundTask }
+export { Textile, API, BackgroundTask }
 
 export * from './Textile/Models'
 

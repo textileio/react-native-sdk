@@ -5,7 +5,7 @@ import TextileStore from './store';
 import TextileMigration from './migration';
 import { ICafeSession } from '@textile/react-native-protobufs';
 export declare const VERSION: any;
-export declare function newBackgroundTask(): void;
+export declare function BackgroundTask(): void;
 interface TextileEventListeners {
     appState?: string;
 }

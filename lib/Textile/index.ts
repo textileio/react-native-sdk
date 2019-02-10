@@ -25,7 +25,7 @@ export const VERSION = packageFile.version
 const MIGRATION_NEEDED_ERROR = 'repo needs migration'
 const INIT_NEEDED_ERROR = 'repo does not exist, initialization is required'
 
-export function newBackgroundTask () {
+export function BackgroundTask () {
   TextileEvents.backgroundTask()
 }
 
