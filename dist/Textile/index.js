@@ -33,6 +33,10 @@ const packageFile = require('./../../package.json');
 exports.VERSION = packageFile.version;
 const MIGRATION_NEEDED_ERROR = 'repo needs migration';
 const INIT_NEEDED_ERROR = 'repo does not exist, initialization is required';
+function newBackgroundTask() {
+    TextileEvents.backgroundTask();
+}
+exports.newBackgroundTask = newBackgroundTask;
 class Textile extends API_1.default {
     constructor(options) {
         super();
@@ -114,18 +118,6 @@ class Textile extends API_1.default {
                     TextileEvents.appNextState(currentAppState);
                     this.nextAppState(currentAppState);
                 }
-            }
-        });
-        this.startBackgroundTask = () => __awaiter(this, void 0, void 0, function* () {
-            const shouldRun = yield this.shouldRunBackgroundTask();
-            if (!shouldRun) {
-                return;
-            }
-            yield this._store.setLastBackgroundEvent();
-            const currentState = this.getCurrentState();
-            // ensure we don't cause things in foreground
-            if (currentState === 'background') {
-                TextileEvents.backgroundTask();
             }
         });
         // Simply create the node, useful only if you want to create in advance of starting
@@ -288,8 +280,17 @@ class Textile extends API_1.default {
         });
         /* ------ INTERNAL METHODS ----- */
         this.backgroundTaskCallback = () => __awaiter(this, void 0, void 0, function* () {
-            TextileEvents.appNextState('background');
-            yield this.nextAppState('background');
+            const shouldRun = yield this.shouldRunBackgroundTask();
+            if (!shouldRun) {
+                return;
+            }
+            yield this._store.setLastBackgroundEvent();
+            const currentState = this.getCurrentState();
+            // ensure we don't cause things in foreground
+            if (currentState === 'background') {
+                TextileEvents.appNextState('background');
+                yield this.nextAppState('background');
+            }
         });
         this.onOnlineCallback = () => {
             this._store.setNodeOnline(true);
@@ -411,13 +412,6 @@ class Textile extends API_1.default {
         if (this._debug) {
             console.info('Initializing @textile/react-native-sdk v. ' + exports.VERSION);
         }
-    }
-    /* ---- Functions to wire into app ------ */
-    backgroundFetch() {
-        this.startBackgroundTask();
-    }
-    locationUpdate() {
-        this.startBackgroundTask();
     }
     // De-register the listeners
     tearDown() {

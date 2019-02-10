@@ -25,6 +25,10 @@ export const VERSION = packageFile.version
 const MIGRATION_NEEDED_ERROR = 'repo needs migration'
 const INIT_NEEDED_ERROR = 'repo does not exist, initialization is required'
 
+export function newBackgroundTask () {
+  TextileEvents.backgroundTask()
+}
+
 interface TextileEventListeners {
   appState?: string
 }
@@ -49,14 +53,6 @@ class Textile extends API {
     if (this._debug) {
       console.info('Initializing @textile/react-native-sdk v. ' + VERSION)
     }
-  }
-
-  /* ---- Functions to wire into app ------ */
-  backgroundFetch () {
-    this.startBackgroundTask()
-  }
-  locationUpdate () {
-    this.startBackgroundTask()
   }
 
   // De-register the listeners
@@ -153,19 +149,6 @@ class Textile extends API {
         TextileEvents.appNextState(currentAppState)
         this.nextAppState(currentAppState)
       }
-    }
-  }
-
-  startBackgroundTask = async () => {
-    const shouldRun = await this.shouldRunBackgroundTask()
-    if (!shouldRun) {
-      return
-    }
-    await this._store.setLastBackgroundEvent()
-    const currentState = this.getCurrentState()
-    // ensure we don't cause things in foreground
-    if (currentState === 'background') {
-      TextileEvents.backgroundTask()
     }
   }
 
@@ -344,9 +327,19 @@ class Textile extends API {
 
   /* ------ INTERNAL METHODS ----- */
   private backgroundTaskCallback = async () => {
-    TextileEvents.appNextState('background')
-    await this.nextAppState('background')
+    const shouldRun = await this.shouldRunBackgroundTask()
+    if (!shouldRun) {
+      return
+    }
+    await this._store.setLastBackgroundEvent()
+    const currentState = this.getCurrentState()
+    // ensure we don't cause things in foreground
+    if (currentState === 'background') {
+      TextileEvents.appNextState('background')
+      await this.nextAppState('background')
+    }
   }
+
   private onOnlineCallback = () => {
     this._store.setNodeOnline(true)
   }

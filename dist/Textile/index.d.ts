@@ -5,6 +5,7 @@ import TextileStore from './store';
 import TextileMigration from './migration';
 import { ICafeSession } from '@textile/react-native-protobufs';
 export declare const VERSION: any;
+export declare function newBackgroundTask(): void;
 interface TextileEventListeners {
     appState?: string;
 }
@@ -18,14 +19,11 @@ declare class Textile extends API {
     _initialized: boolean;
     repoPath: string;
     constructor(options: TextileOptions);
-    backgroundFetch(): void;
-    locationUpdate(): void;
     tearDown(): void;
     setup: (config?: TextileConfig | undefined) => Promise<void>;
     isInitializedCheck: () => void;
     getCurrentState: () => AppStateStatus;
     initializeAppState: () => Promise<void>;
-    startBackgroundTask: () => Promise<void>;
     createNode: () => Promise<void>;
     createAndStartNode: () => Promise<void>;
     shutDown: () => Promise<void>;
