@@ -1,5 +1,20 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+var NodeState;
+(function (NodeState) {
+    NodeState["nonexistent"] = "nonexistent";
+    NodeState["creating"] = "creating";
+    NodeState["created"] = "created";
+    NodeState["starting"] = "starting";
+    NodeState["started"] = "started";
+    NodeState["stopping"] = "stopping";
+    NodeState["stopped"] = "stopped";
+    NodeState["creatingWallet"] = "creatingWallet";
+    NodeState["derivingAccount"] = "derivingAccount";
+    NodeState["initializingRepo"] = "initializingRepo";
+    NodeState["walletInitSuccess"] = "walletInitSuccess";
+    NodeState["postMigration"] = "postMigration";
+})(NodeState = exports.NodeState || (exports.NodeState = {}));
 var ThreadFeedItemType;
 (function (ThreadFeedItemType) {
     ThreadFeedItemType["join"] = "join";

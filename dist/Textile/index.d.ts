@@ -1,2 +1,51 @@
-export * from './Api';
-export * from './Models';
+import { AppStateStatus } from 'react-native';
+import { TextileAppStateStatus, TextileOptions, NodeState, TextileConfig } from './Models';
+import API from './API';
+import TextileStore from './store';
+import TextileMigration from './migration';
+import { ICafeSession } from '@textile/react-native-protobufs';
+export declare const VERSION: any;
+export declare function BackgroundTask(): void;
+interface TextileEventListeners {
+    appState?: string;
+}
+declare class Textile extends API {
+    migration: TextileMigration;
+    _debug: boolean;
+    _store: TextileStore;
+    _nativeEvents: import("react-native").EventEmitter;
+    _config: TextileConfig;
+    _listeners: TextileEventListeners;
+    _initialized: boolean;
+    repoPath: string;
+    constructor(options: TextileOptions);
+    tearDown(): void;
+    setup: (config?: TextileConfig | undefined) => Promise<void>;
+    isInitializedCheck: () => void;
+    getCurrentState: () => AppStateStatus;
+    initializeAppState: () => Promise<void>;
+    createNode: () => Promise<void>;
+    createAndStartNode: () => Promise<void>;
+    shutDown: () => Promise<void>;
+    manageNode: (previousState: TextileAppStateStatus, newState: TextileAppStateStatus) => Promise<void>;
+    discoverAndRegisterCafes: () => Promise<void>;
+    isInitialized: () => boolean;
+    appState: () => Promise<TextileAppStateStatus>;
+    nodeOnline: () => Promise<boolean>;
+    nodeState: () => Promise<NodeState>;
+    getCafeSessions: () => Promise<ReadonlyArray<ICafeSession>>;
+    getRefreshedCafeSessions: () => Promise<ReadonlyArray<ICafeSession>>;
+    private backgroundTaskCallback;
+    private onOnlineCallback;
+    private notifyAppStateChangeCallback;
+    private createAndStartNodeCallback;
+    private nextStateCallback;
+    private shouldRunBackgroundTask;
+    private discoverCafes;
+    private updateNodeStateError;
+    private nextAppState;
+    private updateNodeState;
+    private stopNode;
+    private backgroundTaskRace;
+}
+export default Textile;

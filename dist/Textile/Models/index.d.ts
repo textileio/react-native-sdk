@@ -1,3 +1,44 @@
+import { AppStateStatus } from 'react-native';
+export interface TextileConfig {
+    RELEASE_TYPE?: string;
+    TEXTILE_CAFE_GATEWAY_URL?: string;
+    TEXTILE_CAFE_OVERRIDE?: string;
+    SELF_MANAGE_APP_STATE?: boolean;
+}
+export declare enum NodeState {
+    'nonexistent' = "nonexistent",
+    'creating' = "creating",
+    'created' = "created",
+    'starting' = "starting",
+    'started' = "started",
+    'stopping' = "stopping",
+    'stopped' = "stopped",
+    'creatingWallet' = "creatingWallet",
+    'derivingAccount' = "derivingAccount",
+    'initializingRepo' = "initializingRepo",
+    'walletInitSuccess' = "walletInitSuccess",
+    'postMigration' = "postMigration"
+}
+export interface DiscoveredCafe {
+    readonly peer: string;
+    readonly address: string;
+    readonly api: string;
+    readonly protocol: string;
+    readonly node: string;
+    readonly url: string;
+}
+export interface DiscoveredCafes {
+    readonly primary: DiscoveredCafe;
+    readonly secondary: DiscoveredCafe;
+}
+export interface TextileOptions {
+    debug?: boolean;
+}
+export interface StoredNodeState {
+    state: NodeState;
+    error?: string;
+}
+export declare type TextileAppStateStatus = AppStateStatus | 'unknown' | 'backgroundFromForeground';
 export interface File {
     readonly mill: string;
     readonly checksum: string;
