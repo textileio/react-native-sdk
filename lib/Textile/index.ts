@@ -34,9 +34,7 @@ class Textile extends API {
   _debug = false
   _store = new TextileStore()
   _nativeEvents = Events
-  _config: TextileConfig = {
-    RELEASE_TYPE: 'development'
-  }
+  _config: TextileConfig = {}
   _listeners: TextileEventListeners = {
   }
   _initialized = false
@@ -171,7 +169,7 @@ class Textile extends API {
 
   // Simply create the node, useful only if you want to create in advance of starting
   createNode = async () => {
-    const debug = this._config.RELEASE_TYPE !== 'production'
+    const debug = !this._config.RELEASE_TYPE || this._config.RELEASE_TYPE !== 'production'
     await this.updateNodeState(NodeState.creating)
     const needsMigration = await this.migration.requiresFileMigration(this.repoPath)
     if (needsMigration) {

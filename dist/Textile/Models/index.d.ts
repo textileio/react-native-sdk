@@ -1,6 +1,6 @@
 import { AppStateStatus } from 'react-native';
 export interface TextileConfig {
-    RELEASE_TYPE: string;
+    RELEASE_TYPE?: string;
     TEXTILE_CAFE_GATEWAY_URL?: string;
     TEXTILE_CAFE_OVERRIDE?: string;
     SELF_MANAGE_APP_STATE?: boolean;

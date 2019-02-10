@@ -41,9 +41,7 @@ class Textile extends API_1.default {
         this._debug = false;
         this._store = new store_1.default();
         this._nativeEvents = Events_1.default;
-        this._config = {
-            RELEASE_TYPE: 'development'
-        };
+        this._config = {};
         this._listeners = {};
         this._initialized = false;
         this.repoPath = `${react_native_fs_1.default.DocumentDirectoryPath}/textile-go`;
@@ -132,7 +130,7 @@ class Textile extends API_1.default {
         });
         // Simply create the node, useful only if you want to create in advance of starting
         this.createNode = () => __awaiter(this, void 0, void 0, function* () {
-            const debug = this._config.RELEASE_TYPE !== 'production';
+            const debug = !this._config.RELEASE_TYPE || this._config.RELEASE_TYPE !== 'production';
             yield this.updateNodeState(Models_1.NodeState.creating);
             const needsMigration = yield this.migration.requiresFileMigration(this.repoPath);
             if (needsMigration) {
