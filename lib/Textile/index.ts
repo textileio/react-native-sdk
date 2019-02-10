@@ -456,6 +456,7 @@ class Textile extends API {
           foregroundEvent.remove() // remove our event listener
           TextileEvents.stopNodeAfterDelayFinishing()
           await this.stopNode() // stop the node
+          TextileEvents.stopNodeAfterDelayComplete()
           cancelled = true // be sure to exit the loop
       }
     } finally {

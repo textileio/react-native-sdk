@@ -405,6 +405,7 @@ class Textile extends API_1.default {
                     foregroundEvent.remove(); // remove our event listener
                     TextileEvents.stopNodeAfterDelayFinishing();
                     yield this.stopNode(); // stop the node
+                    TextileEvents.stopNodeAfterDelayComplete();
                     cancelled = true; // be sure to exit the loop
                 }
             }
