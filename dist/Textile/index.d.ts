@@ -3,19 +3,17 @@ import { TextileAppStateStatus, TextileOptions, NodeState, TextileConfig } from 
 import API from './API';
 import TextileStore from './store';
 import TextileMigration from './migration';
+import Events from './events';
 import { ICafeSession } from '@textile/react-native-protobufs';
 export declare const VERSION: any;
 export declare function BackgroundTask(): void;
-interface TextileEventListeners {
-    appState?: string;
-}
 declare class Textile extends API {
+    events: Events;
     migration: TextileMigration;
     _debug: boolean;
     _store: TextileStore;
     _nativeEvents: import("react-native").EventEmitter;
     _config: TextileConfig;
-    _listeners: TextileEventListeners;
     _initialized: boolean;
     repoPath: string;
     constructor(options: TextileOptions);
@@ -23,11 +21,10 @@ declare class Textile extends API {
     setup: (config?: TextileConfig | undefined) => Promise<void>;
     isInitializedCheck: () => void;
     getCurrentState: () => AppStateStatus;
-    initializeAppState: () => Promise<void>;
     createNode: () => Promise<void>;
+    startNode: () => Promise<void>;
     createAndStartNode: () => Promise<void>;
     shutDown: () => Promise<void>;
-    manageNode: (previousState: TextileAppStateStatus, newState: TextileAppStateStatus) => Promise<void>;
     discoverAndRegisterCafes: () => Promise<void>;
     isInitialized: () => boolean;
     appState: () => Promise<TextileAppStateStatus>;
@@ -35,6 +32,10 @@ declare class Textile extends API {
     nodeState: () => Promise<NodeState>;
     getCafeSessions: () => Promise<ReadonlyArray<ICafeSession>>;
     getRefreshedCafeSessions: () => Promise<ReadonlyArray<ICafeSession>>;
+    private initWallet;
+    private runRepoMigration;
+    private manageNode;
+    private initializeAppState;
     private backgroundTaskCallback;
     private onOnlineCallback;
     private notifyAppStateChangeCallback;
