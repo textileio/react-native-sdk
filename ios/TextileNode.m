@@ -104,7 +104,7 @@ RCT_EXPORT_METHOD(addSchema:(NSString*)jsonstr resolver:(RCTPromiseResolveBlock)
 }
 
 RCT_EXPORT_METHOD(addThread:(NSString*)key name:(NSString*)name type:(NSString*)type sharing:(NSString*)sharing schema:(NSString*)schema media:(BOOL)media  cameraRoll:(BOOL)cameraRoll resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
-  MobileMobileThreadConfig *config = [[MobileMobileThreadConfig alloc] init];
+  MobileAddThreadConfig *config = [[MobileAddThreadConfig alloc] init];
   config.key = key;
   config.name = name;
   config.type = type;

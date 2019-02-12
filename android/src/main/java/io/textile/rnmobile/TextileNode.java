@@ -126,7 +126,7 @@ public class TextileNode extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void addThread(final String key, final String name, final String type, final String sharing, final String schema, final Boolean media, final Boolean cameraRoll, final Promise promise) {
+    public void addThread(final String key, final String name, final String type, final String sharing, final String members, final String schema, final Boolean media, final Boolean cameraRoll, final Promise promise) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
@@ -136,6 +136,7 @@ public class TextileNode extends ReactContextBaseJavaModule {
                     config.setName(name);
                     config.setType(type);
                     config.setSharing(sharing);
+                    config.setMembers(members);
                     config.setSchema(schema);
                     config.setMedia(media);
                     config.setCameraRoll(cameraRoll);
