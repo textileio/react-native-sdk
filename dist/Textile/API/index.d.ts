@@ -1,4 +1,4 @@
-import { File, ExternalInvite, ContactInfo, ContactInfoQueryResult, Overview, FileData, ThreadInfo, WalletAccount, BlockInfo, NotificationInfo, ThreadFilesInfo, ThreadFeedItem, ThreadMessageInfo, LogLevel } from '../Models';
+import { File, ExternalInvite, ContactInfo, ContactInfoQueryResult, Overview, FileData, ThreadInfo, WalletAccount, BlockInfo, NotificationInfo, ThreadFilesInfo, ThreadFeedItem, ThreadMessageInfo, ThreadSharing, ThreadType, LogLevel, SchemaType } from '../Models';
 import { IMobilePreparedFiles, ICafeSession, ICafeSessions, IDirectory } from '@textile/react-native-protobufs';
 declare class API {
     /**
@@ -9,7 +9,7 @@ declare class API {
     addContact: (contact: ContactInfo) => Promise<void>;
     addExternalThreadInvite: (threadId: string) => Promise<ExternalInvite>;
     addSchema: (jsonstr: string) => Promise<File>;
-    addThread: (key: string, name: string, shared: boolean) => Promise<ThreadInfo>;
+    addThread: (key: string, name: string, type: ThreadType, sharing: ThreadSharing, members: string[], schema_type: SchemaType, json_schema?: string | undefined) => Promise<ThreadInfo>;
     addThreadComment: (blockId: string, body: string) => Promise<string>;
     addThreadFiles: (dir: IDirectory, threadId: string, caption?: string | undefined) => Promise<BlockInfo>;
     addThreadFilesByTarget: (target: string, threadId: string, caption?: string | undefined) => Promise<BlockInfo>;
@@ -40,7 +40,7 @@ declare class API {
     readAllNotifications: () => Promise<void>;
     readNotification: (id_: string) => Promise<void>;
     refreshCafeSession: (peerId: string) => Promise<ICafeSession | undefined>;
-    registerCafe: (peerId: string) => Promise<void>;
+    registerCafe: (peerId: string, token: string) => Promise<void>;
     removeThread: (id_: string) => Promise<string>;
     seed: () => Promise<string>;
     setAvatar: (id_: string) => Promise<void>;

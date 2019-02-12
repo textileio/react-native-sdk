@@ -47,6 +47,12 @@ var NotificationType;
     NotificationType["CommentAddedNotification"] = "COMMENT_ADDED";
     NotificationType["LikeAddedNotification"] = "LIKE_ADDED";
 })(NotificationType = exports.NotificationType || (exports.NotificationType = {}));
+var SchemaType;
+(function (SchemaType) {
+    SchemaType["MEDIA"] = "MEDIA";
+    SchemaType["CAMERA_ROLL"] = "CAMERA_ROLL";
+    SchemaType["JSON"] = "JSON";
+})(SchemaType = exports.SchemaType || (exports.SchemaType = {}));
 var ThreadType;
 (function (ThreadType) {
     ThreadType["PRIVATE"] = "PRIVATE";

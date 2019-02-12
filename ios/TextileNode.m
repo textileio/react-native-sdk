@@ -103,9 +103,18 @@ RCT_EXPORT_METHOD(addSchema:(NSString*)jsonstr resolver:(RCTPromiseResolveBlock)
   [self fulfillWithResult:result error:error resolver:resolve rejecter:reject];
 }
 
-RCT_EXPORT_METHOD(addThread:(NSString*)key name:(NSString*)name shared:(BOOL)shared resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_EXPORT_METHOD(addThread:(NSString*)key name:(NSString*)name type:(NSString*)type sharing:(NSString*)sharing members:(NSString*)members schema:(NSString*)schema media:(BOOL)media  cameraRoll:(BOOL)cameraRoll resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+  MobileAddThreadConfig *config = [[MobileAddThreadConfig alloc] init];
+  config.key = key;
+  config.name = name;
+  config.type = type;
+  config.sharing = sharing;
+  config.members = members;
+  config.schema = schema;
+  config.media = media;
+  config.cameraRoll = cameraRoll;
   NSError *error;
-  NSString *result = [self.node addThread:key name:name shared:shared error:&error];
+  NSString *result = [self.node addThread:config error:&error];
   [self fulfillWithResult:result error:error resolver:resolve rejecter:reject];
 }
 
@@ -216,12 +225,6 @@ RCT_EXPORT_METHOD(deregisterCafe:(NSString*)peerId resolver:(RCTPromiseResolveBl
 RCT_EXPORT_METHOD(fileData:(NSString*)hash resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSError *error;
   NSString *result = [self _fileData:hash error:&error];
-  [self fulfillWithResult:result error:error resolver:resolve rejecter:reject];
-}
-
-RCT_EXPORT_METHOD(findContact:(NSString*)username limit:(NSInteger)limit wait:(NSInteger)wait resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
-  NSError *error;
-  NSString *result = [self.node findContact:username limit:limit wait:wait error:&error];
   [self fulfillWithResult:result error:error resolver:resolve rejecter:reject];
 }
 

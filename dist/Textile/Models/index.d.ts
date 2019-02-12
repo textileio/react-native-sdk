@@ -1,9 +1,12 @@
 import { AppStateStatus } from 'react-native';
 export interface TextileConfig {
     RELEASE_TYPE?: string;
-    TEXTILE_CAFE_GATEWAY_URL?: string;
-    TEXTILE_CAFE_OVERRIDE?: string;
     SELF_MANAGE_APP_STATE?: boolean;
+}
+export interface CafeConfig {
+    TEXTILE_CAFE_GATEWAY_URL: string;
+    TEXTILE_CAFE_TOKEN: string;
+    TEXTILE_CAFE_OVERRIDE?: string;
 }
 export declare enum NodeState {
     'nonexistent' = "nonexistent",
@@ -251,6 +254,11 @@ export interface Node {
     readonly links?: {
         readonly [key: string]: Link;
     };
+}
+export declare enum SchemaType {
+    MEDIA = "MEDIA",
+    CAMERA_ROLL = "CAMERA_ROLL",
+    JSON = "JSON"
 }
 export declare enum ThreadType {
     PRIVATE = "PRIVATE",
