@@ -13,7 +13,7 @@
   "scripts": {
     "build": "rm -rf dist/ && tsc",
     "lint": "rm -rf dist/ && tsc; tslint -c tslint.json --project .",
-    "test": "rm -rf dist/ && tsc; jest --no-watchman",
+    "test": "rm -rf dist/ && tsc; jest --no-watchman"
   },
   "keywords": [
     "react-native"
