@@ -1,7 +1,7 @@
 import { AppStateStatus } from 'react-native'
 
 export interface TextileConfig {
-  RELEASE_TYPE: string
+  RELEASE_TYPE?: string
   TEXTILE_CAFE_GATEWAY_URL?: string
   TEXTILE_CAFE_OVERRIDE?: string
   SELF_MANAGE_APP_STATE?: boolean
@@ -17,7 +17,9 @@ export enum NodeState {
   'stopped' = 'stopped', // Node has been explicitly stopped, different than created
   'creatingWallet' = 'creatingWallet',
   'derivingAccount' = 'derivingAccount',
-  'initializingRepo' = 'initializingRepo'
+  'initializingRepo' = 'initializingRepo',
+  'walletInitSuccess' = 'walletInitSuccess',
+  'postMigration' = 'postMigration'
 }
 
 export interface DiscoveredCafe {

@@ -16,6 +16,7 @@ exports.keys = {
     migrationNeeded: '@textile/migrationNeeded',
     setRecoveryPhrase: '@textile/setRecoveryPhrase',
     walletInitSuccess: '@textile/walletInitSuccess',
+    backgroundTask: '@textile/backgroundTask',
     error: '@textile/error'
 };
 function newError(message, type) {
@@ -26,6 +27,10 @@ function nonInitializedError() {
     newError('nonInitializedError', 'Error: Attempt to use a Textile method reserved for an initialized instance.');
 }
 exports.nonInitializedError = nonInitializedError;
+function backgroundTask() {
+    react_native_1.DeviceEventEmitter.emit(exports.keys.backgroundTask);
+}
+exports.backgroundTask = backgroundTask;
 function newNodeState(state) {
     react_native_1.DeviceEventEmitter.emit(exports.keys.newNodeState, { state });
 }
@@ -55,13 +60,9 @@ function stopNodeAfterDelayComplete() {
 }
 exports.stopNodeAfterDelayComplete = stopNodeAfterDelayComplete;
 function appStateChange(previousState, newState) {
-    react_native_1.DeviceEventEmitter.emit(exports.keys.appStateChange, { previousState, newState });
+    react_native_1.DeviceEventEmitter.emit(exports.keys.appStateChange, { previousState: previousState, newState: newState });
 }
 exports.appStateChange = appStateChange;
-function newErrorMessage(error) {
-    react_native_1.DeviceEventEmitter.emit(exports.keys.newErrorMessage, { error });
-}
-exports.newErrorMessage = newErrorMessage;
 function updateProfile() {
     react_native_1.DeviceEventEmitter.emit(exports.keys.updateProfile);
 }

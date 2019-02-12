@@ -1,6 +1,6 @@
 import { AppStateStatus } from 'react-native';
 export interface TextileConfig {
-    RELEASE_TYPE: string;
+    RELEASE_TYPE?: string;
     TEXTILE_CAFE_GATEWAY_URL?: string;
     TEXTILE_CAFE_OVERRIDE?: string;
     SELF_MANAGE_APP_STATE?: boolean;
@@ -15,7 +15,9 @@ export declare enum NodeState {
     'stopped' = "stopped",
     'creatingWallet' = "creatingWallet",
     'derivingAccount' = "derivingAccount",
-    'initializingRepo' = "initializingRepo"
+    'initializingRepo' = "initializingRepo",
+    'walletInitSuccess' = "walletInitSuccess",
+    'postMigration' = "postMigration"
 }
 export interface DiscoveredCafe {
     readonly peer: string;

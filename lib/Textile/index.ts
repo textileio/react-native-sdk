@@ -7,7 +7,7 @@ import {
   NodeState,
   TextileConfig
 } from './Models'
-import * as API from './API'
+import API from './API'
 import TextileStore from './store'
 import Events from '../Events'
 import TextileMigration from './migration'
@@ -17,7 +17,7 @@ import BackgroundTimer from 'react-native-background-timer'
 import BackgroundFetch from 'react-native-background-fetch'
 import RNFS from 'react-native-fs'
 
-import { ICafeSessions, ICafeSession } from '@textile/react-native-protobufs'
+import { ICafeSession } from '@textile/react-native-protobufs'
 
 const packageFile = require('./../../package.json')
 export const VERSION = packageFile.version
@@ -25,96 +25,67 @@ export const VERSION = packageFile.version
 const MIGRATION_NEEDED_ERROR = 'repo needs migration'
 const INIT_NEEDED_ERROR = 'repo does not exist, initialization is required'
 
-class Textile {
+export function BackgroundTask () {
+  TextileEvents.backgroundTask()
+}
+
+interface TextileEventListeners {
+  appState?: string
+}
+class Textile extends API {
   // Temp instance of the app's redux store while I remove deps to it
-  api: any
   migration = new TextileMigration()
   _debug = false
   _store = new TextileStore()
   _nativeEvents = Events
-  _config: TextileConfig = {
-    RELEASE_TYPE: 'development'
+  _config: TextileConfig = {}
+  _listeners: TextileEventListeners = {
   }
   _initialized = false
 
   repoPath = `${RNFS.DocumentDirectoryPath}/textile-go`
 
   constructor(options: TextileOptions) {
+    super()
     if (options.debug) {
       this._debug = true
     }
-    this.api = API
-    console.info('Initializing @textile/react-native-sdk v. ' + VERSION)
-  }
-
-  /* ---- Functions to wire into app ------ */
-  backgroundFetch () {
-    this.startBackgroundTask()
-  }
-  locationUpdate () {
-    this.startBackgroundTask()
+    if (this._debug) {
+      console.info('Initializing @textile/react-native-sdk v. ' + VERSION)
+    }
   }
 
   // De-register the listeners
   tearDown() {
     // Clear on out too if detected to help speed up any startup time
     // Clear all our listeners
-    this._nativeEvents.removeAllListeners()
-    // TODO: be sure to limit to only internal listeners (same above)
-    DeviceEventEmitter.removeAllListeners()
-    if (!this._config.SELF_MANAGE_APP_STATE) {
-      AppState.removeEventListener('change', (nextState: AppStateStatus) => {
-        TextileEvents.appNextState(nextState)
-        this.nextAppState(nextState)
-      })
+    this._nativeEvents.removeListener('onOnline', this.onOnlineCallback)
+    DeviceEventEmitter.removeListener('@textile/backgroundTask', this.backgroundTaskCallback)
+    DeviceEventEmitter.removeListener('@textile/createAndStartNode', this.createAndStartNodeCallback)
+    if (this._config.SELF_MANAGE_APP_STATE) {
+      DeviceEventEmitter.removeListener('@textile/notifyAppStateChange', this.notifyAppStateChangeCallback)
+    } else {
+      AppState.removeEventListener('change', this.nextStateCallback)
     }
   }
 
   // setup should only be run where the class will remain persistent so that
   // listeners will be wired in to one instance only,
-  setup(config?: TextileConfig) {
+  setup = async (config?: TextileConfig) => {
     // if config provided, set it
     if (config) {
       this._config = config
     }
-    // Clear storage to fresh state
-    this._store.clear()
-    // Clear state on setup
-    // Setup our within sdk listeners
-    this._nativeEvents.addListener('onOnline', () => {
-      this._store.setNodeOnline(true)
-    })
 
-    DeviceEventEmitter.addListener('@textile/createAndStartNode', (payload) => {
-      this.createAndStartNode()
-    })
-
-    if (!this._config.SELF_MANAGE_APP_STATE) {
-      // SDK automatically detects app state changes manages the node
-      AppState.addEventListener('change', (nextState: AppStateStatus) => {
-        TextileEvents.appNextState(nextState)
-        this.nextAppState(nextState)
-      })
-    } else {
-      // Alternatively, the developer can trigger changes manually via an notifyAppStateChange event
-      DeviceEventEmitter.addListener('@textile/notifyAppStateChange', (payload) => {
-        if (!payload || !payload.nextState) {
-          return
-        }
-        TextileEvents.appNextState(payload.nextState)
-        this.nextAppState(payload.nextState)
-      })
-    }
-
-    this.initializeAppState()
-
-    this._initialized = true
+    return this.initializeAppState()
   }
 
   isInitializedCheck = () => {
     if (!this._initialized) {
       TextileEvents.nonInitializedError()
-      throw new Error('Attempt to call a Textile instance method on an uninitialized instance')
+      if (this._debug) {
+        console.error('@textile/react-native-sdk: Attempt to call a Textile instance method on an uninitialized instance')
+      }
     }
   }
 
@@ -122,45 +93,74 @@ class Textile {
   //  All methods here should only be called as the result of a sequenced kicked off
   //  By an event and detected by the persistent instance that executed setup()
 
-  initializeAppState = async () => {
-    const defaultAppState = 'default' as TextileAppStateStatus
-    // if for some reason initialized will ever be called from a non-blank state (?), we need the below
-    // const storedState = await this._store.getAppState()
-    // let defaultAppState = 'default' as TextileAppStateStatus
-    // if (storedState) {
-    //   defaultAppState = JSON.parse(storedState) as TextileAppStateStatus
-    // }
-    // wait just a moment in case we beat native state
-    await delay(10)
+  getCurrentState = () => {
     const currentAppState = AppState.currentState
-    const queriedAppState = currentAppState || 'unknown'
-    await this.appStateChange(defaultAppState, queriedAppState)
+    return currentAppState || 'unknown'
   }
 
-  startBackgroundTask = async () => {
-    const shouldRun = await this.shouldRunBackgroundTask()
-    if (!shouldRun) {
-      return
+  initializeAppState = async () => {
+    // Clear storage to fresh state
+    await this._store.clear()
+
+    const defaultAppState = 'unknown' as TextileAppStateStatus
+
+    let queriedAppState = this.getCurrentState()
+    while (queriedAppState.match(/unknown/)) {
+      await delay(10)
+      queriedAppState = await this.getCurrentState()
     }
-    await this._store.setLastBackgroundEvent()
-    const currentState = await this.appState()
-    // const currentState = yield select(TextileNodeSelectors.appState)
-    // ensure we don't cause things in foreground
-    if (currentState === 'background' || currentState === 'backgroundFromForeground') {
-      await this.appStateChange(currentState, 'background')
+    // Setup our within sdk listeners
+    this._nativeEvents.addListener('onOnline', this.onOnlineCallback)
+
+    // DeviceEventEmitter.addListener('@textile/createAndStartNode', this.createAndStartNodeCallback)
+
+    DeviceEventEmitter.addListener('@textile/backgroundTask', this.backgroundTaskCallback)
+
+    // Mark as initialized
+    this._initialized = true
+
+    try {
+      // Begin first node startup cycle
+      await this.manageNode(defaultAppState, queriedAppState)
+
+    } catch (error) {
+      TextileEvents.newError(error.message, 'manageNode')
+    } finally {
+      // try to keep our app going...
+      let missedAppState = this.getCurrentState()
+      while (missedAppState.match(/unknown/)) {
+        await delay(10)
+        missedAppState = await this.getCurrentState()
+      }
+
+      // Create listeners for app state change to start/stop node
+      if (this._config.SELF_MANAGE_APP_STATE) {
+        // NOT DEFAULT, the developer can trigger changes manually via an notifyAppStateChange event
+        DeviceEventEmitter.addListener('@textile/notifyAppStateChange', this.notifyAppStateChangeCallback)
+      } else {
+        // DEFAULT: SDK automatically detects app state changes manages the node
+        AppState.addEventListener('change', this.nextStateCallback)
+      }
+
+      // There was a missed state change while we were in the startup sequence
+      if (missedAppState !== queriedAppState) {
+        const currentAppState = this.getCurrentState()
+        // we should be safe to fire a duplicate here anyway...
+        TextileEvents.appNextState(currentAppState)
+        this.nextAppState(currentAppState)
+      }
     }
   }
 
   // Simply create the node, useful only if you want to create in advance of starting
   createNode = async () => {
-    this.isInitializedCheck()
-    const debug = this._config.RELEASE_TYPE !== 'production'
+    const debug = !this._config.RELEASE_TYPE || this._config.RELEASE_TYPE === 'development'
     await this.updateNodeState(NodeState.creating)
     const needsMigration = await this.migration.requiresFileMigration(this.repoPath)
     if (needsMigration) {
       await this.migration.runFileMigration(this.repoPath)
     }
-    await this.api.newTextile(this.repoPath, debug)
+    await this.newTextile(this.repoPath, debug)
 
     await this.updateNodeState(NodeState.created)
   }
@@ -173,21 +173,30 @@ class Textile {
     */
     this.isInitializedCheck()
 
-    const debug = this._config.RELEASE_TYPE !== 'production'
+    const debug = !this._config.RELEASE_TYPE || this._config.RELEASE_TYPE !== 'production'
 
+    const prevState = await this._store.getNodeState()
+    // if the known state isn't stopped, nonexistent, or in error... don't try to create it
+    if (
+      prevState && (
+        prevState.state === NodeState.starting ||
+        prevState.state === NodeState.started
+      )) {
+      return
+    }
     try {
 
       await this.createNode()
 
       await this.updateNodeState(NodeState.starting)
 
-      await this.api.start()
+      await this.start()
 
-      const sessions: ICafeSessions = await this.api.cafeSessions()
+      const sessions = await this.cafeSessions()
       if (!sessions || !sessions.values || sessions.values.length < 1) {
         const cafeOverride = this._config.TEXTILE_CAFE_OVERRIDE
         if (cafeOverride) {
-          await this.api.registerCafe(cafeOverride as string)
+          await this.registerCafe(cafeOverride as string)
         } else if (this._config.TEXTILE_CAFE_GATEWAY_URL) {
           await this.discoverAndRegisterCafes()
         }
@@ -198,25 +207,29 @@ class Textile {
       try {
         if (error.message === MIGRATION_NEEDED_ERROR) {
           // instruct the node to export data to files
-          await this.api.migrateRepo(this.repoPath)
+          await this.migrateRepo(this.repoPath)
           // store the fact there is a pending migration in the preferences redux persisted state
           TextileEvents.migrationNeeded()
+          await this.updateNodeState(NodeState.postMigration)
           // call the create/start sequence again
-          TextileEvents.createAndStartNode()
+          await this.createAndStartNode()
         } else if (error.message === INIT_NEEDED_ERROR) {
           await this.updateNodeState(NodeState.creatingWallet)
-          const recoveryPhrase: string = await this.api.newWallet(12)
+          const recoveryPhrase: string = await this.newWallet(12)
           TextileEvents.setRecoveryPhrase(recoveryPhrase)
           await this.updateNodeState(NodeState.derivingAccount)
-          const walletAccount: WalletAccount = await this.api.walletAccountAt(recoveryPhrase, 0)
+          const walletAccount: WalletAccount = await this.walletAccountAt(recoveryPhrase, 0)
           await this.updateNodeState(NodeState.initializingRepo)
-          await this.api.initRepo(walletAccount.seed, this.repoPath, true, debug)
-          TextileEvents.createAndStartNode()
+          await this.initRepo(walletAccount.seed, this.repoPath, true, debug)
+          await this.updateNodeState(NodeState.walletInitSuccess)
           TextileEvents.walletInitSuccess()
+          await this.createAndStartNode()
         } else {
+          TextileEvents.newError(error.message, 'startNodeError')
           await this.updateNodeStateError(error)
         }
       } catch (error) {
+        TextileEvents.newError(error.message, 'startNodeError')
         await this.updateNodeStateError(error)
       }
     }
@@ -235,7 +248,7 @@ class Textile {
       await TextileEvents.appStateChange(previousState, newState)
     }
     if (newState === 'active' || newState === 'background') {
-      this.createAndStartNode()
+      await this.createAndStartNode()
     }
     if (newState === 'background' || newState === 'backgroundFromForeground') {
       await this.backgroundTaskRace()
@@ -243,15 +256,15 @@ class Textile {
   }
 
   discoverAndRegisterCafes = async () => {
-    this.initializeAppState()
+    this.isInitializedCheck()
     try {
       const cafes = await createTimeout(10000, this.discoverCafes())
       const discoveredCafes = cafes as DiscoveredCafes
-      await this.api.registerCafe(discoveredCafes.primary.url)
-      await this.api.registerCafe(discoveredCafes.secondary.url)
+      await this.registerCafe(discoveredCafes.primary.url)
+      await this.registerCafe(discoveredCafes.secondary.url)
     } catch (error) {
       // When this happens, you should retry the discover and register...
-      TextileEvents.newError('cafeDiscoveryError', 'cafe discovery timed out, internet connection needed')
+      TextileEvents.newError('cafe discovery timed out, internet connection needed', 'cafeDiscoveryError')
     }
   }
 
@@ -281,7 +294,7 @@ class Textile {
 
   // Client should use this once account is onboarded to register with Cafe
   getCafeSessions = async (): Promise<ReadonlyArray<ICafeSession>> => {
-    const sessions: Readonly<ICafeSessions> = await this.api.cafeSessions()
+    const sessions = await this.cafeSessions()
     if (!sessions) {
       return []
     }
@@ -295,7 +308,7 @@ class Textile {
 
   // Client should use this if cafe sessions are detected as expired
   getRefreshedCafeSessions = async (): Promise<ReadonlyArray<ICafeSession>> => {
-    const sessions: Readonly<ICafeSessions> = await this.api.cafeSessions()
+    const sessions = await this.cafeSessions()
     if (!sessions) {
       return []
     }
@@ -304,13 +317,46 @@ class Textile {
       return []
     } else {
       const refreshedValues: ReadonlyArray<ICafeSession> = await Promise.all(
-        values.map(async (session) => await this.api.refreshCafeSession(session.id!))
+        values
+          .map(async (session) => await this.refreshCafeSession(session.id!))
+          .filter((session) => session !== undefined) as ReadonlyArray<ICafeSession>
       )
       return refreshedValues
     }
   }
 
   /* ------ INTERNAL METHODS ----- */
+  private backgroundTaskCallback = async () => {
+    const shouldRun = await this.shouldRunBackgroundTask()
+    if (!shouldRun) {
+      return
+    }
+    await this._store.setLastBackgroundEvent()
+    const currentState = this.getCurrentState()
+    // ensure we don't cause things in foreground
+    if (currentState === 'background') {
+      TextileEvents.appNextState('background')
+      await this.nextAppState('background')
+    }
+  }
+
+  private onOnlineCallback = () => {
+    this._store.setNodeOnline(true)
+  }
+  private notifyAppStateChangeCallback = (payload: {nextState: AppStateStatus}) => {
+    if (!payload || !payload.nextState) {
+      return
+    }
+    TextileEvents.appNextState(payload.nextState)
+    this.nextAppState(payload.nextState)
+  }
+  private createAndStartNodeCallback = () => {
+    this.createAndStartNode()
+  }
+  private nextStateCallback = (nextState: AppStateStatus) => {
+    TextileEvents.appNextState(nextState)
+    this.nextAppState(nextState)
+  }
   private shouldRunBackgroundTask = async (): Promise<boolean> => {
     const MINIMUM_MINUTES_BETWEEN_TASKS = 10
     const now = Number((new Date()).getTime())
@@ -337,24 +383,28 @@ class Textile {
 
   private updateNodeStateError = async (error: Error) => {
     const storedState = await this._store.getNodeState()
-    const state = storedState ? storedState.state : NodeState.nonexistent
+    const state = storedState && storedState.state || NodeState.nonexistent
     await this._store.setNodeState({state, error: error.message})
   }
-  private nextAppState = async (nextState: TextileAppStateStatus) => {
-    this.isInitializedCheck()
-    const previousState = await this.appState()
-        // const currentState = this.store.getState().textileNode.appState
-    const newState: TextileAppStateStatus = nextState === 'background' && (previousState === 'active' || previousState === 'inactive') ? 'backgroundFromForeground' : nextState
-    if (newState !== previousState || newState === 'background') {
-      await this.appStateChange(previousState, newState)
+  private nextAppState = async (nextState: AppStateStatus) => {
+    try {
+      const previousState = await this.appState()
+      const newState: TextileAppStateStatus = nextState === 'background' && (
+          previousState === 'active' || previousState === 'inactive'
+      ) ? 'backgroundFromForeground' : nextState
+      if (newState !== previousState || newState === 'background') {
+        await this.manageNode(previousState, newState)
+      }
+    } catch (error) {
+      TextileEvents.newError(error.message, 'nextAppState')
     }
   }
-  private appStateChange = async (previousState: TextileAppStateStatus, nextState: TextileAppStateStatus) => {
-    this.isInitializedCheck()
-    await this.manageNode(previousState, nextState)
-  }
+
   private updateNodeState = async (state: NodeState) => {
-    this.isInitializedCheck()
+    const pastState = await this._store.getNodeState()
+    if (pastState && !pastState.error && pastState.state === state) {
+      return
+    }
     await this._store.setNodeState({state})
     TextileEvents.newNodeState(state)
   }
@@ -362,7 +412,7 @@ class Textile {
   /* ----- PRIVATE - EVENT EMITTERS ----- */
   private stopNode = async () => {
     await this.updateNodeState(NodeState.stopping)
-    await this.api.stop()
+    await this.stop()
     await this._store.setNodeOnline(false)
     await this.updateNodeState(NodeState.stopped)
   }
@@ -373,41 +423,45 @@ class Textile {
     // Using the race effect, if we get a foreground event while we're waiting
     // to stop the node, cancel the stop and let it keep running
     await BackgroundTimer.start()
-    const ms = 20000
-    let cancelled = false
+    try {
+      const ms = 20000
+      let cancelled = false
 
-    const foregroundEvent = DeviceEventEmitter.addListener('@textile/appNextState', (payload) => {
-      if (payload.nextState === 'active' && !cancelled) {
-        TextileEvents.stopNodeAfterDelayCancelled()
-        cancelled = true
+      const foregroundEvent = DeviceEventEmitter.addListener('@textile/appNextState', (payload) => {
+        if (payload.nextState === 'active' && !cancelled) {
+          TextileEvents.stopNodeAfterDelayCancelled()
+          cancelled = true
+        }
+      })
+
+      cancelSequence:
+      while (!cancelled) {
+          TextileEvents.stopNodeAfterDelayStarting()
+          await this.checkCafeMessages() // do a quick check for new messages
+          await delay(ms / 2)
+          if (cancelled) { // cancelled by event, so abort sequence
+            foregroundEvent.remove() // remove our event listener
+            break cancelSequence
+          }
+          await this.checkCafeMessages()
+          await delay(ms / 2)
+          if (cancelled) { // cancelled by event, so abort sequence
+            foregroundEvent.remove() // remove our event listener
+            break cancelSequence
+          }
+          // enter stopping sequence
+          foregroundEvent.remove() // remove our event listener
+          TextileEvents.stopNodeAfterDelayFinishing()
+          await this.stopNode() // stop the node
+          cancelled = true // be sure to exit the loop
       }
-    })
-
-    cancelSequence:
-    while (!cancelled) {
-        TextileEvents.stopNodeAfterDelayStarting()
-        await this.api.checkCafeMessages() // do a quick check for new messages
-        await delay(ms / 2)
-        if (cancelled) { // cancelled by event, so abort sequence
-          foregroundEvent.remove() // remove our event listener
-          break cancelSequence
-        }
-        await this.api.checkCafeMessages()
-        await delay(ms / 2)
-        if (cancelled) { // cancelled by event, so abort sequence
-          foregroundEvent.remove() // remove our event listener
-          break cancelSequence
-        }
-        // enter stopping sequence
-        foregroundEvent.remove() // remove our event listener
-        TextileEvents.stopNodeAfterDelayFinishing()
-        await this.stopNode() // stop the node
-        cancelled = true // be sure to exit the loop
+    } finally {
+      // TODO: this might be better in a client provided callback
+      await BackgroundFetch.finish(BackgroundFetch.FETCH_RESULT_NEW_DATA)
+      // Tells iOS that we are done with our background task so it's okay to suspend us
+      await BackgroundTimer.stop()
     }
-    await BackgroundTimer.stop()
-    // TODO: this might be better in a client provided callback
-    await BackgroundFetch.finish(BackgroundFetch.FETCH_RESULT_NEW_DATA)
   }
 }
 
-export default new Textile({})
+export default Textile

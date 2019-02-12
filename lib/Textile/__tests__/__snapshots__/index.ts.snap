@@ -4,6 +4,18 @@ exports[`rn textile Textile lifecycle should run as expected creates node succes
 
 exports[`rn textile Textile lifecycle should run as expected shuts down successfully 1`] = `undefined`;
 
-exports[`rn textile Textile lifecycle should run as expected shuts down successfully 2`] = `true`;
+exports[`rn textile Textile lifecycle should run as expected shuts down successfully 2`] = `false`;
 
-exports[`rn textile state functions should error when not initialized starts successfully 1`] = `undefined`;
+exports[`rn textile state functions should error when not initialized starts successfully 1`] = `
+Promise {
+  "_40": 0,
+  "_55": Promise {
+    "_40": 0,
+    "_55": null,
+    "_65": 0,
+    "_72": null,
+  },
+  "_65": 3,
+  "_72": null,
+}
+`;

@@ -17,7 +17,7 @@ class TextileStore {
             peerId: '@textile/peerId',
             sdkVersion: '@textile/sdkVersion',
             nodeOnline: '@textile/nodeOnline',
-            nodeState: '@textile/nodeOnline',
+            nodeState: '@textile/nodeState',
             lastBackgroundEvent: '@textile/lastBackgroundEvent'
         };
         this.clear = () => __awaiter(this, void 0, void 0, function* () {

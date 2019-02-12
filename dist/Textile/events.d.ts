@@ -1,4 +1,4 @@
-import { NodeState } from './Models';
+import { NodeState, TextileAppStateStatus } from './Models';
 export declare const keys: {
     newNodeState: string;
     createAndStartNode: string;
@@ -14,10 +14,12 @@ export declare const keys: {
     migrationNeeded: string;
     setRecoveryPhrase: string;
     walletInitSuccess: string;
+    backgroundTask: string;
     error: string;
 };
 export declare function newError(message: string, type: string): void;
 export declare function nonInitializedError(): void;
+export declare function backgroundTask(): void;
 export declare function newNodeState(state: NodeState): void;
 export declare function createAndStartNode(): void;
 export declare function startNodeFinished(): void;
@@ -25,8 +27,7 @@ export declare function stopNodeAfterDelayStarting(): void;
 export declare function stopNodeAfterDelayCancelled(): void;
 export declare function stopNodeAfterDelayFinishing(): void;
 export declare function stopNodeAfterDelayComplete(): void;
-export declare function appStateChange(previousState: string, newState: string): void;
-export declare function newErrorMessage(error: string): void;
+export declare function appStateChange(previousState: TextileAppStateStatus, newState: TextileAppStateStatus): void;
 export declare function updateProfile(): void;
 export declare function walletInitSuccess(): void;
 export declare function setRecoveryPhrase(recoveryPhrase: string): void;

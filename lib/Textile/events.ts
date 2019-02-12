@@ -1,7 +1,7 @@
 import {
   DeviceEventEmitter
 } from 'react-native'
-import { NodeState } from './Models'
+import { NodeState, TextileAppStateStatus } from './Models'
 
 export const keys = {
   newNodeState: '@textile/newNodeState',
@@ -18,6 +18,7 @@ export const keys = {
   migrationNeeded: '@textile/migrationNeeded',
   setRecoveryPhrase: '@textile/setRecoveryPhrase',
   walletInitSuccess: '@textile/walletInitSuccess',
+  backgroundTask: '@textile/backgroundTask',
   error: '@textile/error'
 }
 
@@ -27,6 +28,9 @@ export function newError(message: string, type: string) {
 
 export function nonInitializedError() {
   newError('nonInitializedError', 'Error: Attempt to use a Textile method reserved for an initialized instance.')
+}
+export function backgroundTask () {
+  DeviceEventEmitter.emit(keys.backgroundTask)
 }
 
 export function newNodeState (state: NodeState) {
@@ -55,11 +59,8 @@ export function stopNodeAfterDelayFinishing () {
 export function stopNodeAfterDelayComplete () {
   DeviceEventEmitter.emit(keys.stopNodeAfterDelayComplete)
 }
-export function appStateChange (previousState: string, newState: string) {
-  DeviceEventEmitter.emit(keys.appStateChange, {previousState, newState})
-}
-export function newErrorMessage (error: string) {
-  DeviceEventEmitter.emit(keys.newErrorMessage, {error})
+export function appStateChange (previousState: TextileAppStateStatus, newState: TextileAppStateStatus) {
+  DeviceEventEmitter.emit(keys.appStateChange, {previousState: previousState as string, newState: newState as string})
 }
 
 export function updateProfile () {
