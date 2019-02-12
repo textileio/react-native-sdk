@@ -15,6 +15,8 @@ import {
   ThreadFilesInfo,
   ThreadFeedItem,
   ThreadMessageInfo,
+  ThreadSharing,
+  ThreadType,
   LogLevel
 } from '../Models'
 
@@ -60,8 +62,9 @@ class API {
     return JSON.parse(result) as File
   }
 
-  addThread = async (key: string, name: string, type: string, sharing: string, schema: string, media: boolean, cameraRoll: boolean): Promise<ThreadInfo> => {
-    const result = await TextileNode.addThread(key, name, type, sharing, schema, media, cameraRoll)
+  addThread = async (key: string, name: string, type: ThreadType, sharing: ThreadSharing, members: string[], schema: string, media: boolean, cameraRoll: boolean): Promise<ThreadInfo> => {
+    const stringMembers = members.join(',')
+    const result = await TextileNode.addThread(key, name, type, sharing, stringMembers, schema, media, cameraRoll)
     return JSON.parse(result) as ThreadInfo
   }
 

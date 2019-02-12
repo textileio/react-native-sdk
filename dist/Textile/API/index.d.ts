@@ -1,4 +1,4 @@
-import { File, ExternalInvite, ContactInfo, ContactInfoQueryResult, Overview, FileData, ThreadInfo, WalletAccount, BlockInfo, NotificationInfo, ThreadFilesInfo, ThreadFeedItem, ThreadMessageInfo, LogLevel } from '../Models';
+import { File, ExternalInvite, ContactInfo, ContactInfoQueryResult, Overview, FileData, ThreadInfo, WalletAccount, BlockInfo, NotificationInfo, ThreadFilesInfo, ThreadFeedItem, ThreadMessageInfo, ThreadSharing, ThreadType, LogLevel } from '../Models';
 import { IMobilePreparedFiles, ICafeSession, ICafeSessions, IDirectory } from '@textile/react-native-protobufs';
 declare class API {
     /**
@@ -9,7 +9,7 @@ declare class API {
     addContact: (contact: ContactInfo) => Promise<void>;
     addExternalThreadInvite: (threadId: string) => Promise<ExternalInvite>;
     addSchema: (jsonstr: string) => Promise<File>;
-    addThread: (key: string, name: string, type: string, sharing: string, schema: string, media: boolean, cameraRoll: boolean) => Promise<ThreadInfo>;
+    addThread: (key: string, name: string, type: ThreadType, sharing: ThreadSharing, members: string[], schema: string, media: boolean, cameraRoll: boolean) => Promise<ThreadInfo>;
     addThreadComment: (blockId: string, body: string) => Promise<string>;
     addThreadFiles: (dir: IDirectory, threadId: string, caption?: string | undefined) => Promise<BlockInfo>;
     addThreadFilesByTarget: (target: string, threadId: string, caption?: string | undefined) => Promise<BlockInfo>;

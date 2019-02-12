@@ -1,5 +1,6 @@
 import API from '../API'
 import { IDirectory } from '@textile/react-native-protobufs'
+import { ThreadType, ThreadSharing } from '../Models';
 
 const threadId = 'QmdNgTtH468cqZFzXCi4sVSWTbJMWQbhYb8cBVyikP9LzW'
 const threadKey = 'VsHHHz8bC8fu9k78RaX8ujQsUzGzaUxwKJyLFKKDacUZoWJaouGnzUQwgmh5'
@@ -31,7 +32,15 @@ describe('textile api', () => {
             expect(result).toHaveProperty('mill')
         })
         it('addThread', async () => {
-            const result = await api.addThread(threadKey, threadName, shared)
+            const result = await api.addThread(
+                threadKey,
+                threadName,
+                ThreadType.PRIVATE,
+                ThreadSharing.INVITE_ONLY,
+                [],
+                '',
+                true,
+                false)
             expect(typeof result).toEqual('object')
             expect(result).toHaveProperty('key')
             expect(result.key).toEqual(threadKey)
