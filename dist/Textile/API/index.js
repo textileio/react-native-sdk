@@ -10,6 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const react_native_1 = require("react-native");
 const buffer_1 = require("buffer");
+const Models_1 = require("../Models");
 const react_native_protobufs_1 = require("@textile/react-native-protobufs");
 const { TextileNode } = react_native_1.NativeModules;
 class API {
@@ -37,8 +38,20 @@ class API {
             const result = yield TextileNode.addSchema(jsonstr);
             return JSON.parse(result);
         });
-        this.addThread = (key, name, type, sharing, members, schema, media, cameraRoll) => __awaiter(this, void 0, void 0, function* () {
+        this.addThread = (key, name, type, sharing, members, schema_type, json_schema) => __awaiter(this, void 0, void 0, function* () {
             const stringMembers = members.join(',');
+            let media = false;
+            let cameraRoll = false;
+            let schema = '';
+            if (schema_type === Models_1.SchemaType.MEDIA) {
+                media = true;
+            }
+            else if (schema_type === Models_1.SchemaType.CAMERA_ROLL) {
+                cameraRoll = true;
+            }
+            else if (schema_type === Models_1.SchemaType.JSON && json_schema) {
+                schema = json_schema;
+            }
             const result = yield TextileNode.addThread(key, name, type, sharing, stringMembers, schema, media, cameraRoll);
             return JSON.parse(result);
         });

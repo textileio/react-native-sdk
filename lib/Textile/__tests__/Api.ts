@@ -1,6 +1,6 @@
 import API from '../API'
 import { IDirectory } from '@textile/react-native-protobufs'
-import { ThreadType, ThreadSharing } from '../Models';
+import { ThreadType, ThreadSharing, SchemaType } from '../Models'
 
 const threadId = 'QmdNgTtH468cqZFzXCi4sVSWTbJMWQbhYb8cBVyikP9LzW'
 const threadKey = 'VsHHHz8bC8fu9k78RaX8ujQsUzGzaUxwKJyLFKKDacUZoWJaouGnzUQwgmh5'
@@ -38,9 +38,7 @@ describe('textile api', () => {
                 ThreadType.PRIVATE,
                 ThreadSharing.INVITE_ONLY,
                 [],
-                '',
-                true,
-                false)
+                SchemaType.MEDIA)
             expect(typeof result).toEqual('object')
             expect(result).toHaveProperty('key')
             expect(result.key).toEqual(threadKey)

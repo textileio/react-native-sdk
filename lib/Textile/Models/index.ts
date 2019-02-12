@@ -276,6 +276,12 @@ export interface Node {
   readonly links?: { readonly [key: string]: Link }
 }
 
+export enum SchemaType {
+  MEDIA = 'MEDIA',
+  CAMERA_ROLL = 'CAMERA_ROLL',
+  JSON = 'JSON'
+}
+
 export enum ThreadType {
   PRIVATE = 'PRIVATE',
   READ_ONLY = 'READ_ONLY',
