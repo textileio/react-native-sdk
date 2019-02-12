@@ -12,9 +12,8 @@
   ],
   "scripts": {
     "build": "rm -rf dist/ && tsc",
-    "lint": "tslint -c tslint.json --project .",
-    "test": "jest --no-watchman",
-    "ios-example": "yarn; yarn build; yarn install --production; cd example; yarn upgrade @textile/react-native-sdk; yarn; react-native run-ios"
+    "lint": "rm -rf dist/ && tsc; tslint -c tslint.json --project .",
+    "test": "rm -rf dist/ && tsc; jest --no-watchman"
   },
   "keywords": [
     "react-native"
@@ -63,7 +62,7 @@
     "typescript": "^3.1.1"
   },
   "dependencies": {
-    "@textile/go-mobile": "1.0.0-rc31",
+    "@textile/go-mobile": "1.0.0-rc33",
     "@textile/react-native-protobufs": "1.1.0",
     "buffer": "^5.2.1",
     "prop-types": "^15.6.2"
