@@ -60,8 +60,8 @@ class API {
     return JSON.parse(result) as File
   }
 
-  addThread = async (key: string, name: string, shared: boolean): Promise<ThreadInfo> => {
-    const result = await TextileNode.addThread(key, name, shared)
+  addThread = async (key: string, name: string, type: string, sharing: string, schema: string, media: boolean, cameraRoll: boolean): Promise<ThreadInfo> => {
+    const result = await TextileNode.addThread(key, name, type, sharing, schema, media, cameraRoll)
     return JSON.parse(result) as ThreadInfo
   }
 

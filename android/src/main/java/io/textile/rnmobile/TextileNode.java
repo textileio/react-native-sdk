@@ -18,6 +18,7 @@ import java.util.concurrent.Executors;
 import mobile.Event;
 import mobile.Messenger;
 import mobile.Mobile;
+import mobile.MobileThreadConfig;
 import mobile.Mobile_;
 import mobile.InitConfig;
 import mobile.MigrateConfig;
@@ -125,12 +126,20 @@ public class TextileNode extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void addThread(final String key, final String name, final Boolean shared, final Promise promise) {
+    public void addThread(final String key, final String name, final String type, final String sharing, final String schema, final Boolean media, final Boolean cameraRoll, final Promise promise) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
                 try {
-                    promise.resolve(node.addThread(key, name, shared));
+                    MobileThreadConfig config = new MobileThreadConfig();
+                    config.setKey(key);
+                    config.setName(name);
+                    config.setType(type);
+                    config.setSharing(sharing);
+                    config.setSchema(schema);
+                    config.setMedia(media);
+                    config.setCameraRoll(cameraRoll);
+                    promise.resolve(node.addThread(config));
                 }
                 catch (Exception e) {
                     promise.reject("addThread", e);
@@ -419,21 +428,6 @@ public class TextileNode extends ReactContextBaseJavaModule {
                 }
                 catch (Exception e) {
                     promise.reject("fileData", e);
-                }
-            }
-        });
-    }
-
-    @ReactMethod
-    public void findContact(final String username, final Integer limit, final Integer wait, final Promise promise) {
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    promise.resolve(node.findContact(username, limit, wait));
-                }
-                catch (Exception e) {
-                    promise.reject("findContact", e);
                 }
             }
         });

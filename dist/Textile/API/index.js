@@ -37,8 +37,8 @@ class API {
             const result = yield TextileNode.addSchema(jsonstr);
             return JSON.parse(result);
         });
-        this.addThread = (key, name, shared) => __awaiter(this, void 0, void 0, function* () {
-            const result = yield TextileNode.addThread(key, name, shared);
+        this.addThread = (key, name, type, sharing, schema, media, cameraRoll) => __awaiter(this, void 0, void 0, function* () {
+            const result = yield TextileNode.addThread(key, name, type, sharing, schema, media, cameraRoll);
             return JSON.parse(result);
         });
         this.addThreadComment = (blockId, body) => __awaiter(this, void 0, void 0, function* () {

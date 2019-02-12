@@ -9,7 +9,7 @@ declare class API {
     addContact: (contact: ContactInfo) => Promise<void>;
     addExternalThreadInvite: (threadId: string) => Promise<ExternalInvite>;
     addSchema: (jsonstr: string) => Promise<File>;
-    addThread: (key: string, name: string, shared: boolean) => Promise<ThreadInfo>;
+    addThread: (key: string, name: string, type: string, sharing: string, schema: string, media: boolean, cameraRoll: boolean) => Promise<ThreadInfo>;
     addThreadComment: (blockId: string, body: string) => Promise<string>;
     addThreadFiles: (dir: IDirectory, threadId: string, caption?: string | undefined) => Promise<BlockInfo>;
     addThreadFilesByTarget: (target: string, threadId: string, caption?: string | undefined) => Promise<BlockInfo>;
