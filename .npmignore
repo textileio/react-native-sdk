@@ -1,6 +1,3 @@
-# not in npmignore
-dist/
-
 # Android
 
 *.keystore

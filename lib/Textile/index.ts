@@ -1,5 +1,6 @@
 import { AppState, AppStateStatus, DeviceEventEmitter } from 'react-native'
 import {
+  CafeConfig,
   DiscoveredCafes,
   TextileAppStateStatus,
   TextileOptions,
@@ -36,6 +37,7 @@ class Textile extends API {
   _store = new TextileStore()
   _nativeEvents = NativeEvents
   _config: TextileConfig = {}
+  _cafe?: CafeConfig
   _initialized = false
 
   repoPath = `${RNFS.DocumentDirectoryPath}/textile-go`
@@ -66,10 +68,13 @@ class Textile extends API {
 
   // setup should only be run where the class will remain persistent so that
   // listeners will be wired in to one instance only,
-  setup = async (config?: TextileConfig) => {
+  setup = async (config?: TextileConfig, cafe?: CafeConfig) => {
     // if config provided, set it
     if (config) {
       this._config = config
+    }
+    if (cafe) {
+      this._cafe = cafe
     }
 
     return this.initializeAppState()
@@ -111,13 +116,15 @@ class Textile extends API {
 
     await this.start()
 
-    const sessions = await this.cafeSessions()
-    if (!sessions || !sessions.values || sessions.values.length < 1) {
-      const cafeOverride = this._config.TEXTILE_CAFE_OVERRIDE
-      if (cafeOverride) {
-        await this.registerCafe(cafeOverride as string)
-      } else if (this._config.TEXTILE_CAFE_GATEWAY_URL) {
-        await this.discoverAndRegisterCafes()
+    if (this._cafe) {
+      const sessions = await this.cafeSessions()
+      if (!sessions || !sessions.values || sessions.values.length < 1) {
+        const cafeOverride = this._cafe.TEXTILE_CAFE_OVERRIDE
+        if (cafeOverride) {
+          await this.registerCafe(cafeOverride as string, this._cafe.TEXTILE_CAFE_TOKEN)
+        } else if (this._cafe.TEXTILE_CAFE_GATEWAY_URL) {
+          await this.discoverAndRegisterCafes()
+        }
       }
     }
     await this.updateNodeState(NodeState.started)
@@ -177,10 +184,14 @@ class Textile extends API {
   discoverAndRegisterCafes = async () => {
     this.isInitializedCheck()
     try {
-      const cafes = await createTimeout(10000, this.discoverCafes())
-      const discoveredCafes = cafes as DiscoveredCafes
-      await this.registerCafe(discoveredCafes.primary.url)
-      await this.registerCafe(discoveredCafes.secondary.url)
+      if (this._cafe) {
+        const cafes = await createTimeout(10000, this.discoverCafes())
+        const discoveredCafes = cafes as DiscoveredCafes
+        await this.registerCafe(discoveredCafes.primary.url, this._cafe.TEXTILE_CAFE_TOKEN || '')
+        await this.registerCafe(discoveredCafes.secondary.url, this._cafe.TEXTILE_CAFE_TOKEN || '')
+      } else {
+        TextileEvents.newError('no cafe config provided', 'cafeConfigError')
+      }
     } catch (error) {
       // When this happens, you should retry the discover and register...
       TextileEvents.newError('cafe discovery timed out, internet connection needed', 'cafeDiscoveryError')
@@ -372,16 +383,20 @@ class Textile extends API {
   }
 
   private discoverCafes = async () => {
-    if (!this._initialized) {
-      TextileEvents.nonInitializedError()
-      return
+    if (this._cafe) {
+      if (!this._initialized) {
+        TextileEvents.nonInitializedError()
+        return
+      }
+      const response = await fetch(`${this._cafe.TEXTILE_CAFE_GATEWAY_URL}/cafes`, { method: 'GET' })
+      if (response.status < 200 || response.status > 299) {
+        throw new Error(`Status code error: ${response.statusText}`)
+      }
+      const discoveredCafes = await response.json() as DiscoveredCafes
+      return discoveredCafes
+    } else {
+      TextileEvents.newError('no cafe config provided', 'cafeConfigError')
     }
-    const response = await fetch(`${this._config.TEXTILE_CAFE_GATEWAY_URL}/cafes`, { method: 'GET' })
-    if (response.status < 200 || response.status > 299) {
-      throw new Error(`Status code error: ${response.statusText}`)
-    }
-    const discoveredCafes = await response.json() as DiscoveredCafes
-    return discoveredCafes
   }
 
   private updateNodeStateError = async (error: Error) => {
