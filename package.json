@@ -14,7 +14,7 @@
     "build": "rm -rf dist/ && tsc",
     "lint": "tslint -c tslint.json --project .",
     "test": "jest --no-watchman",
-    "ios-example": "yarn; yarn build; yarn install --production; cd example; yarn upgrade @textile/react-native-sdk; yarn; react-native run-ios"
+    "tsc": "tsc -p . --noEmit"
   },
   "keywords": [
     "react-native"

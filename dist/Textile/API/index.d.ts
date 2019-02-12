@@ -40,7 +40,7 @@ declare class API {
     readAllNotifications: () => Promise<void>;
     readNotification: (id_: string) => Promise<void>;
     refreshCafeSession: (peerId: string) => Promise<ICafeSession | undefined>;
-    registerCafe(peerId: string, token: string): Promise<void>;
+    registerCafe: (peerId: string, token: string) => Promise<void>;
     removeThread: (id_: string) => Promise<string>;
     seed: () => Promise<string>;
     setAvatar: (id_: string) => Promise<void>;
