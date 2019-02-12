@@ -196,7 +196,7 @@ class Textile extends API {
       if (!sessions || !sessions.values || sessions.values.length < 1) {
         const cafeOverride = this._config.TEXTILE_CAFE_OVERRIDE
         if (cafeOverride) {
-          await this.registerCafe(cafeOverride as string)
+          await this.registerCafe(cafeOverride as string, this._config.TEXTILE_CAFE_TOKEN || '')
         } else if (this._config.TEXTILE_CAFE_GATEWAY_URL) {
           await this.discoverAndRegisterCafes()
         }
@@ -260,8 +260,8 @@ class Textile extends API {
     try {
       const cafes = await createTimeout(10000, this.discoverCafes())
       const discoveredCafes = cafes as DiscoveredCafes
-      await this.registerCafe(discoveredCafes.primary.url)
-      await this.registerCafe(discoveredCafes.secondary.url)
+      await this.registerCafe(discoveredCafes.primary.url, this._config.TEXTILE_CAFE_TOKEN || '')
+      await this.registerCafe(discoveredCafes.secondary.url, this._config.TEXTILE_CAFE_TOKEN || '')
     } catch (error) {
       // When this happens, you should retry the discover and register...
       TextileEvents.newError('cafe discovery timed out, internet connection needed', 'cafeDiscoveryError')
