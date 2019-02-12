@@ -6,6 +6,11 @@ export interface TextileConfig {
     TEXTILE_CAFE_TOKEN?: string;
     SELF_MANAGE_APP_STATE?: boolean;
 }
+export interface CafeConfig {
+    TEXTILE_CAFE_GATEWAY_URL: string;
+    TEXTILE_CAFE_TOKEN: string;
+    TEXTILE_CAFE_OVERRIDE?: string;
+}
 export declare enum NodeState {
     'nonexistent' = "nonexistent",
     'creating' = "creating",

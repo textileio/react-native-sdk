@@ -1,5 +1,5 @@
 import { AppStateStatus } from 'react-native';
-import { TextileAppStateStatus, TextileOptions, NodeState, TextileConfig } from './Models';
+import { CafeConfig, TextileAppStateStatus, TextileOptions, NodeState, TextileConfig } from './Models';
 import API from './API';
 import TextileStore from './store';
 import TextileMigration from './migration';
@@ -15,12 +15,13 @@ declare class Textile extends API {
     _store: TextileStore;
     _nativeEvents: import("react-native").EventEmitter;
     _config: TextileConfig;
+    _cafe?: CafeConfig;
     _listeners: TextileEventListeners;
     _initialized: boolean;
     repoPath: string;
     constructor(options: TextileOptions);
     tearDown(): void;
-    setup: (config?: TextileConfig | undefined) => Promise<void>;
+    setup: (config?: TextileConfig | undefined, cafe?: CafeConfig | undefined) => Promise<void>;
     isInitializedCheck: () => void;
     getCurrentState: () => AppStateStatus;
     initializeAppState: () => Promise<void>;
