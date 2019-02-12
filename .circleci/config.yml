@@ -28,9 +28,9 @@ jobs:
             - run: yarn install
 
             - run:
-                name: tsc
+                name: build
                 command: |
-                    yarn tsc
+                    yarn build
             - run:
                 name: lint
                 command: |
