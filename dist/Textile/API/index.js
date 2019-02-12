@@ -175,8 +175,8 @@ class API {
             const buffer = buffer_1.Buffer.from(result, 'base64');
             return react_native_protobufs_1.CafeSession.decode(buffer);
         });
-        this.registerCafe = (peerId, token) => __awaiter(this, void 0, void 0, function* () {
-            yield TextileNode.registerCafe(peerId, token);
+        this.registerCafe = (peerId) => __awaiter(this, void 0, void 0, function* () {
+            yield TextileNode.registerCafe(peerId);
         });
         this.removeThread = (id_) => __awaiter(this, void 0, void 0, function* () {
             const result = yield TextileNode.removeThread(id_); // returns hash b58 string

@@ -229,8 +229,8 @@ class API {
     return CafeSession.decode(buffer)
   }
 
-  registerCafe = async (peerId: string, token: string): Promise<void> => {
-    await TextileNode.registerCafe(peerId, token)
+  registerCafe = async (peerId: string): Promise<void> => {
+    await TextileNode.registerCafe(peerId)
   }
 
   removeThread = async (id_: string): Promise<string> => {

@@ -1,4 +1,4 @@
-import API from '../API'
+import API from '../Api'
 import { IDirectory } from '@textile/react-native-protobufs'
 
 const threadId = 'QmdNgTtH468cqZFzXCi4sVSWTbJMWQbhYb8cBVyikP9LzW'

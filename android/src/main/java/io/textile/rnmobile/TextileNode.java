@@ -634,12 +634,12 @@ public class TextileNode extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void registerCafe(final String peerId, final String token, final Promise promise) {
+    public void registerCafe(final String peerId, final Promise promise) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
                 try {
-                    node.registerCafe(peerId, token);
+                    node.registerCafe(peerId);
                     promise.resolve(null);
                 }
                 catch (Exception e) {

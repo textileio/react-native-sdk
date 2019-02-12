@@ -51,13 +51,10 @@ class Textile extends API_1.default {
         this.repoPath = `${react_native_fs_1.default.DocumentDirectoryPath}/textile-go`;
         // setup should only be run where the class will remain persistent so that
         // listeners will be wired in to one instance only,
-        this.setup = (config, cafe) => __awaiter(this, void 0, void 0, function* () {
+        this.setup = (config) => __awaiter(this, void 0, void 0, function* () {
             // if config provided, set it
             if (config) {
                 this._config = config;
-            }
-            if (cafe) {
-                this._cafe = cafe;
             }
             return this.initializeAppState();
         });
@@ -152,16 +149,14 @@ class Textile extends API_1.default {
                 yield this.createNode();
                 yield this.updateNodeState(Models_1.NodeState.starting);
                 yield this.start();
-                if (this._cafe) {
-                    const sessions = yield this.cafeSessions();
-                    if (!sessions || !sessions.values || sessions.values.length < 1) {
-                        const cafeOverride = this._cafe.TEXTILE_CAFE_OVERRIDE;
-                        if (cafeOverride) {
-                            yield this.registerCafe(cafeOverride, this._cafe.TEXTILE_CAFE_TOKEN);
-                        }
-                        else if (this._cafe.TEXTILE_CAFE_GATEWAY_URL) {
-                            yield this.discoverAndRegisterCafes();
-                        }
+                const sessions = yield this.cafeSessions();
+                if (!sessions || !sessions.values || sessions.values.length < 1) {
+                    const cafeOverride = this._config.TEXTILE_CAFE_OVERRIDE;
+                    if (cafeOverride) {
+                        yield this.registerCafe(cafeOverride);
+                    }
+                    else if (this._config.TEXTILE_CAFE_GATEWAY_URL) {
+                        yield this.discoverAndRegisterCafes();
                     }
                 }
                 yield this.updateNodeState(Models_1.NodeState.started);
@@ -222,15 +217,10 @@ class Textile extends API_1.default {
         this.discoverAndRegisterCafes = () => __awaiter(this, void 0, void 0, function* () {
             this.isInitializedCheck();
             try {
-                if (this._cafe) {
-                    const cafes = yield helpers_1.createTimeout(10000, this.discoverCafes());
-                    const discoveredCafes = cafes;
-                    yield this.registerCafe(discoveredCafes.primary.url, this._cafe.TEXTILE_CAFE_TOKEN || '');
-                    yield this.registerCafe(discoveredCafes.secondary.url, this._cafe.TEXTILE_CAFE_TOKEN || '');
-                }
-                else {
-                    TextileEvents.newError('no cafe config provided', 'cafeConfigError');
-                }
+                const cafes = yield helpers_1.createTimeout(10000, this.discoverCafes());
+                const discoveredCafes = cafes;
+                yield this.registerCafe(discoveredCafes.primary.url);
+                yield this.registerCafe(discoveredCafes.secondary.url);
             }
             catch (error) {
                 // When this happens, you should retry the discover and register...
@@ -330,21 +320,16 @@ class Textile extends API_1.default {
             return true;
         });
         this.discoverCafes = () => __awaiter(this, void 0, void 0, function* () {
-            if (this._cafe) {
-                if (!this._initialized) {
-                    TextileEvents.nonInitializedError();
-                    return;
-                }
-                const response = yield fetch(`${this._cafe.TEXTILE_CAFE_GATEWAY_URL}/cafes`, { method: 'GET' });
-                if (response.status < 200 || response.status > 299) {
-                    throw new Error(`Status code error: ${response.statusText}`);
-                }
-                const discoveredCafes = yield response.json();
-                return discoveredCafes;
+            if (!this._initialized) {
+                TextileEvents.nonInitializedError();
+                return;
             }
-            else {
-                TextileEvents.newError('no cafe config provided', 'cafeConfigError');
+            const response = yield fetch(`${this._config.TEXTILE_CAFE_GATEWAY_URL}/cafes`, { method: 'GET' });
+            if (response.status < 200 || response.status > 299) {
+                throw new Error(`Status code error: ${response.statusText}`);
             }
+            const discoveredCafes = yield response.json();
+            return discoveredCafes;
         });
         this.updateNodeStateError = (error) => __awaiter(this, void 0, void 0, function* () {
             const storedState = yield this._store.getNodeState();
