@@ -12,7 +12,6 @@ const react_native_1 = require("react-native");
 const buffer_1 = require("buffer");
 const react_native_protobufs_1 = require("@textile/react-native-protobufs");
 const { TextileNode } = react_native_1.NativeModules;
-
 class API {
     constructor() {
         /**

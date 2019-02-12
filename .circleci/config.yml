@@ -1,0 +1,98 @@
+version: 2.1
+
+jobs:
+    lint:
+        working_directory: ~/react-native-sdk
+        docker:
+            - image: circleci/node:8
+        steps:
+            - restore_cache: # If any cache exists, it'll way speedup these checkouts
+                keys:
+                    - source-v2-{{ arch }}-{{ .Branch }}-{{ .Revision }}
+                    - source-v2-{{ arch }}-{{ .Branch }}-
+                    - source-v2-{{ arch }}-
+
+            - checkout
+
+            - save_cache:
+                key: source-v2-{{ arch }}-{{ .Branch }}-{{ .Revision }}
+                paths:
+                    - ".git"
+
+            - restore_cache:
+                key: yarn-v1-{{ checksum "yarn.lock" }}-{{ arch }}
+
+            - restore_cache:
+                key: node-v1-{{ checksum "package.json" }}-{{ arch }}
+
+            - run: yarn install
+
+            - run:
+                name: lint
+                command: |
+                    yarn lint
+            # cache our yarn cache
+            - save_cache:
+                key: yarn-v1-{{ checksum "yarn.lock" }}-{{ arch }}
+                paths:
+                    - ~/.cache/yarn
+
+            # cache our node_modules
+            - save_cache:
+                key: node-v1-{{ checksum "package.json" }}-{{ arch }}
+                paths:
+                    - node_modules
+    tests:
+        working_directory: ~/textile-mobile
+        docker:
+            - image: circleci/node:8
+        steps:
+            - restore_cache: # If any cache exists, it'll way speedup these checkouts
+                keys:
+                    - source-v2-{{ arch }}-{{ .Branch }}-{{ .Revision }}
+                    - source-v2-{{ arch }}-{{ .Branch }}-
+                    - source-v2-{{ arch }}-
+
+            - checkout
+
+            - save_cache:
+                key: source-v2-{{ arch }}-{{ .Branch }}-{{ .Revision }}
+                paths:
+                    - ".git"
+
+            - restore_cache:
+                key: yarn-v1-{{ checksum "yarn.lock" }}-{{ arch }}
+
+            - restore_cache:
+                key: node-v1-{{ checksum "package.json" }}-{{ arch }}
+
+            - run: yarn install
+
+            - run:
+                name: jest tests
+                command: |
+                    mkdir -p test-results/jest
+                    yarn run test
+                environment:
+                    JEST_JUNIT_OUTPUT: test-results/jest/junit.xml
+
+            - store_test_results:
+                path: test-results
+
+            - store_artifacts:
+                path: test-results
+
+workflows:
+    version: 2
+    dev:
+        jobs:
+            - lint:
+                filters:
+                    branches:
+                        ignore:
+                            - master
+            - tests:
+                filters:
+                    branches:
+                        ignore:
+                            - master
