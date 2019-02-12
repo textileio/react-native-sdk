@@ -675,6 +675,37 @@ public class TextileNode extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
+    public void searchContacts(final String query, final String options, final Promise promise) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    byte[] queryBytes = Base64.decode(query, Base64.DEFAULT);
+                    byte[] optionsBytes = Base64.decode(options, Base64.DEFAULT);
+                    node.searchContacts(queryBytes, optionsBytes, new Callback() {
+                        @Override
+                        public void call(byte[] bytes, Exception e) {
+                            if (e == null) {
+                                if (bytes != null) {
+                                    String base64 = Base64.encodeToString(bytes, Base64.DEFAULT);
+                                    promise.resolve(base64);
+                                } else {
+                                    promise.resolve("");
+                                }
+                            } else {
+                                promise.reject("searchContacts", e);
+                            }
+                        }
+                    });
+                }
+                catch (Exception e) {
+                    promise.reject("searchContacts", e);
+                }
+            }
+        });
+    }
+
+    @ReactMethod
     public void seed(final Promise promise) {
         executor.execute(new Runnable() {
             @Override

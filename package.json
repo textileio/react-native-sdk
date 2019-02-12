@@ -63,7 +63,7 @@
   },
   "dependencies": {
     "@textile/go-mobile": "1.0.0-rc36",
-    "@textile/react-native-protobufs": "1.1.0",
+    "@textile/react-native-protobufs": "git://github.com/textileio/react-native-textile-protobufs.git#38599d05411f323ccce87e705831421b6595cd7c",
     "buffer": "^5.2.1",
     "prop-types": "^15.6.2"
   },

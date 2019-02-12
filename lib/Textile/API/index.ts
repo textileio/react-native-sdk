@@ -29,7 +29,9 @@ import {
   MobilePreparedFiles,
   CafeSession,
   CafeSessions,
-  Directory
+  Directory,
+  ContactQuery,
+  QueryOptions
 } from '@textile/react-native-protobufs'
 
 const { TextileNode } = NativeModules
@@ -250,6 +252,11 @@ class API {
   removeThread = async (id_: string): Promise<string> => {
     const result = await TextileNode.removeThread(id_) // returns hash b58 string
     return result as string
+  }
+
+  searchContacts = async (query: ContactQuery, options: QueryOptions): Promise<any> => {
+    const result = await TextileNode.searchContacts(query, options)
+    return result
   }
 
   seed = async (): Promise<string> => {
