@@ -257,10 +257,14 @@ class API {
     return new Promise(async (resolve, reject) => {
       // internal contact search result handler
       let stream: EmitterSubscription
+      let streamError: EmitterSubscription
       // just a helper to dedup below
       const cleanup = () => {
         if (stream) {
           stream.remove()
+        }
+        if (streamError) {
+          streamError.remove()
         }
       }
       // wrap in a try to ensure we cleanup if an error
@@ -268,7 +272,7 @@ class API {
         stream = NativeEvents.addListener('@textile/sdk/searchContactsResult', (payload: BufferJSON) => {
           const result = payload.buffer
           if (!result) {
-              return undefined
+              return
           }
           const buffer = Buffer.from(result, 'base64')
           const queryEvent = QueryEvent.decode(buffer)
@@ -283,6 +287,10 @@ class API {
               }
               break
           }
+        })
+        streamError = NativeEvents.addListener('@textile/sdk/searchContactsError', (payload: any) => {
+          cleanup()
+          reject(payload)
         })
 
         const queryArray = ContactQuery.encode(query).finish()
