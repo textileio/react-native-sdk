@@ -1,2 +1,2 @@
-export * from './Bridge'
+export * from './API'
 export * from './SDK'

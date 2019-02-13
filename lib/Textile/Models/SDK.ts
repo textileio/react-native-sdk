@@ -1,5 +1,5 @@
 import { AppStateStatus } from 'react-native'
-import { NodeState } from './Bridge'
+import { NodeState } from './API'
 
 export interface BufferJSON {
   buffer: string
