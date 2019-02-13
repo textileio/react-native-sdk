@@ -255,7 +255,16 @@ class API {
   }
 
   searchContacts = async (query: ContactQuery, options: QueryOptions): Promise<any> => {
-    const result = await TextileNode.searchContacts(query, options)
+
+    const queryArray = ContactQuery.encode(query).finish()
+    const queryBuffer = Buffer.from(queryArray)
+    const queryString = queryBuffer.toString('base64')
+
+    const optionsArray = QueryOptions.encode(options).finish()
+    const optionsBuffer = Buffer.from(optionsArray)
+    const optionsString = optionsBuffer.toString('base64')
+
+    const result = await TextileNode.searchContacts(queryString, optionsString)
     return result
   }
 

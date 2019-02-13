@@ -319,8 +319,11 @@ RCT_EXPORT_METHOD(removeThread:(NSString*)id_ resolver:(RCTPromiseResolveBlock)r
   [self fulfillWithResult:result error:error resolver:resolve rejecter:reject];
 }
 
-RCT_EXPORT_METHOD(searchContacts:(NSData*)query options:(NSData*)options resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
-  [self.node searchContacts:query options:options cb:[[Callback alloc] initWithCompletion:^ (NSData *payload, NSError *error) {
+RCT_EXPORT_METHOD(searchContacts:(NSString*)queryString options:(NSData*)optionsString resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+
+  NSData *query = [[NSData alloc] initWithBase64EncodedString:queryString options:0];
+  NSData *options = [[NSData alloc] initWithBase64EncodedString:optionsString options:0];
+  [self.node searchContacts:queryData options:options cb:[[Callback alloc] initWithCompletion:^ (NSData *payload, NSError *error) {
     if (error) {
       reject(@(error.code).stringValue, error.localizedDescription, error);
     } else {
