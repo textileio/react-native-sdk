@@ -8,13 +8,17 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.bridge.WritableNativeMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
+import mobile.AddThreadConfig;
+import mobile.CancelFn;
 import mobile.Event;
 import mobile.Messenger;
 import mobile.Mobile;
@@ -30,6 +34,7 @@ public class TextileNode extends ReactContextBaseJavaModule {
 
     // made public so external native libraries can interact
     public static Mobile_ node = null;
+    public static CancelFn cancellableSearchContacts = null;
 
     private Executor executor = Executors.newSingleThreadExecutor();
 
@@ -125,12 +130,21 @@ public class TextileNode extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void addThread(final String key, final String name, final Boolean shared, final Promise promise) {
+    public void addThread(final String key, final String name, final String type, final String sharing, final String members, final String schema, final Boolean media, final Boolean cameraRoll, final Promise promise) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
                 try {
-                    promise.resolve(node.addThread(key, name, shared));
+                    AddThreadConfig config = new AddThreadConfig();
+                    config.setKey(key);
+                    config.setName(name);
+                    config.setType(type);
+                    config.setSharing(sharing);
+                    config.setMembers(members);
+                    config.setSchema(schema);
+                    config.setMedia(media);
+                    config.setCameraRoll(cameraRoll);
+                    promise.resolve(node.addThread(config));
                 }
                 catch (Exception e) {
                     promise.reject("addThread", e);
@@ -425,21 +439,6 @@ public class TextileNode extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void findContact(final String username, final Integer limit, final Integer wait, final Promise promise) {
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    promise.resolve(node.findContact(username, limit, wait));
-                }
-                catch (Exception e) {
-                    promise.reject("findContact", e);
-                }
-            }
-        });
-    }
-
-    @ReactMethod
     public void ignoreThreadInviteViaNotification(final String id_, final Promise promise) {
         executor.execute(new Runnable() {
             @Override
@@ -675,6 +674,64 @@ public class TextileNode extends ReactContextBaseJavaModule {
                 }
                 catch (Exception e) {
                     promise.reject("removeThread", e);
+                }
+            }
+        });
+    }
+
+    @ReactMethod
+    public void searchContacts(final String query, final String options, final Promise promise) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    byte[] queryBytes = Base64.decode(query, Base64.DEFAULT);
+                    byte[] optionsBytes = Base64.decode(options, Base64.DEFAULT);
+                    if (TextileNode.cancellableSearchContacts != null) {
+                        TextileNode.cancellableSearchContacts.call();
+                    }
+                    CancelFn newCancel = node.searchContacts(queryBytes, optionsBytes, new Callback() {
+                        @Override
+                        public void call(byte[] bytes, Exception e) {
+                            if (e == null) {
+                                if (bytes != null) {
+                                    String base64 = Base64.encodeToString(bytes, Base64.DEFAULT);
+                                    WritableMap payload = new WritableNativeMap();
+                                    payload.putString("buffer", base64);
+                                    TextileNode.emitDeviceEvent("@textile/sdk/searchContactsResult", payload);
+                                } else {
+                                    TextileNode.emitDeviceEvent("@textile/sdk/searchContactsResult", null);
+                                }
+                            } else {
+                                WritableMap payload = new WritableNativeMap();
+                                payload.putString("message", e.getMessage());
+                                TextileNode.emitDeviceEvent("@textile/sdk/searchContactsError", payload);
+                            }
+                        }
+                    });
+                    TextileNode.cancellableSearchContacts = newCancel;
+                }
+                catch (Exception e) {
+                    promise.reject("searchContacts", e);
+                }
+            }
+        });
+    }
+
+    @ReactMethod
+    public void cancelSearchContacts(final Promise promise) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    if (TextileNode.cancellableSearchContacts != null) {
+                        TextileNode.cancellableSearchContacts.call();
+                        TextileNode.cancellableSearchContacts = null;
+                    }
+                    promise.resolve(null);
+                }
+                catch (Exception e) {
+                    promise.reject("cancelSearchContacts", e);
                 }
             }
         });

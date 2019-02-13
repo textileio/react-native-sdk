@@ -1,5 +1,6 @@
-import { NativeModules } from 'react-native'
+import { NativeModules, EmitterSubscription } from 'react-native'
 import { Buffer } from 'buffer'
+import NativeEvents from '../../NativeEvents'
 
 import {
   File,
@@ -15,7 +16,11 @@ import {
   ThreadFilesInfo,
   ThreadFeedItem,
   ThreadMessageInfo,
-  LogLevel
+  ThreadSharing,
+  ThreadType,
+  LogLevel,
+  SchemaType,
+  BufferJSON
 } from '../Models'
 
 import {
@@ -23,10 +28,16 @@ import {
   ICafeSession,
   ICafeSessions,
   IDirectory,
+  IQueryOptions,
+  IContactQuery,
   MobilePreparedFiles,
   CafeSession,
   CafeSessions,
-  Directory
+  Directory,
+  ContactQuery,
+  QueryOptions,
+  Contact,
+  QueryEvent
 } from '@textile/react-native-protobufs'
 
 const { TextileNode } = NativeModules
@@ -60,8 +71,12 @@ class API {
     return JSON.parse(result) as File
   }
 
-  addThread = async (key: string, name: string, shared: boolean): Promise<ThreadInfo> => {
-    const result = await TextileNode.addThread(key, name, shared)
+  addThread = async (key: string, name: string, type: ThreadType, sharing: ThreadSharing, members: string[], schema_type: SchemaType, json_schema?: string): Promise<ThreadInfo> => {
+    const stringMembers = members.join(',')
+    const media = schema_type === SchemaType.MEDIA
+    const cameraRoll = !media && schema_type === SchemaType.CAMERA_ROLL
+    const schema = schema_type === SchemaType.JSON && json_schema ? json_schema : ''
+    const result = await TextileNode.addThread(key, name, type, sharing, stringMembers, schema, media, cameraRoll)
     return JSON.parse(result) as ThreadInfo
   }
 
@@ -236,6 +251,67 @@ class API {
   removeThread = async (id_: string): Promise<string> => {
     const result = await TextileNode.removeThread(id_) // returns hash b58 string
     return result as string
+  }
+
+  searchContacts = async (query: IContactQuery, options: IQueryOptions, handler: (contact: Contact) => void): Promise<void> => {
+    return new Promise(async (resolve, reject) => {
+      // internal contact search result handler
+      let stream: EmitterSubscription
+      let streamError: EmitterSubscription
+      // just a helper to dedup below
+      const cleanup = () => {
+        if (stream) {
+          stream.remove()
+        }
+        if (streamError) {
+          streamError.remove()
+        }
+      }
+      // wrap in a try to ensure we cleanup if an error
+      try {
+        stream = NativeEvents.addListener('@textile/sdk/searchContactsResult', (payload: BufferJSON) => {
+          const result = payload.buffer
+          if (!result) {
+              return
+          }
+          const buffer = Buffer.from(result, 'base64')
+          const queryEvent = QueryEvent.decode(buffer)
+          switch (queryEvent.type) {
+            case 1:
+              cleanup()
+              resolve()
+              break
+            case 0:
+              if (queryEvent.data) {
+                handler(queryEvent.data as Contact)
+              }
+              break
+          }
+        })
+        streamError = NativeEvents.addListener('@textile/sdk/searchContactsError', (payload: any) => {
+          cleanup()
+          reject(payload)
+        })
+
+        const queryArray = ContactQuery.encode(query).finish()
+        const queryBuffer = Buffer.from(queryArray)
+        const queryString = queryBuffer.toString('base64')
+
+        const optionsArray = QueryOptions.encode(options).finish()
+        const optionsBuffer = Buffer.from(optionsArray)
+        const optionsString = optionsBuffer.toString('base64')
+
+        await TextileNode.searchContacts(queryString, optionsString)
+      } catch (error) {
+        // specifically not finally here, because it should return before listeners complete
+        cleanup()
+        reject(error)
+      }
+    })
+  }
+
+  cancelSearchContacts = async (): Promise<void> => {
+    await TextileNode.cancelSearchContacts()
   }
 
   seed = async (): Promise<string> => {
