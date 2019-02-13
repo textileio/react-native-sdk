@@ -260,25 +260,16 @@ class API {
 
   searchContacts = async (query: ContactQuery, options: QueryOptions, handler: (contact: Contact) => void): Promise<void> => {
     return new Promise(async (resolve, reject) => {
-      // internal error event handler
-      let errors: EmitterSubscription
       // internal contact search result handler
       let stream: EmitterSubscription
       // just a helper to dedup below
       const cleanup = () => {
-        if (errors) {
-          errors.remove()
-        }
         if (stream) {
           stream.remove()
         }
       }
       // wrap in a try to ensure we cleanup if an error
       try {
-        errors = NativeEvents.addListener('@textile/sdk/searchContactsError', (error: string) => {
-          cleanup()
-          reject(error)
-        })
         stream = NativeEvents.addListener('@textile/sdk/searchContactsResult', (payload: BufferJSON) => {
           const result = payload.buffer
           if (!result) {
