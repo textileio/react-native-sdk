@@ -71,16 +71,9 @@ class API {
 
   addThread = async (key: string, name: string, type: ThreadType, sharing: ThreadSharing, members: string[], schema_type: SchemaType, json_schema?: string): Promise<ThreadInfo> => {
     const stringMembers = members.join(',')
-    let media = false
-    let cameraRoll = false
-    let schema = ''
-    if (schema_type === SchemaType.MEDIA) {
-      media = true
-    } else if (schema_type === SchemaType.CAMERA_ROLL) {
-      cameraRoll = true
-    } else if (schema_type === SchemaType.JSON && json_schema) {
-      schema = json_schema
-    }
+    const media = schema_type === SchemaType.MEDIA
+    const cameraRoll = !media && schema_type === SchemaType.CAMERA_ROLL
+    const schema = schema_type === SchemaType.JSON && json_schema ? json_schema : ''
     const result = await TextileNode.addThread(key, name, type, sharing, stringMembers, schema, media, cameraRoll)
     return JSON.parse(result) as ThreadInfo
   }
