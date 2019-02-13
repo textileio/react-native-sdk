@@ -1,5 +1,9 @@
 import { AppStateStatus } from 'react-native'
 
+export interface BufferJSON {
+  buffer: string
+}
+
 export interface TextileConfig {
   RELEASE_TYPE?: string
   SELF_MANAGE_APP_STATE?: boolean

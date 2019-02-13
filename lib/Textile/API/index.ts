@@ -19,7 +19,8 @@ import {
   ThreadSharing,
   ThreadType,
   LogLevel,
-  SchemaType
+  SchemaType,
+  BufferJSON
 } from '../Models'
 
 import {
@@ -274,12 +275,12 @@ class API {
       }
       // wrap in a try to ensure we cleanup if an error
       try {
-        errors = NativeEvents.addListener('@textile/internal/searchContactsError', (error: string) => {
+        errors = NativeEvents.addListener('@textile/sdk/searchContactsError', (error: string) => {
           cleanup()
           reject(error)
         })
-        stream = NativeEvents.addListener('@textile/internal/searchContacts', (payload: any) => {
-          const result = payload.data
+        stream = NativeEvents.addListener('@textile/sdk/searchContactsResult', (payload: BufferJSON) => {
+          const result = payload.buffer
           if (!result) {
               return undefined
           }

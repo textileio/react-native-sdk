@@ -327,12 +327,8 @@ RCT_EXPORT_METHOD(searchContacts:(NSString*)queryString options:(NSString*)optio
       [Events emitEventWithName:@"@textile/internal/searchContactsError" andPayload:error.localizedDescription];
     } else {
       NSString *base64 = [payload base64EncodedStringWithOptions:0];
-      NSString *decodedString = [[NSString alloc] initWithData:payload encoding:NSUTF8StringEncoding];
-      long len = [base64 length];
-      if ([base64 length] > 2) {
-        NSString *json = [NSString stringWithFormat:@"{\"data\":\"%@\"}", base64];
-        [Events emitEventWithName:@"@textile/internal/searchContacts" andPayload:json];
-      }
+      NSString *jsonString = [NSString stringWithFormat:@"{\"buffer\":\"%@\"}", base64];
+      [Events emitEventWithName:@"@textile/sdk/searchContactsResult" andPayload:jsonString];
     }
   }] error:nil];
 }
