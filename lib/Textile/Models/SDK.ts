@@ -1,5 +1,4 @@
 import { AppStateStatus } from 'react-native'
-import { NodeState } from './API'
 
 export interface BufferJSON {
   buffer: string
@@ -9,6 +8,21 @@ export interface CafeConfig {
   TEXTILE_CAFE_GATEWAY_URL: string
   TEXTILE_CAFE_TOKEN: string
   TEXTILE_CAFE_OVERRIDE?: string
+}
+
+export enum NodeState {
+  'nonexistent' = 'nonexistent',
+  'creating' = 'creating',
+  'created' = 'created', // Node has been created, on it's way to starting
+  'starting' = 'starting',
+  'started' = 'started',
+  'stopping' = 'stopping',
+  'stopped' = 'stopped', // Node has been explicitly stopped, different than created
+  'creatingWallet' = 'creatingWallet',
+  'derivingAccount' = 'derivingAccount',
+  'initializingRepo' = 'initializingRepo',
+  'walletInitSuccess' = 'walletInitSuccess',
+  'postMigration' = 'postMigration'
 }
 
 export enum SchemaType {
