@@ -714,9 +714,9 @@
   version "1.0.0-rc36"
   resolved "https://registry.yarnpkg.com/@textile/go-mobile/-/go-mobile-1.0.0-rc36.tgz#3ba211d4e3c51a34786cde3cf1a1c61b9d3c1270"
 
-"@textile/react-native-protobufs@git://github.com/textileio/react-native-textile-protobufs.git#38599d05411f323ccce87e705831421b6595cd7c":
-  version "1.1.0"
-  resolved "git://github.com/textileio/react-native-textile-protobufs.git#38599d05411f323ccce87e705831421b6595cd7c"
+"@textile/react-native-protobufs@1.1.1":
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/@textile/react-native-protobufs/-/react-native-protobufs-1.1.1.tgz#90842bbce73f66e3193ab64ed584834e5b7e537b"
   dependencies:
     protobufjs "^6.8.8"
 
