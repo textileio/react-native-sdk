@@ -31,7 +31,8 @@ import {
   CafeSessions,
   Directory,
   ContactQuery,
-  QueryOptions
+  QueryOptions,
+  Contact
 } from '@textile/react-native-protobufs'
 
 const { TextileNode } = NativeModules
@@ -254,7 +255,7 @@ class API {
     return result as string
   }
 
-  searchContacts = async (query: ContactQuery, options: QueryOptions): Promise<any> => {
+  searchContacts = async (query: ContactQuery, options: QueryOptions): Promise<Contact> => {
 
     const queryArray = ContactQuery.encode(query).finish()
     const queryBuffer = Buffer.from(queryArray)
@@ -265,7 +266,8 @@ class API {
     const optionsString = optionsBuffer.toString('base64')
 
     const result = await TextileNode.searchContacts(queryString, optionsString)
-    return result
+
+    return Contact.decode(result)
   }
 
   seed = async (): Promise<string> => {
