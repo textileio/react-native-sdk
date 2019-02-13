@@ -319,18 +319,22 @@ RCT_EXPORT_METHOD(removeThread:(NSString*)id_ resolver:(RCTPromiseResolveBlock)r
   [self fulfillWithResult:result error:error resolver:resolve rejecter:reject];
 }
 
-RCT_EXPORT_METHOD(searchContacts:(NSString*)queryString options:(NSData*)optionsString resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
-
+RCT_EXPORT_METHOD(searchContacts:(NSString*)queryString options:(NSString*)optionsString) {
   NSData *query = [[NSData alloc] initWithBase64EncodedString:queryString options:0];
   NSData *options = [[NSData alloc] initWithBase64EncodedString:optionsString options:0];
-  [self.node searchContacts:queryData options:options cb:[[Callback alloc] initWithCompletion:^ (NSData *payload, NSError *error) {
+  [self.node searchContacts:query options:options cb:[[Callback alloc] initWithCompletion:^ (NSData *payload, NSError *error) {
     if (error) {
-      reject(@(error.code).stringValue, error.localizedDescription, error);
+      [Events emitEventWithName:@"@textile/internal/searchContactsError" andPayload:error.localizedDescription];
     } else {
       NSString *base64 = [payload base64EncodedStringWithOptions:0];
-      resolve(base64);
+      NSString *decodedString = [[NSString alloc] initWithData:payload encoding:NSUTF8StringEncoding];
+      long len = [base64 length];
+      if ([base64 length] > 2) {
+        NSString *json = [NSString stringWithFormat:@"{\"data\":\"%@\"}", base64];
+        [Events emitEventWithName:@"@textile/internal/searchContacts" andPayload:json];
+      }
     }
-
+  }] error:nil];
 }
 
 RCT_EXPORT_METHOD(seed:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {

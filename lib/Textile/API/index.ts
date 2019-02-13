@@ -1,5 +1,6 @@
-import { NativeModules } from 'react-native'
+import { NativeModules, EmitterSubscription } from 'react-native'
 import { Buffer } from 'buffer'
+import NativeEvents from '../../NativeEvents'
 
 import {
   File,
@@ -32,7 +33,8 @@ import {
   Directory,
   ContactQuery,
   QueryOptions,
-  Contact
+  Contact,
+  QueryEvent
 } from '@textile/react-native-protobufs'
 
 const { TextileNode } = NativeModules
@@ -255,19 +257,62 @@ class API {
     return result as string
   }
 
-  searchContacts = async (query: ContactQuery, options: QueryOptions): Promise<Contact> => {
+  searchContacts = async (query: ContactQuery, options: QueryOptions, callback: (contact: Contact) => void): Promise<void> => {
+    return new Promise(async (resolve, reject) => {
+      // internal error event handler
+      let errors: EmitterSubscription
+      // internal contact search result handler
+      let stream: EmitterSubscription
+      // just a helper to dedup below
+      const cleanup = () => {
+        if (errors) {
+          errors.remove()
+        }
+        if (stream) {
+          stream.remove()
+        }
+      }
+      // wrap in a try to ensure we cleanup if an error
+      try {
+        errors = NativeEvents.addListener('@textile/internal/searchContactsError', (error: string) => {
+          cleanup()
+          reject(error)
+        })
+        stream = NativeEvents.addListener('@textile/internal/searchContacts', (payload: any) => {
+          const result = payload.data
+          if (!result) {
+              return undefined
+          }
+          const buffer = Buffer.from(result, 'base64')
+          const queryEvent = QueryEvent.decode(buffer)
+          switch (queryEvent.type) {
+            case 1:
+              cleanup()
+              resolve()
+              break
+            case 0:
+              if (queryEvent.data) {
+                callback(queryEvent.data as Contact)
+              }
+              break
+          }
+        })
 
-    const queryArray = ContactQuery.encode(query).finish()
-    const queryBuffer = Buffer.from(queryArray)
-    const queryString = queryBuffer.toString('base64')
+        const queryArray = ContactQuery.encode(query).finish()
+        const queryBuffer = Buffer.from(queryArray)
+        const queryString = queryBuffer.toString('base64')
 
-    const optionsArray = QueryOptions.encode(options).finish()
-    const optionsBuffer = Buffer.from(optionsArray)
-    const optionsString = optionsBuffer.toString('base64')
+        const optionsArray = QueryOptions.encode(options).finish()
+        const optionsBuffer = Buffer.from(optionsArray)
+        const optionsString = optionsBuffer.toString('base64')
 
-    const result = await TextileNode.searchContacts(queryString, optionsString)
-
-    return Contact.decode(result)
+        await TextileNode.searchContacts(queryString, optionsString)
+      } catch (error) {
+        // specifically not finally here, because it should return before listeners complete
+        cleanup()
+        reject(error)
+      }
+    })
   }
 
   seed = async (): Promise<string> => {

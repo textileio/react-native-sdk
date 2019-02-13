@@ -33,7 +33,9 @@ RCT_EXPORT_MODULE();
             @"onThreadUpdate",
             @"onAccountPeerAdded",
             @"onAccountPeerRemoved",
-            @"onNotification"];
+            @"onNotification",
+            @"@textile/internal/searchContacts",
+            @"@textile/internal/searchContactsError"];
 }
 
 // This function listens for the events we want to send out and will then pass the
