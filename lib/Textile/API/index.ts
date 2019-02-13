@@ -302,6 +302,10 @@ class API {
     })
   }
 
+  cancelSearchContacts = async (): Promise<void> => {
+    await TextileNode.cancelSearchContacts()
+  }
+
   seed = async (): Promise<string> => {
     const result = await TextileNode.seed()
     return result as string

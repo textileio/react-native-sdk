@@ -57,6 +57,7 @@
 @interface TextileNode()
 
 @property (nonatomic, strong) MobileMobile *node;
+@property (readwrite, strong) NSMutableArray *cancellableSearchContacts;
 
 @end
 
@@ -322,7 +323,13 @@ RCT_EXPORT_METHOD(removeThread:(NSString*)id_ resolver:(RCTPromiseResolveBlock)r
 RCT_EXPORT_METHOD(searchContacts:(NSString*)queryString options:(NSString*)optionsString) {
   NSData *query = [[NSData alloc] initWithBase64EncodedString:queryString options:0];
   NSData *options = [[NSData alloc] initWithBase64EncodedString:optionsString options:0];
-  [self.node searchContacts:query options:options cb:[[Callback alloc] initWithCompletion:^ (NSData *payload, NSError *error) {
+
+  if ([self.cancellableSearchContacts count] > 0) {
+    [[self.cancellableSearchContacts firstObject] call];
+    [self.cancellableSearchContacts removeAllObjects];
+  }
+
+  MobileCancelFn *newCancellable = [self.node searchContacts:query options:options cb:[[Callback alloc] initWithCompletion:^ (NSData *payload, NSError *error) {
     if (error) {
       NSString *jsonString = [NSString stringWithFormat:@"{\"message\":\"%@\"}", error.localizedDescription];
       [Events emitEventWithName:@"@textile/sdk/searchContactsError" andPayload:jsonString];
@@ -332,6 +339,21 @@ RCT_EXPORT_METHOD(searchContacts:(NSString*)queryString options:(NSString*)optio
       [Events emitEventWithName:@"@textile/sdk/searchContactsResult" andPayload:jsonString];
     }
   }] error:nil];
+  [self.cancellableSearchContacts addObject:[newCancellable class]];
+}
+
+RCT_EXPORT_METHOD(cancelSearchContacts:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+  @try {
+    if ([self.cancellableSearchContacts count] > 0) {
+      [[self.cancellableSearchContacts firstObject] call];
+      [self.cancellableSearchContacts removeAllObjects];
+    }
+    resolve(@"success");
+  }
+  @catch (NSException *exception) {
+    NSError *error;
+    reject(exception.name, exception.reason, error);
+  }
 }
 
 RCT_EXPORT_METHOD(seed:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
