@@ -258,7 +258,7 @@ class API {
     return result as string
   }
 
-  searchContacts = async (query: ContactQuery, options: QueryOptions, callback: (contact: Contact) => void): Promise<void> => {
+  searchContacts = async (query: ContactQuery, options: QueryOptions, handler: (contact: Contact) => void): Promise<void> => {
     return new Promise(async (resolve, reject) => {
       // internal error event handler
       let errors: EmitterSubscription
@@ -293,7 +293,7 @@ class API {
               break
             case 0:
               if (queryEvent.data) {
-                callback(queryEvent.data as Contact)
+                handler(queryEvent.data as Contact)
               }
               break
           }
