@@ -13,7 +13,6 @@ import com.facebook.react.modules.core.DeviceEventManagerModule;
 
 import org.json.JSONObject;
 
-import java.text.MessageFormat;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
