@@ -324,7 +324,8 @@ RCT_EXPORT_METHOD(searchContacts:(NSString*)queryString options:(NSString*)optio
   NSData *options = [[NSData alloc] initWithBase64EncodedString:optionsString options:0];
   [self.node searchContacts:query options:options cb:[[Callback alloc] initWithCompletion:^ (NSData *payload, NSError *error) {
     if (error) {
-      [Events emitEventWithName:@"@textile/internal/searchContactsError" andPayload:error.localizedDescription];
+      NSString *jsonString = [NSString stringWithFormat:@"{\"message\":\"%@\"}", error.localizedDescription];
+      [Events emitEventWithName:@"@textile/sdk/searchContactsError" andPayload:jsonString];
     } else {
       NSString *base64 = [payload base64EncodedStringWithOptions:0];
       NSString *jsonString = [NSString stringWithFormat:@"{\"buffer\":\"%@\"}", base64];

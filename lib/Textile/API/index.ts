@@ -28,6 +28,8 @@ import {
   ICafeSession,
   ICafeSessions,
   IDirectory,
+  IQueryOptions,
+  IContactQuery,
   MobilePreparedFiles,
   CafeSession,
   CafeSessions,
@@ -251,7 +253,7 @@ class API {
     return result as string
   }
 
-  searchContacts = async (query: ContactQuery, options: QueryOptions, handler: (contact: Contact) => void): Promise<void> => {
+  searchContacts = async (query: IContactQuery, options: IQueryOptions, handler: (contact: Contact) => void): Promise<void> => {
     return new Promise(async (resolve, reject) => {
       // internal contact search result handler
       let stream: EmitterSubscription

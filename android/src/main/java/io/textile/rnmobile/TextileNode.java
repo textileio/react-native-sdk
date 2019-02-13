@@ -8,13 +8,16 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.bridge.WritableNativeMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 
 import org.json.JSONObject;
 
+import java.text.MessageFormat;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
+import mobile.AddThreadConfig;
 import mobile.Event;
 import mobile.Messenger;
 import mobile.Mobile;
@@ -130,7 +133,7 @@ public class TextileNode extends ReactContextBaseJavaModule {
             @Override
             public void run() {
                 try {
-                    MobileThreadConfig config = new MobileThreadConfig();
+                    AddThreadConfig config = new AddThreadConfig();
                     config.setKey(key);
                     config.setName(name);
                     config.setType(type);
@@ -688,12 +691,14 @@ public class TextileNode extends ReactContextBaseJavaModule {
                             if (e == null) {
                                 if (bytes != null) {
                                     String base64 = Base64.encodeToString(bytes, Base64.DEFAULT);
-                                    promise.resolve(base64);
-                                } else {
-                                    promise.resolve("");
+                                    WritableMap payload = new WritableNativeMap();
+                                    payload.putString("buffer", base64);
+                                    TextileNode.emitDeviceEvent("@textile/internal/searchContactsResult", payload);
                                 }
                             } else {
-                                promise.reject("searchContacts", e);
+                                WritableMap payload = new WritableNativeMap();
+                                payload.putString("message", e.getMessage());
+                                TextileNode.emitDeviceEvent("@textile/internal/searchContactsError", payload);
                             }
                         }
                     });

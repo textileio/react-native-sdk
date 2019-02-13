@@ -34,8 +34,8 @@ RCT_EXPORT_MODULE();
             @"onAccountPeerAdded",
             @"onAccountPeerRemoved",
             @"onNotification",
-            @"@textile/internal/searchContacts",
-            @"@textile/internal/searchContactsError"];
+            @"@textile/sdk/searchContactsResult",
+            @"@textile/sdk/searchContactsError"];
 }
 
 // This function listens for the events we want to send out and will then pass the
