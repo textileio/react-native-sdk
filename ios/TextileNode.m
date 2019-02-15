@@ -391,7 +391,7 @@ RCT_EXPORT_METHOD(stop:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejec
   [self fulfillWithResult:nil error:error resolver:resolve rejecter:reject];
 }
 
-RCT_EXPORT_METHOD(feed:(NSString*)offset limit:(NSInteger)limit threadId:(NSString*)threadId mode:(NSInteger*)mode resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_EXPORT_METHOD(feed:(NSString*)offset limit:(NSInteger)limit mode:(NSInteger*)mode threadId:(NSString*)threadId resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSError *error;
   int32_t m = mode ? (int32_t) mode : 0;
   NSData *result = [self.node feed:offset limit:limit threadId:threadId mode:m error:&error];

@@ -803,7 +803,7 @@ public class TextileNode extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void feed(final String offset, final Integer limit, final String threadId, final Integer mode, final Promise promise) {
+    public void feed(final String offset, final Integer limit, final Integer mode, final String threadId, final Promise promise) {
         executor.execute(new Runnable() {
             @Override
             public void run() {

@@ -340,11 +340,8 @@ class API {
     await TextileNode.stop()
   }
 
-  feed = async (offset: string, limit: number, threadId?: string, mode?: FeedMode): Promise<IFeedItemList> => {
-    if (mode === undefined) {
-      mode = FeedMode.CHRONO
-    }
-    const result = await TextileNode.feed(offset, limit, threadId, mode)
+  feed = async (offset: string, limit: number, mode: FeedMode, threadId?: string): Promise<IFeedItemList> => {
+    const result = await TextileNode.feed(offset, limit, mode, threadId)
     return JSON.parse(result) as IFeedItemList
   }
 
