@@ -84,15 +84,7 @@ jobs:
 
 workflows:
     version: 2
-    dev:
+    react-native-sdk:
         jobs:
-            - lint:
-                filters:
-                    branches:
-                        ignore:
-                            - master
-            - tests:
-                filters:
-                    branches:
-                        ignore:
-                            - master 
+            - lint
+            - tests
