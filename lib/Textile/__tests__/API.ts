@@ -44,7 +44,7 @@ describe('textile api', () => {
             expect(result).toHaveProperty('name')
             expect(result.name).toEqual(threadName)
         })
-        it('addThreadFiles', async () => {
+        it('addFiles', async () => {
             const dir: IDirectory = {}
             const result = await api.addFiles(dir, threadId, 'here we go')
             expect(typeof result).toEqual('object')

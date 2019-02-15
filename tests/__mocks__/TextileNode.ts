@@ -1,6 +1,5 @@
 import {
     ExternalInvite,
-    File,
     ThreadInfo,
     ThreadType,
     ThreadSharing,
@@ -9,6 +8,7 @@ import {
     BlockType,
     ContactInfo
 } from '../../lib/Textile/Models'
+import { IFileIndex } from '@textile/react-native-protobufs'
 
 export default {
     acceptExternalThreadInvite: jest.fn((id, key): Promise<string> => new Promise((resolve) => {
@@ -27,15 +27,15 @@ export default {
     })),
     addSchema: jest.fn((): Promise<string> => new Promise((resolve) => {
         // TODO: handle jsonstr: string input better
-        const mockFile: File = {
+        const mockFile: IFileIndex = {
             mill: 'ABC',
             checksum: 'DEF',
             source: 'GHI',
             hash: 'JKL',
             media: 'photo',
             size: 123,
-            added: 'ABC',
-            meta: { height: 1 }
+            added: { seconds: 0, nanos: 0 },
+            meta: { fields: { height: { numberValue: 100 } } }
           }
         resolve(JSON.stringify(mockFile))
     })),
