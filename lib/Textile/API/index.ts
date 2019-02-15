@@ -25,6 +25,7 @@ import {
   Contact,
   ContactQuery,
   Directory,
+  FeedMode,
   ICafeSession,
   ICafeSessions,
   IContactQuery,
@@ -71,11 +72,11 @@ class API {
     return JSON.parse(result) as IFileIndex
   }
 
-  addThread = async (key: string, name: string, type: ThreadType, sharing: ThreadSharing, members: string[], schema_type: SchemaType, json_schema?: string): Promise<ThreadInfo> => {
+  addThread = async (key: string, name: string, type: ThreadType, sharing: ThreadSharing, members: string[], schema_type: SchemaType, schema_json?: string): Promise<ThreadInfo> => {
     const stringMembers = members.join(',')
     const media = schema_type === SchemaType.MEDIA
     const cameraRoll = !media && schema_type === SchemaType.CAMERA_ROLL
-    const schema = schema_type === SchemaType.JSON && json_schema ? json_schema : ''
+    const schema = schema_type === SchemaType.JSON && schema_json ? schema_json : ''
     const result = await TextileNode.addThread(key, name, type, sharing, stringMembers, schema, media, cameraRoll)
     return JSON.parse(result) as ThreadInfo
   }
@@ -339,18 +340,21 @@ class API {
     await TextileNode.stop()
   }
 
-  feed = async (offset: string, limit: number, threadId?: string): Promise<IFeedItemList> => {
-    const result = await TextileNode.threadFeed(offset, limit, threadId)
+  feed = async (offset: string, limit: number, threadId?: string, mode?: FeedMode): Promise<IFeedItemList> => {
+    if (mode === undefined) {
+      mode = FeedMode.CHRONO
+    }
+    const result = await TextileNode.feed(offset, limit, threadId, mode)
     return JSON.parse(result) as IFeedItemList
   }
 
   files = async (offset: string, limit: number, threadId?: string): Promise<IFilesList> => {
-    const result = await TextileNode.threadFiles(offset, limit, threadId)
+    const result = await TextileNode.files(offset, limit, threadId)
     return JSON.parse(result) as IFilesList
   }
 
   messages = async (offset: string, limit: number, threadId?: string): Promise<ITextList> => {
-    const result = await TextileNode.threadMessages(offset, limit, threadId)
+    const result = await TextileNode.messages(offset, limit, threadId)
     return JSON.parse(result) as ITextList
   }
 
