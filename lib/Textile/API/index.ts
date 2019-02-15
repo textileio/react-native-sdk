@@ -25,7 +25,9 @@ import {
   Contact,
   ContactQuery,
   Directory,
+  FeedItemList,
   FeedMode,
+  FilesList,
   ICafeSession,
   ICafeSessions,
   IContactQuery,
@@ -38,7 +40,8 @@ import {
   ITextList,
   MobilePreparedFiles,
   QueryEvent,
-  QueryOptions
+  QueryOptions,
+  TextList
 } from '@textile/react-native-protobufs'
 
 const { TextileNode } = NativeModules
@@ -254,7 +257,7 @@ class API {
     return result as string
   }
 
-  searchContacts = async (query: IContactQuery, options: IQueryOptions, handler: (contact: Contact) => void): Promise<void> => {
+  searchContacts = async (query: IContactQuery, options: IQueryOptions, handler: (contact: Contact, local: boolean) => void): Promise<void> => {
     return new Promise(async (resolve, reject) => {
       // internal contact search result handler
       let stream: EmitterSubscription
@@ -279,8 +282,9 @@ class API {
           const queryEvent = QueryEvent.decode(buffer)
           switch (queryEvent.type) {
             case QueryEvent.Type.DATA:
-              if (queryEvent.data) {
-                handler(queryEvent.data as Contact)
+              if (queryEvent.data && queryEvent.data.value && queryEvent.data.value.value) {
+                const contact = Contact.decode(queryEvent.data.value.value)
+                handler(contact, !!queryEvent.data.local)
               }
               break
             case QueryEvent.Type.DONE:
@@ -342,17 +346,20 @@ class API {
 
   feed = async (offset: string, limit: number, mode: FeedMode, threadId?: string): Promise<IFeedItemList> => {
     const result = await TextileNode.feed(offset, limit, mode, threadId)
-    return JSON.parse(result) as IFeedItemList
+    const buffer = Buffer.from(result, 'base64')
+    return FeedItemList.decode(buffer)
   }
 
   files = async (offset: string, limit: number, threadId?: string): Promise<IFilesList> => {
     const result = await TextileNode.files(offset, limit, threadId)
-    return JSON.parse(result) as IFilesList
+    const buffer = Buffer.from(result, 'base64')
+    return FilesList.decode(buffer)
   }
 
   messages = async (offset: string, limit: number, threadId?: string): Promise<ITextList> => {
     const result = await TextileNode.messages(offset, limit, threadId)
-    return JSON.parse(result) as ITextList
+    const buffer = Buffer.from(result, 'base64')
+    return TextList.decode(buffer)
   }
 
   threadInfo = async (threadId: string): Promise<ThreadInfo> => {
