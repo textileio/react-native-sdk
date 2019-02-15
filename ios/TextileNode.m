@@ -393,7 +393,8 @@ RCT_EXPORT_METHOD(stop:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejec
 
 RCT_EXPORT_METHOD(feed:(NSString*)offset limit:(NSInteger)limit threadId:(NSString*)threadId mode:(NSInteger*)mode resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSError *error;
-  NSData *result = [self.node feed:offset limit:limit threadId:threadId mode:(int32_t) mode error:&error];
+  int32_t m = mode ? (int32_t) mode : 0;
+  NSData *result = [self.node feed:offset limit:limit threadId:threadId mode:m error:&error];
   NSString *base64 = [result base64EncodedStringWithOptions:0];
   [self fulfillWithResult:base64 error:error resolver:resolve rejecter:reject];
 }

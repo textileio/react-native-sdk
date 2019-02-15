@@ -12,7 +12,6 @@ import com.facebook.react.bridge.WritableNativeMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -295,13 +294,7 @@ public class TextileNode extends ReactContextBaseJavaModule {
             @Override
             public void run() {
                 try {
-                    byte[] bytes = node.cafeSession(peerId);
-                    if (bytes != null) {
-                        String base64 = Base64.encodeToString(bytes, Base64.DEFAULT);
-                        promise.resolve(base64);
-                    } else {
-                        promise.resolve("");
-                    }
+                    promise.resolve(stringEncode(node.cafeSession(peerId)));
                 }
                 catch (Exception e) {
                     promise.reject("cafeSession", e);
@@ -316,13 +309,7 @@ public class TextileNode extends ReactContextBaseJavaModule {
             @Override
             public void run() {
                 try {
-                    byte[] bytes = node.cafeSessions();
-                    if (bytes != null) {
-                        String base64 = Base64.encodeToString(bytes, Base64.DEFAULT);
-                        promise.resolve(base64);
-                    } else {
-                        promise.resolve("");
-                    }
+                    promise.resolve(stringEncode(node.cafeSessions()));
                 }
                 catch (Exception e) {
                     promise.reject("cafeSessions", e);
@@ -520,13 +507,7 @@ public class TextileNode extends ReactContextBaseJavaModule {
             @Override
             public void run() {
                 try {
-                    byte[] bytes = node.prepareFiles(path, threadId);
-                    if (bytes != null) {
-                        String base64 = Base64.encodeToString(bytes, Base64.DEFAULT);
-                        promise.resolve(base64);
-                    } else {
-                        promise.resolve("");
-                    }
+                    promise.resolve(stringEncode(node.prepareFiles(path, threadId)));
                 }
                 catch (Exception e) {
                     promise.reject("prepareFiles", e);
@@ -545,12 +526,7 @@ public class TextileNode extends ReactContextBaseJavaModule {
                         @Override
                         public void call(byte[] bytes, Exception e) {
                             if (e == null) {
-                                if (bytes != null) {
-                                    String base64 = Base64.encodeToString(bytes, Base64.DEFAULT);
-                                    promise.resolve(base64);
-                                } else {
-                                    promise.resolve("");
-                                }
+                                promise.resolve(stringEncode(bytes));
                             } else {
                                 promise.reject("prepareFilesAsync", e);
                             }
@@ -617,13 +593,7 @@ public class TextileNode extends ReactContextBaseJavaModule {
             @Override
             public void run() {
                 try {
-                    byte[] bytes = node.refreshCafeSession(peerId);
-                    if (bytes != null) {
-                        String base64 = Base64.encodeToString(bytes, Base64.DEFAULT);
-                        promise.resolve(base64);
-                    } else {
-                        promise.resolve("");
-                    }
+                    promise.resolve(stringEncode(node.refreshCafeSession(peerId)));
                 }
                 catch (Exception e) {
                     promise.reject("refreshCafeSession", e);
@@ -833,12 +803,13 @@ public class TextileNode extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void feed(final String offset, final Integer limit, final String threadId, final Promise promise) {
+    public void feed(final String offset, final Integer limit, final String threadId, final Integer mode, final Promise promise) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
                 try {
-                    promise.resolve(node.feed(offset, limit, threadId));
+                    int m = mode != null ? mode : 0;
+                    promise.resolve(stringEncode(node.feed(offset, limit, threadId, m)));
                 }
                 catch (Exception e) {
                     promise.reject("feed", e);
@@ -853,7 +824,7 @@ public class TextileNode extends ReactContextBaseJavaModule {
             @Override
             public void run() {
                 try {
-                    promise.resolve(node.files(offset, limit, threadId));
+                    promise.resolve(stringEncode(node.files(offset, limit, threadId)));
                 }
                 catch (Exception e) {
                     promise.reject("files", e);
@@ -868,7 +839,7 @@ public class TextileNode extends ReactContextBaseJavaModule {
             @Override
             public void run() {
                 try {
-                    promise.resolve(node.messages(offset, limit, threadId));
+                    promise.resolve(stringEncode(node.messages(offset, limit, threadId)));
                 }
                 catch (Exception e) {
                     promise.reject("messages", e);
@@ -1045,6 +1016,13 @@ public class TextileNode extends ReactContextBaseJavaModule {
         // A method for emitting from the native side to JS
         // https://facebook.github.io/react-native/docs/native-modules-android.html#sending-events-to-javascript
         reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(eventName, eventData);
+    }
+
+    private static String stringEncode(byte[] data) {
+        if (data == null) {
+            return "";
+        }
+        return Base64.encodeToString(data, Base64.DEFAULT);
     }
 
 }
