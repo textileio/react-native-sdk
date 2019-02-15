@@ -12,6 +12,21 @@ export interface DiscoveredCafes {
   readonly secondary: DiscoveredCafe
 }
 
+export interface File {
+  readonly mill: string
+  readonly checksum: string
+  readonly source: string
+  readonly opts?: string
+  readonly hash: string
+  readonly key?: string
+  readonly media: string
+  readonly name?: string
+  readonly size: number
+  readonly added: string
+  readonly meta?: { readonly [key: string]: any }
+  readonly targets?: ReadonlyArray<string>
+}
+
 export enum BlockType {
   MERGE = 'MERGE',
   IGNORE = 'IGNORE',

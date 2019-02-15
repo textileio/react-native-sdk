@@ -3,6 +3,7 @@ import {Buffer} from 'buffer'
 import NativeEvents from '../../NativeEvents'
 
 import {
+  File,
   BlockInfo,
   BufferJSON,
   ContactInfo,
@@ -33,7 +34,6 @@ import {
   IContactQuery,
   IDirectory,
   IFeedItemList,
-  IFileIndex,
   IFilesList,
   IMobilePreparedFiles,
   IQueryOptions,
@@ -70,9 +70,9 @@ class API {
     return JSON.parse(result) as ExternalInvite
   }
 
-  addSchema = async (jsonstr: string): Promise<IFileIndex> => {
+  addSchema = async (jsonstr: string): Promise<File> => {
     const result = await TextileNode.addSchema(jsonstr)
-    return JSON.parse(result) as IFileIndex
+    return JSON.parse(result) as File
   }
 
   addThread = async (key: string, name: string, type: ThreadType, sharing: ThreadSharing, members: string[], schema_type: SchemaType, schema_json?: string): Promise<ThreadInfo> => {
