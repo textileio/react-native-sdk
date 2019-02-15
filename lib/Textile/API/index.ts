@@ -1,43 +1,47 @@
-import { NativeModules, EmitterSubscription } from 'react-native'
-import { Buffer } from 'buffer'
+import {EmitterSubscription, NativeModules} from 'react-native'
+import {Buffer} from 'buffer'
 import NativeEvents from '../../NativeEvents'
 
 import {
   File,
-  ExternalInvite,
+  BlockInfo,
+  BufferJSON,
   ContactInfo,
   ContactInfoQueryResult,
-  Overview,
+  ExternalInvite,
   FileData,
-  ThreadInfo,
-  WalletAccount,
-  BlockInfo,
+  LogLevel,
   NotificationInfo,
-  ThreadFilesInfo,
-  ThreadFeedItem,
-  ThreadMessageInfo,
+  Overview,
+  SchemaType,
+  ThreadInfo,
   ThreadSharing,
   ThreadType,
-  LogLevel,
-  SchemaType,
-  BufferJSON
+  WalletAccount
 } from '../Models'
 
 import {
-  IMobilePreparedFiles,
-  ICafeSession,
-  ICafeSessions,
-  IDirectory,
-  IQueryOptions,
-  IContactQuery,
-  MobilePreparedFiles,
   CafeSession,
   CafeSessions,
-  Directory,
-  ContactQuery,
-  QueryOptions,
   Contact,
-  QueryEvent
+  ContactQuery,
+  Directory,
+  FeedItemList,
+  FeedMode,
+  FilesList,
+  ICafeSession,
+  ICafeSessions,
+  IContactQuery,
+  IDirectory,
+  IFeedItemList,
+  IFilesList,
+  IMobilePreparedFiles,
+  IQueryOptions,
+  ITextList,
+  MobilePreparedFiles,
+  QueryEvent,
+  QueryOptions,
+  TextList
 } from '@textile/react-native-protobufs'
 
 const { TextileNode } = NativeModules
@@ -46,13 +50,13 @@ class API {
   /**
    * Returns the hash of the initial join block. Not the threadId of the final thread created/joined
    */
-  acceptExternalThreadInvite = async (id_: string, key: string): Promise<string> => {
-    const result = await TextileNode.acceptExternalThreadInvite(id_, key) // returns hash
+  acceptExternalInvite = async (id_: string, key: string): Promise<string> => {
+    const result = await TextileNode.acceptExternalInvite(id_, key) // returns hash
     return result as string
   }
 
-  acceptThreadInviteViaNotification = async (id_: string): Promise<string> => {
-    const result = await TextileNode.acceptThreadInviteViaNotification(id_) // returns addr
+  acceptInviteViaNotification = async (id_: string): Promise<string> => {
+    const result = await TextileNode.acceptInviteViaNotification(id_) // returns addr
     return result as string
   }
 
@@ -61,8 +65,8 @@ class API {
     await TextileNode.addContact(contactJsonString)
   }
 
-  addExternalThreadInvite = async (threadId: string): Promise<ExternalInvite> => {
-    const result = await TextileNode.addExternalThreadInvite(threadId)
+  addExternalInvite = async (threadId: string): Promise<ExternalInvite> => {
+    const result = await TextileNode.addExternalInvite(threadId)
     return JSON.parse(result) as ExternalInvite
   }
 
@@ -71,50 +75,50 @@ class API {
     return JSON.parse(result) as File
   }
 
-  addThread = async (key: string, name: string, type: ThreadType, sharing: ThreadSharing, members: string[], schema_type: SchemaType, json_schema?: string): Promise<ThreadInfo> => {
+  addThread = async (key: string, name: string, type: ThreadType, sharing: ThreadSharing, members: string[], schema_type: SchemaType, schema_json?: string): Promise<ThreadInfo> => {
     const stringMembers = members.join(',')
     const media = schema_type === SchemaType.MEDIA
     const cameraRoll = !media && schema_type === SchemaType.CAMERA_ROLL
-    const schema = schema_type === SchemaType.JSON && json_schema ? json_schema : ''
+    const schema = schema_type === SchemaType.JSON && schema_json ? schema_json : ''
     const result = await TextileNode.addThread(key, name, type, sharing, stringMembers, schema, media, cameraRoll)
     return JSON.parse(result) as ThreadInfo
   }
 
-  addThreadComment = async (blockId: string, body: string): Promise<string> => {
-    const result = await TextileNode.addThreadComment(blockId, body) // returns hash
+  addComment = async (blockId: string, body: string): Promise<string> => {
+    const result = await TextileNode.addComment(blockId, body) // returns hash
     return result as string
   }
 
-  addThreadFiles = async (dir: IDirectory, threadId: string, caption?: string): Promise<BlockInfo> => {
+  addFiles = async (dir: IDirectory, threadId: string, caption?: string): Promise<BlockInfo> => {
     const byteArray = Directory.encode(dir).finish()
     const buffer = Buffer.from(byteArray)
     const base64 = buffer.toString('base64')
-    const result = await TextileNode.addThreadFiles(base64, threadId, caption)
+    const result = await TextileNode.addFiles(base64, threadId, caption)
     return JSON.parse(result) as BlockInfo
   }
 
-  addThreadFilesByTarget = async (target: string, threadId: string, caption?: string): Promise<BlockInfo> => {
-    const result = await TextileNode.addThreadFilesByTarget(target, threadId, caption)
+  addFilesByTarget = async (target: string, threadId: string, caption?: string): Promise<BlockInfo> => {
+    const result = await TextileNode.addFilesByTarget(target, threadId, caption)
     return JSON.parse(result) as BlockInfo
   }
 
-  addThreadIgnore = async (blockId: string): Promise<string> => {
-    const result = await TextileNode.addThreadIgnore(blockId) // returns hash
+  addIgnore = async (blockId: string): Promise<string> => {
+    const result = await TextileNode.addIgnore(blockId) // returns hash
     return result as string
   }
 
-  addThreadInvite = async (threadId: string, inviteeId: string): Promise<string> => {
-    const result = await TextileNode.addThreadInvite(threadId, inviteeId) // returns hash
+  addInvite = async (threadId: string, inviteeId: string): Promise<string> => {
+    const result = await TextileNode.addInvite(threadId, inviteeId) // returns hash
     return result as string
   }
 
-  addThreadLike = async (blockId: string): Promise<string> => {
-    const result = await TextileNode.addThreadLike(blockId) // returns hash
+  addLike = async (blockId: string): Promise<string> => {
+    const result = await TextileNode.addLike(blockId) // returns hash
     return result as string
   }
 
-  addThreadMessage = async (threadId: string, body: string): Promise<string> => {
-    const result = await TextileNode.addThreadMessage(threadId, body) // returns hash
+  addMessage = async (threadId: string, body: string): Promise<string> => {
+    const result = await TextileNode.addMessage(threadId, body) // returns hash
     return result as string
   }
 
@@ -184,8 +188,8 @@ class API {
     return JSON.parse(result) as ContactInfoQueryResult
   }
 
-  ignoreThreadInviteViaNotification = async (id_: string): Promise<string> => {
-    const result = await TextileNode.ignoreThreadInviteViaNotification(id_)
+  ignoreInviteViaNotification = async (id_: string): Promise<string> => {
+    const result = await TextileNode.ignoreInviteViaNotification(id_)
     return result as string
   }
 
@@ -253,7 +257,7 @@ class API {
     return result as string
   }
 
-  searchContacts = async (query: IContactQuery, options: IQueryOptions, handler: (contact: Contact) => void): Promise<void> => {
+  searchContacts = async (query: IContactQuery, options: IQueryOptions, handler: (contact: Contact, local: boolean) => void): Promise<void> => {
     return new Promise(async (resolve, reject) => {
       // internal contact search result handler
       let stream: EmitterSubscription
@@ -277,14 +281,15 @@ class API {
           const buffer = Buffer.from(result, 'base64')
           const queryEvent = QueryEvent.decode(buffer)
           switch (queryEvent.type) {
-            case 1:
+            case QueryEvent.Type.DATA:
+              if (queryEvent.data && queryEvent.data.value && queryEvent.data.value.value) {
+                const contact = Contact.decode(queryEvent.data.value.value)
+                handler(contact, !!queryEvent.data.local)
+              }
+              break
+            case QueryEvent.Type.DONE:
               cleanup()
               resolve()
-              break
-            case 0:
-              if (queryEvent.data) {
-                handler(queryEvent.data as Contact)
-              }
               break
           }
         })
@@ -339,19 +344,22 @@ class API {
     await TextileNode.stop()
   }
 
-  threadFeed = async (offset: string, limit: number, threadId?: string): Promise<ReadonlyArray<ThreadFeedItem>> => {
-    const result = await TextileNode.threadFeed(offset, limit, threadId)
-    return JSON.parse(result) as ReadonlyArray<ThreadFeedItem>
+  feed = async (offset: string, limit: number, mode: FeedMode, threadId?: string): Promise<IFeedItemList> => {
+    const result = await TextileNode.feed(offset, limit, mode, threadId)
+    const buffer = Buffer.from(result, 'base64')
+    return FeedItemList.decode(buffer)
   }
 
-  threadFiles = async (offset: string, limit: number, threadId?: string): Promise<ReadonlyArray<ThreadFilesInfo>> => {
-    const result = await TextileNode.threadFiles(offset, limit, threadId)
-    return JSON.parse(result) as ReadonlyArray<ThreadFilesInfo>
+  files = async (offset: string, limit: number, threadId?: string): Promise<IFilesList> => {
+    const result = await TextileNode.files(offset, limit, threadId)
+    const buffer = Buffer.from(result, 'base64')
+    return FilesList.decode(buffer)
   }
 
-  threadMessages = async (offset: string, limit: number, threadId?: string): Promise<ReadonlyArray<ThreadMessageInfo>> => {
-    const result = await TextileNode.threadMessages(offset, limit, threadId)
-    return JSON.parse(result) as ReadonlyArray<ThreadMessageInfo>
+  messages = async (offset: string, limit: number, threadId?: string): Promise<ITextList> => {
+    const result = await TextileNode.messages(offset, limit, threadId)
+    const buffer = Buffer.from(result, 'base64')
+    return TextList.decode(buffer)
   }
 
   threadInfo = async (threadId: string): Promise<ThreadInfo> => {

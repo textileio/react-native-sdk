@@ -12,7 +12,6 @@ import com.facebook.react.bridge.WritableNativeMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -54,30 +53,30 @@ public class TextileNode extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void acceptExternalThreadInvite(final String id_, final String key, final Promise promise) {
+    public void acceptExternalInvite(final String id_, final String key, final Promise promise) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
                 try {
-                    promise.resolve(node.acceptExternalThreadInvite(id_, key));
+                    promise.resolve(node.acceptExternalInvite(id_, key));
                 }
                 catch (Exception e) {
-                    promise.reject("acceptExternalThreadInvite", e);
+                    promise.reject("acceptExternalInvite", e);
                 }
             }
         });
     }
 
     @ReactMethod
-    public void acceptThreadInviteViaNotification(final String id_, final Promise promise) {
+    public void acceptInviteViaNotification(final String id_, final Promise promise) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
                 try {
-                    promise.resolve(node.acceptThreadInviteViaNotification(id_));
+                    promise.resolve(node.acceptInviteViaNotification(id_));
                 }
                 catch (Exception e) {
-                    promise.reject("acceptThreadInviteViaNotification", e);
+                    promise.reject("acceptInviteViaNotification", e);
                 }
             }
         });
@@ -100,15 +99,15 @@ public class TextileNode extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void addExternalThreadInvite(final String threadId, final Promise promise) {
+    public void addExternalInvite(final String threadId, final Promise promise) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
                 try {
-                    promise.resolve(node.addExternalThreadInvite(threadId));
+                    promise.resolve(node.addExternalInvite(threadId));
                 }
                 catch (Exception e) {
-                    promise.reject("addExternalThreadInvite", e);
+                    promise.reject("addExternalInvite", e);
                 }
             }
         });
@@ -154,106 +153,106 @@ public class TextileNode extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void addThreadComment(final String blockId, final String body, final Promise promise) {
+    public void addComment(final String blockId, final String body, final Promise promise) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
                 try {
-                    promise.resolve(node.addThreadComment(blockId, body));
+                    promise.resolve(node.addComment(blockId, body));
                 }
                 catch (Exception e) {
-                    promise.reject("addThreadComment", e);
+                    promise.reject("addComment", e);
                 }
             }
         });
     }
 
     @ReactMethod
-    public void addThreadFiles(final String dir, final String threadId, final String caption, final Promise promise) {
+    public void addFiles(final String dir, final String threadId, final String caption, final Promise promise) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
                 try {
                     byte[] bytes = Base64.decode(dir, Base64.DEFAULT);
-                    promise.resolve(node.addThreadFiles(bytes, threadId, caption));
+                    promise.resolve(node.addFiles(bytes, threadId, caption));
                 }
                 catch (Exception e) {
-                    promise.reject("addThreadFiles", e);
+                    promise.reject("addFiles", e);
                 }
             }
         });
     }
 
     @ReactMethod
-    public void addThreadFilesByTarget(final String target, final String threadId, final String caption, final Promise promise) {
+    public void addFilesByTarget(final String target, final String threadId, final String caption, final Promise promise) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
                 try {
-                    promise.resolve(node.addThreadFilesByTarget(target, threadId, caption));
+                    promise.resolve(node.addFilesByTarget(target, threadId, caption));
                 }
                 catch (Exception e) {
-                    promise.reject("addThreadFilesByTarget", e);
+                    promise.reject("addFilesByTarget", e);
                 }
             }
         });
     }
 
     @ReactMethod
-    public void addThreadIgnore(final String blockId, final Promise promise) {
+    public void addIgnore(final String blockId, final Promise promise) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
                 try {
-                    promise.resolve(node.addThreadIgnore(blockId));
+                    promise.resolve(node.addIgnore(blockId));
                 }
                 catch (Exception e) {
-                    promise.reject("addThreadIgnore", e);
+                    promise.reject("addIgnore", e);
                 }
             }
         });
     }
 
     @ReactMethod
-    public void addThreadInvite(final String threadId, final String inviteeId, final Promise promise) {
+    public void addInvite(final String threadId, final String inviteeId, final Promise promise) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
                 try {
-                    promise.resolve(node.addThreadInvite(threadId, inviteeId));
+                    promise.resolve(node.addInvite(threadId, inviteeId));
                 }
                 catch (Exception e) {
-                    promise.reject("addThreadInvite", e);
+                    promise.reject("addInvite", e);
                 }
             }
         });
     }
 
     @ReactMethod
-    public void addThreadLike(final String blockId, final Promise promise) {
+    public void addLike(final String blockId, final Promise promise) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
                 try {
-                    promise.resolve(node.addThreadLike(blockId));
+                    promise.resolve(node.addLike(blockId));
                 }
                 catch (Exception e) {
-                    promise.reject("addThreadLike", e);
+                    promise.reject("addLike", e);
                 }
             }
         });
     }
 
     @ReactMethod
-    public void addThreadMessage(final String threadId, final String body, final Promise promise) {
+    public void addMessage(final String threadId, final String body, final Promise promise) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
                 try {
-                    promise.resolve(node.addThreadMessage(threadId, body));
+                    promise.resolve(node.addMessage(threadId, body));
                 }
                 catch (Exception e) {
-                    promise.reject("addThreadMessage", e);
+                    promise.reject("addMessage", e);
                 }
             }
         });
@@ -295,13 +294,7 @@ public class TextileNode extends ReactContextBaseJavaModule {
             @Override
             public void run() {
                 try {
-                    byte[] bytes = node.cafeSession(peerId);
-                    if (bytes != null) {
-                        String base64 = Base64.encodeToString(bytes, Base64.DEFAULT);
-                        promise.resolve(base64);
-                    } else {
-                        promise.resolve("");
-                    }
+                    promise.resolve(stringEncode(node.cafeSession(peerId)));
                 }
                 catch (Exception e) {
                     promise.reject("cafeSession", e);
@@ -316,13 +309,7 @@ public class TextileNode extends ReactContextBaseJavaModule {
             @Override
             public void run() {
                 try {
-                    byte[] bytes = node.cafeSessions();
-                    if (bytes != null) {
-                        String base64 = Base64.encodeToString(bytes, Base64.DEFAULT);
-                        promise.resolve(base64);
-                    } else {
-                        promise.resolve("");
-                    }
+                    promise.resolve(stringEncode(node.cafeSessions()));
                 }
                 catch (Exception e) {
                     promise.reject("cafeSessions", e);
@@ -439,16 +426,16 @@ public class TextileNode extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void ignoreThreadInviteViaNotification(final String id_, final Promise promise) {
+    public void ignoreInviteViaNotification(final String id_, final Promise promise) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
                 try {
-                    node.ignoreThreadInviteViaNotification(id_);
+                    node.ignoreInviteViaNotification(id_);
                     promise.resolve(null);
                 }
                 catch (Exception e) {
-                    promise.reject("ignoreThreadInviteViaNotification", e);
+                    promise.reject("ignoreInviteViaNotification", e);
                 }
             }
         });
@@ -520,13 +507,7 @@ public class TextileNode extends ReactContextBaseJavaModule {
             @Override
             public void run() {
                 try {
-                    byte[] bytes = node.prepareFiles(path, threadId);
-                    if (bytes != null) {
-                        String base64 = Base64.encodeToString(bytes, Base64.DEFAULT);
-                        promise.resolve(base64);
-                    } else {
-                        promise.resolve("");
-                    }
+                    promise.resolve(stringEncode(node.prepareFiles(path, threadId)));
                 }
                 catch (Exception e) {
                     promise.reject("prepareFiles", e);
@@ -545,12 +526,7 @@ public class TextileNode extends ReactContextBaseJavaModule {
                         @Override
                         public void call(byte[] bytes, Exception e) {
                             if (e == null) {
-                                if (bytes != null) {
-                                    String base64 = Base64.encodeToString(bytes, Base64.DEFAULT);
-                                    promise.resolve(base64);
-                                } else {
-                                    promise.resolve("");
-                                }
+                                promise.resolve(stringEncode(bytes));
                             } else {
                                 promise.reject("prepareFilesAsync", e);
                             }
@@ -617,13 +593,7 @@ public class TextileNode extends ReactContextBaseJavaModule {
             @Override
             public void run() {
                 try {
-                    byte[] bytes = node.refreshCafeSession(peerId);
-                    if (bytes != null) {
-                        String base64 = Base64.encodeToString(bytes, Base64.DEFAULT);
-                        promise.resolve(base64);
-                    } else {
-                        promise.resolve("");
-                    }
+                    promise.resolve(stringEncode(node.refreshCafeSession(peerId)));
                 }
                 catch (Exception e) {
                     promise.reject("refreshCafeSession", e);
@@ -833,45 +803,46 @@ public class TextileNode extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void threadFeed(final String offset, final Integer limit, final String threadId, final Promise promise) {
+    public void feed(final String offset, final Integer limit, final Integer mode, final String threadId, final Promise promise) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
                 try {
-                    promise.resolve(node.threadFeed(offset, limit, threadId));
+                    int m = mode != null ? mode : 0;
+                    promise.resolve(stringEncode(node.feed(offset, limit, threadId, m)));
                 }
                 catch (Exception e) {
-                    promise.reject("threadFeed", e);
+                    promise.reject("feed", e);
                 }
             }
         });
     }
 
     @ReactMethod
-    public void threadFiles(final String offset, final Integer limit, final String threadId, final Promise promise) {
+    public void files(final String offset, final Integer limit, final String threadId, final Promise promise) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
                 try {
-                    promise.resolve(node.threadFiles(offset, limit, threadId));
+                    promise.resolve(stringEncode(node.files(offset, limit, threadId)));
                 }
                 catch (Exception e) {
-                    promise.reject("threadFiles", e);
+                    promise.reject("files", e);
                 }
             }
         });
     }
 
     @ReactMethod
-    public void threadMessages(final String offset, final Integer limit, final String threadId, final Promise promise) {
+    public void messages(final String offset, final Integer limit, final String threadId, final Promise promise) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
                 try {
-                    promise.resolve(node.threadMessages(offset, limit, threadId));
+                    promise.resolve(stringEncode(node.messages(offset, limit, threadId)));
                 }
                 catch (Exception e) {
-                    promise.reject("threadMessages", e);
+                    promise.reject("messages", e);
                 }
             }
         });
@@ -1045,6 +1016,13 @@ public class TextileNode extends ReactContextBaseJavaModule {
         // A method for emitting from the native side to JS
         // https://facebook.github.io/react-native/docs/native-modules-android.html#sending-events-to-javascript
         reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(eventName, eventData);
+    }
+
+    private static String stringEncode(byte[] data) {
+        if (data == null) {
+            return "";
+        }
+        return Base64.encodeToString(data, Base64.DEFAULT);
     }
 
 }

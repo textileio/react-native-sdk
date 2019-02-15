@@ -10,15 +10,15 @@ const api = new API()
 describe('textile api', () => {
     describe('thread invites', () => {
         it('accept external thread invite', async () => {
-            const result = await api.acceptExternalThreadInvite(threadId, threadKey)
+            const result = await api.acceptExternalInvite(threadId, threadKey)
             expect(result).toEqual('SUCCESS')
         })
         it('add thread invite via notification', async () => {
-            const result = await api.acceptThreadInviteViaNotification(threadId)
+            const result = await api.acceptInviteViaNotification(threadId)
             expect(result).toEqual('SUCCESS')
         })
         it('add external thread invite', async () => {
-            const result = await api.addExternalThreadInvite(threadId)
+            const result = await api.addExternalInvite(threadId)
             expect(typeof result).toEqual('object')
             expect(result).toHaveProperty('id')
             expect(result.id).toEqual(threadId)
@@ -44,9 +44,9 @@ describe('textile api', () => {
             expect(result).toHaveProperty('name')
             expect(result.name).toEqual(threadName)
         })
-        it('addThreadFiles', async () => {
+        it('addFiles', async () => {
             const dir: IDirectory = {}
-            const result = await api.addThreadFiles(dir, threadId, 'here we go')
+            const result = await api.addFiles(dir, threadId, 'here we go')
             expect(typeof result).toEqual('object')
             expect(result).toHaveProperty('thread_id')
             expect(result.thread_id).toEqual(threadId)

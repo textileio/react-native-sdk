@@ -8,7 +8,7 @@ jest.mock('react-native', () => {
   return {
     DeviceEventEmitter: new DeviceEvent(),
     NativeModules: {
-      TextileNode 
+      TextileNode
     },
     Platform: {
       OS: 'android',

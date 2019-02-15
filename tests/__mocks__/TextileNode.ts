@@ -1,6 +1,6 @@
 import {
-    ExternalInvite,
     File,
+    ExternalInvite,
     ThreadInfo,
     ThreadType,
     ThreadSharing,
@@ -11,13 +11,13 @@ import {
 } from '../../lib/Textile/Models'
 
 export default {
-    acceptExternalThreadInvite: jest.fn((id, key): Promise<string> => new Promise((resolve) => {
+    acceptExternalInvite: jest.fn((id, key): Promise<string> => new Promise((resolve) => {
         resolve('SUCCESS')
     })),
-    acceptThreadInviteViaNotification: jest.fn((id): Promise<string> => new Promise((resolve) => {
+    acceptInviteViaNotification: jest.fn((id): Promise<string> => new Promise((resolve) => {
         resolve('SUCCESS')
     })),
-    addExternalThreadInvite: jest.fn((id): Promise<string> => new Promise((resolve) => {
+    addExternalInvite: jest.fn((id): Promise<string> => new Promise((resolve) => {
         const mockInvite: ExternalInvite = {
             id,
             key: 'VsHHHz8bC8fu9k78RaX8ujQsUzGzaUxwKJyLFKKDacUZoWJaouGnzUQwgmh5',
@@ -54,7 +54,7 @@ export default {
           }
         resolve(JSON.stringify(mockThreadInfo))
     })),
-    addThreadFiles: jest.fn((base64: string, threadId: string, caption: string): Promise<string> => new Promise((resolve) => {
+    addFiles: jest.fn((base64: string, threadId: string, caption: string): Promise<string> => new Promise((resolve) => {
         const mockBlockInfo: BlockInfo = {
             id: 'ABC',
             thread_id: threadId,

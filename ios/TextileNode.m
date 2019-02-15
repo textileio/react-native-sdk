@@ -74,15 +74,15 @@ RCT_EXPORT_MODULE();
 // Export methods to a native module
 // https://facebook.github.io/react-native/docs/native-modules-ios.html
 
-RCT_EXPORT_METHOD(acceptExternalThreadInvite:(NSString*)id_ key:(NSString*)key resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_EXPORT_METHOD(acceptExternalInvite:(NSString*)id_ key:(NSString*)key resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSError *error;
-  NSString *result = [self.node acceptExternalThreadInvite:id_ key:key error:&error];
+  NSString *result = [self.node acceptExternalInvite:id_ key:key error:&error];
   [self fulfillWithResult:result error:error resolver:resolve rejecter:reject];
 }
 
-RCT_EXPORT_METHOD(acceptThreadInviteViaNotification:(NSString*)id_ resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_EXPORT_METHOD(acceptInviteViaNotification:(NSString*)id_ resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSError *error;
-  NSString *result = [self.node acceptThreadInviteViaNotification:id_ error:&error];
+  NSString *result = [self.node acceptInviteViaNotification:id_ error:&error];
   [self fulfillWithResult:result error:error resolver:resolve rejecter:reject];
 }
 
@@ -92,9 +92,9 @@ RCT_EXPORT_METHOD(addContact:(NSString*)contactJsonString resolver:(RCTPromiseRe
   [self fulfillWithResult:nil error:error resolver:resolve rejecter:reject];
 }
 
-RCT_EXPORT_METHOD(addExternalThreadInvite:(NSString*)threadId resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_EXPORT_METHOD(addExternalInvite:(NSString*)threadId resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSError *error;
-  NSString *result = [self.node addExternalThreadInvite:threadId error:&error];
+  NSString *result = [self.node addExternalInvite:threadId error:&error];
   [self fulfillWithResult:result error:error resolver:resolve rejecter:reject];
 }
 
@@ -119,46 +119,46 @@ RCT_EXPORT_METHOD(addThread:(NSString*)key name:(NSString*)name type:(NSString*)
   [self fulfillWithResult:result error:error resolver:resolve rejecter:reject];
 }
 
-RCT_EXPORT_METHOD(addThreadComment:(NSString*)blockId body:(NSString*)body resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_EXPORT_METHOD(addComment:(NSString*)blockId body:(NSString*)body resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSError *error;
-  NSString *result = [self.node addThreadComment:blockId body:body error:&error];
+  NSString *result = [self.node addComment:blockId body:body error:&error];
   [self fulfillWithResult:result error:error resolver:resolve rejecter:reject];
 }
 
-RCT_EXPORT_METHOD(addThreadFiles:(NSString*)dir threadId:(NSString*)threadId caption:(NSString*)caption resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_EXPORT_METHOD(addFiles:(NSString*)dir threadId:(NSString*)threadId caption:(NSString*)caption resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSError *error;
   NSData *data = [[NSData alloc] initWithBase64EncodedString:dir options:0];
-  NSString *result = [self.node addThreadFiles:data threadId:threadId caption:caption error:&error];
+  NSString *result = [self.node addFiles:data threadId:threadId caption:caption error:&error];
   [self fulfillWithResult:result error:error resolver:resolve rejecter:reject];
 }
 
-RCT_EXPORT_METHOD(addThreadFilesByTarget:(NSString*)target threadId:(NSString*)threadId caption:(NSString*)caption resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_EXPORT_METHOD(addFilesByTarget:(NSString*)target threadId:(NSString*)threadId caption:(NSString*)caption resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSError *error;
-  NSString *result = [self.node addThreadFilesByTarget:target threadId:threadId caption:caption error:&error];
+  NSString *result = [self.node addFilesByTarget:target threadId:threadId caption:caption error:&error];
   [self fulfillWithResult:result error:error resolver:resolve rejecter:reject];
 }
 
-RCT_EXPORT_METHOD(addThreadIgnore:(NSString*)blockId resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_EXPORT_METHOD(addIgnore:(NSString*)blockId resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSError *error;
-  NSString *result = [self.node addThreadIgnore:blockId error:&error];
+  NSString *result = [self.node addIgnore:blockId error:&error];
   [self fulfillWithResult:result error:error resolver:resolve rejecter:reject];
 }
 
-RCT_EXPORT_METHOD(addThreadInvite:(NSString*)threadId inviteeId:(NSString*)inviteeId resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_EXPORT_METHOD(addInvite:(NSString*)threadId inviteeId:(NSString*)inviteeId resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSError *error;
-  NSString *result = [self.node addThreadInvite:threadId inviteeId:inviteeId error:&error];
+  NSString *result = [self.node addInvite:threadId inviteeId:inviteeId error:&error];
   [self fulfillWithResult:result error:error resolver:resolve rejecter:reject];
 }
 
-RCT_EXPORT_METHOD(addThreadLike:(NSString*)blockId resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_EXPORT_METHOD(addLike:(NSString*)blockId resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSError *error;
-  NSString *result = [self.node addThreadLike:blockId error:&error];
+  NSString *result = [self.node addLike:blockId error:&error];
   [self fulfillWithResult:result error:error resolver:resolve rejecter:reject];
 }
 
-RCT_EXPORT_METHOD(addThreadMessage:(NSString*)threadId body:(NSString*)body resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_EXPORT_METHOD(addMessage:(NSString*)threadId body:(NSString*)body resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSError *error;
-  NSString *result = [self.node addThreadMessage:threadId body:body error:&error];
+  NSString *result = [self.node addMessage:threadId body:body error:&error];
   [self fulfillWithResult:result error:error resolver:resolve rejecter:reject];
 }
 
@@ -229,9 +229,9 @@ RCT_EXPORT_METHOD(fileData:(NSString*)hash resolver:(RCTPromiseResolveBlock)reso
   [self fulfillWithResult:result error:error resolver:resolve rejecter:reject];
 }
 
-RCT_EXPORT_METHOD(ignoreThreadInviteViaNotification:(NSString*)id_ resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_EXPORT_METHOD(ignoreInviteViaNotification:(NSString*)id_ resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSError *error;
-  [self.node ignoreThreadInviteViaNotification:id_ error:&error];
+  [self.node ignoreInviteViaNotification:id_ error:&error];
   [self fulfillWithResult:nil error:error resolver:resolve rejecter:reject];
 }
 
@@ -391,22 +391,26 @@ RCT_EXPORT_METHOD(stop:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejec
   [self fulfillWithResult:nil error:error resolver:resolve rejecter:reject];
 }
 
-RCT_EXPORT_METHOD(threadFeed:(NSString*)offset limit:(NSInteger)limit threadId:(NSString*)threadId resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_EXPORT_METHOD(feed:(NSString*)offset limit:(NSInteger)limit mode:(NSInteger*)mode threadId:(NSString*)threadId resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSError *error;
-  NSString *result = [self.node threadFeed:offset limit:limit threadId:threadId error:&error];
-  [self fulfillWithResult:result error:error resolver:resolve rejecter:reject];
+  int32_t m = mode ? (int32_t) mode : 0;
+  NSData *result = [self.node feed:offset limit:limit threadId:threadId mode:m error:&error];
+  NSString *base64 = [result base64EncodedStringWithOptions:0];
+  [self fulfillWithResult:base64 error:error resolver:resolve rejecter:reject];
 }
 
-RCT_EXPORT_METHOD(threadFiles:(NSString*)offset limit:(NSInteger)limit threadId:(NSString*)threadId resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_EXPORT_METHOD(files:(NSString*)offset limit:(NSInteger)limit threadId:(NSString*)threadId resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSError *error;
-  NSString *result = [self.node threadFiles:offset limit:limit threadId:threadId error:&error];
-  [self fulfillWithResult:result error:error resolver:resolve rejecter:reject];
+  NSData *result = [self.node files:offset limit:limit threadId:threadId error:&error];
+  NSString *base64 = [result base64EncodedStringWithOptions:0];
+  [self fulfillWithResult:base64 error:error resolver:resolve rejecter:reject];
 }
 
-RCT_EXPORT_METHOD(threadMessages:(NSString*)offset limit:(NSInteger)limit threadId:(NSString*)threadId resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_EXPORT_METHOD(messages:(NSString*)offset limit:(NSInteger)limit threadId:(NSString*)threadId resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSError *error;
-  NSString *result = [self.node threadMessages:offset limit:limit threadId:threadId error:&error];
-  [self fulfillWithResult:result error:error resolver:resolve rejecter:reject];
+  NSData *result = [self.node messages:offset limit:limit threadId:threadId error:&error];
+  NSString *base64 = [result base64EncodedStringWithOptions:0];
+  [self fulfillWithResult:base64 error:error resolver:resolve rejecter:reject];
 }
 
 RCT_EXPORT_METHOD(threadInfo:(NSString*)threadId resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {

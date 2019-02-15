@@ -6,6 +6,7 @@ export interface DiscoveredCafe {
   readonly node: string
   readonly url: string
 }
+
 export interface DiscoveredCafes {
   readonly primary: DiscoveredCafe
   readonly secondary: DiscoveredCafe
@@ -24,93 +25,6 @@ export interface File {
   readonly added: string
   readonly meta?: { readonly [key: string]: any }
   readonly targets?: ReadonlyArray<string>
-}
-
-export interface Directory {
-  readonly [key: string]: File
-}
-
-export interface ThreadFileInfo {
-  readonly index: number
-  readonly file?: File
-  readonly links?: Directory
-}
-
-export interface ThreadCommentInfo {
-  readonly id: string
-  readonly date: string
-  readonly author_id: string
-  readonly username?: string
-  readonly avatar?: string
-  readonly body: string
-}
-
-export interface ThreadLikeInfo {
-  readonly id: string
-  readonly date: string
-  readonly author_id: string
-  readonly username?: string
-  readonly avatar?: string
-}
-
-export enum ThreadFeedItemType {
-  join = 'join',
-  leave = 'leave',
-  files = 'files',
-  message = 'message'
-}
-
-export interface ThreadFeedItem {
-  readonly block: string
-  readonly type: ThreadFeedItemType
-  readonly join?: ThreadJoinInfo
-  readonly leave?: ThreadLeaveInfo
-  readonly files?: ThreadFilesInfo
-  readonly message?: ThreadMessageInfo
-}
-
-export interface ThreadFilesInfo {
-  readonly block: string
-  readonly target: string
-  readonly date: string
-  readonly author_id: string
-  readonly username?: string
-  readonly avatar?: string
-  readonly caption?: string
-  readonly files: ReadonlyArray<ThreadFileInfo>
-  readonly comments: ReadonlyArray<ThreadCommentInfo>
-  readonly likes: ReadonlyArray<ThreadLikeInfo>
-  readonly threads: ReadonlyArray<string>
-}
-
-export interface ThreadJoinInfo {
-  readonly block: string
-  readonly date: string
-  readonly author_id: string
-  readonly username?: string
-  readonly avatar?: string
-  readonly body: string
-  readonly likes: ReadonlyArray<ThreadLikeInfo>
-}
-
-export interface ThreadLeaveInfo {
-  readonly block: string
-  readonly date: string
-  readonly author_id: string
-  readonly username?: string
-  readonly avatar?: string
-  readonly likes: ReadonlyArray<ThreadLikeInfo>
-}
-
-export interface ThreadMessageInfo {
-  readonly block: string
-  readonly date: string
-  readonly author_id: string
-  readonly username?: string
-  readonly avatar?: string
-  readonly body: string
-  readonly comments: ReadonlyArray<ThreadCommentInfo>
-  readonly likes: ReadonlyArray<ThreadLikeInfo>
 }
 
 export enum BlockType {
@@ -154,14 +68,6 @@ export interface Cafe {
   readonly node: string
   readonly url: string
   readonly swarm: ReadonlyArray<string>
-}
-
-export interface CafeSession {
-  readonly id: string
-  readonly access: string
-  readonly refresh: string
-  readonly exp: string
-  readonly cafe: Cafe
 }
 
 export interface ContactInfo {
