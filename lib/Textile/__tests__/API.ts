@@ -1,5 +1,5 @@
 import API from '../API'
-import { IDirectory } from '@textile/react-native-protobufs'
+import { pb } from '../Models'
 import { SchemaType, ThreadSharing, ThreadType } from '../Models'
 
 const threadId = 'QmdNgTtH468cqZFzXCi4sVSWTbJMWQbhYb8cBVyikP9LzW'
@@ -45,7 +45,7 @@ describe('textile api', () => {
             expect(result.name).toEqual(threadName)
         })
         it('addFiles', async () => {
-            const dir: IDirectory = {}
+            const dir: pb.Directory.AsObject = { filesMap: [] }
             const result = await api.addFiles(dir, threadId, 'here we go')
             expect(typeof result).toEqual('object')
             expect(result).toHaveProperty('thread_id')
