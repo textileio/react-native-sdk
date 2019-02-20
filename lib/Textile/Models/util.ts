@@ -1,22 +1,18 @@
-import {
-  ContactQuery,
-  QueryOptions,
-  Directory,
-  FileIndex
-} from '@textile/go-mobile'
 import { Timestamp } from 'google-protobuf/google/protobuf/timestamp_pb'
 import { Struct, Value, ListValue } from 'google-protobuf/google/protobuf/struct_pb'
 
-export function convertContactQueryData(data: ContactQuery.AsObject) {
-  const query = new ContactQuery()
+import { pb } from './'
+
+export function convertContactQueryData(data: pb.ContactQuery.AsObject) {
+  const query = new pb.ContactQuery()
   query.setId(data.id)
   query.setAddress(data.address)
   query.setUsername(data.username)
   return query
 }
 
-export function convertContactQueryOptionsData(data: QueryOptions.AsObject) {
-  const options = new QueryOptions()
+export function convertContactQueryOptionsData(data: pb.QueryOptions.AsObject) {
+  const options = new pb.QueryOptions()
   options.setExcludeList(data.excludeList)
   options.setFilter(data.filter)
   options.setLimit(data.limit)
@@ -25,16 +21,16 @@ export function convertContactQueryOptionsData(data: QueryOptions.AsObject) {
   return options
 }
 
-export function convertDirectoryData(data: Directory.AsObject) {
-  const directory = new Directory()
+export function convertDirectoryData(data: pb.Directory.AsObject) {
+  const directory = new pb.Directory()
   for (const fileIndexData of data.filesMap) {
     directory.getFilesMap().set(fileIndexData[0], convertFileIndexData(fileIndexData[1]))
   }
   return directory
 }
 
-export function convertFileIndexData(data: FileIndex.AsObject) {
-  const fileIndex = new FileIndex()
+export function convertFileIndexData(data: pb.FileIndex.AsObject) {
+  const fileIndex = new pb.FileIndex()
   fileIndex.setAdded(data.added ? convertTimestampData(data.added) : undefined)
   fileIndex.setChecksum(data.checksum)
   fileIndex.setHash(data.hash)

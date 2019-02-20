@@ -20,20 +20,7 @@ import {
   WalletAccount
 } from '../Models'
 
-import {
-  MobilePreparedFiles,
-  CafeSession,
-  CafeSessions,
-  Contact,
-  ContactQuery,
-  QueryOptions,
-  Directory,
-  FeedItemList,
-  FeedMode,
-  FilesList,
-  TextList,
-  QueryEvent
-} from '@textile/go-mobile'
+import { pb } from '../Models'
 
 import {
   convertDirectoryData,
@@ -86,7 +73,7 @@ class API {
     return result as string
   }
 
-  addFiles = async (dir: Directory.AsObject, threadId: string, caption?: string): Promise<BlockInfo> => {
+  addFiles = async (dir: pb.Directory.AsObject, threadId: string, caption?: string): Promise<BlockInfo> => {
     const directoryInstance = convertDirectoryData(dir)
     const byteArray = directoryInstance.serializeBinary()
     const buffer = Buffer.from(byteArray)
@@ -130,22 +117,22 @@ class API {
     return result.length > 0 ? result : undefined
   }
 
-  cafeSession = async (peerId: string): Promise<CafeSession.AsObject | undefined> => {
+  cafeSession = async (peerId: string): Promise<pb.CafeSession.AsObject | undefined> => {
     const result = await TextileNode.cafeSession(peerId)
     if (!result) {
       return undefined
     }
     const buffer = Buffer.from(result, 'base64')
-    return CafeSession.deserializeBinary(buffer).toObject()
+    return pb.CafeSession.deserializeBinary(buffer).toObject()
   }
 
-  cafeSessions = async (): Promise<CafeSessions.AsObject | undefined> => {
+  cafeSessions = async (): Promise<pb.CafeSessions.AsObject | undefined> => {
     const result = await TextileNode.cafeSessions()
     if (!result) {
       return undefined
     }
     const buffer = Buffer.from(result, 'base64')
-    return CafeSessions.deserializeBinary(buffer).toObject()
+    return pb.CafeSessions.deserializeBinary(buffer).toObject()
   }
 
   checkCafeMessages = async (): Promise<void> => {
@@ -212,16 +199,16 @@ class API {
     return result as string
   }
 
-  prepareFiles = async (path: string, threadId: string): Promise<MobilePreparedFiles.AsObject> => {
+  prepareFiles = async (path: string, threadId: string): Promise<pb.MobilePreparedFiles.AsObject> => {
     const result = await TextileNode.prepareFiles(path, threadId)
     const buffer = Buffer.from(result, 'base64')
-    return MobilePreparedFiles.deserializeBinary(buffer).toObject()
+    return pb.MobilePreparedFiles.deserializeBinary(buffer).toObject()
   }
 
-  prepareFilesAsync = async (path: string, threadId: string): Promise<MobilePreparedFiles.AsObject> => {
+  prepareFilesAsync = async (path: string, threadId: string): Promise<pb.MobilePreparedFiles.AsObject> => {
     const result = await TextileNode.prepareFilesAsync(path, threadId)
     const buffer = Buffer.from(result, 'base64')
-    return MobilePreparedFiles.deserializeBinary(buffer).toObject()
+    return pb.MobilePreparedFiles.deserializeBinary(buffer).toObject()
   }
 
   profile = async (): Promise<ContactInfo> => {
@@ -237,13 +224,13 @@ class API {
     await TextileNode.readNotification(id_)
   }
 
-  refreshCafeSession = async (peerId: string): Promise<CafeSession.AsObject | undefined> => {
+  refreshCafeSession = async (peerId: string): Promise<pb.CafeSession.AsObject | undefined> => {
     const result = await TextileNode.refreshCafeSession(peerId)
     if (!result) {
       return undefined
     }
     const buffer = Buffer.from(result, 'base64')
-    return CafeSession.deserializeBinary(buffer).toObject()
+    return pb.CafeSession.deserializeBinary(buffer).toObject()
   }
 
   registerCafe = async (peerId: string, token: string): Promise<void> => {
@@ -255,7 +242,7 @@ class API {
     return result as string
   }
 
-  searchContacts = async (query: ContactQuery.AsObject, options: QueryOptions.AsObject, handler: (contact: Contact.AsObject, local: boolean) => void): Promise<void> => {
+  searchContacts = async (query: pb.ContactQuery.AsObject, options: pb.QueryOptions.AsObject, handler: (contact: pb.Contact.AsObject, local: boolean) => void): Promise<{}> => {
     return new Promise(async (resolve, reject) => {
       // internal contact search result handler
       let stream: EmitterSubscription
@@ -277,15 +264,15 @@ class API {
               return
           }
           const buffer = Buffer.from(result, 'base64')
-          const queryEvent = QueryEvent.deserializeBinary(buffer).toObject()
+          const queryEvent = pb.QueryEvent.deserializeBinary(buffer).toObject()
           switch (queryEvent.type) {
-            case QueryEvent.Type.DATA:
+            case pb.QueryEvent.Type.DATA:
               if (queryEvent.data && queryEvent.data.value && queryEvent.data.value.value && typeof queryEvent.data.value.value !== 'string') {
-                const contact = Contact.deserializeBinary(queryEvent.data.value.value).toObject()
+                const contact = pb.Contact.deserializeBinary(queryEvent.data.value.value).toObject()
                 handler(contact, !!queryEvent.data.local)
               }
               break
-            case QueryEvent.Type.DONE:
+            case pb.QueryEvent.Type.DONE:
               cleanup()
               resolve()
               break
@@ -344,22 +331,22 @@ class API {
     await TextileNode.stop()
   }
 
-  feed = async (offset: string, limit: number, mode: FeedMode, threadId?: string): Promise<FeedItemList.AsObject> => {
+  feed = async (offset: string, limit: number, mode: pb.FeedMode, threadId?: string): Promise<pb.FeedItemList.AsObject> => {
     const result = await TextileNode.feed(offset, limit, mode, threadId)
     const buffer = Buffer.from(result, 'base64')
-    return FeedItemList.deserializeBinary(buffer).toObject()
+    return pb.FeedItemList.deserializeBinary(buffer).toObject()
   }
 
-  files = async (offset: string, limit: number, threadId?: string): Promise<FilesList.AsObject> => {
+  files = async (offset: string, limit: number, threadId?: string): Promise<pb.FilesList.AsObject> => {
     const result = await TextileNode.files(offset, limit, threadId)
     const buffer = Buffer.from(result, 'base64')
-    return FilesList.deserializeBinary(buffer).toObject()
+    return pb.FilesList.deserializeBinary(buffer).toObject()
   }
 
-  messages = async (offset: string, limit: number, threadId?: string): Promise<TextList.AsObject> => {
+  messages = async (offset: string, limit: number, threadId?: string): Promise<pb.TextList.AsObject> => {
     const result = await TextileNode.messages(offset, limit, threadId)
     const buffer = Buffer.from(result, 'base64')
-    return TextList.deserializeBinary(buffer).toObject()
+    return pb.TextList.deserializeBinary(buffer).toObject()
   }
 
   threadInfo = async (threadId: string): Promise<ThreadInfo> => {

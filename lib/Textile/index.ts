@@ -18,7 +18,7 @@ import BackgroundTimer from 'react-native-background-timer'
 import BackgroundFetch from 'react-native-background-fetch'
 import RNFS from 'react-native-fs'
 
-import { ICafeSession } from '@textile/react-native-protobufs'
+import { pb } from './Models'
 
 const packageFile = require('./../../package.json')
 export const VERSION = packageFile.version
@@ -118,7 +118,7 @@ class Textile extends API {
 
     if (this._cafe) {
       const sessions = await this.cafeSessions()
-      if (!sessions || !sessions.values || sessions.values.length < 1) {
+      if (!sessions || sessions.valuesList.length < 1) {
         const cafeOverride = this._cafe.TEXTILE_CAFE_OVERRIDE
         if (cafeOverride) {
           await this.registerCafe(cafeOverride as string, this._cafe.TEXTILE_CAFE_TOKEN)
@@ -223,36 +223,30 @@ class Textile extends API {
   }
 
   // Client should use this once account is onboarded to register with Cafe
-  getCafeSessions = async (): Promise<ReadonlyArray<ICafeSession>> => {
+  getCafeSessions = async (): Promise<ReadonlyArray<pb.CafeSession.AsObject>> => {
     const sessions = await this.cafeSessions()
     if (!sessions) {
       return []
     }
-    const values: ReadonlyArray<ICafeSession> | undefined | null = sessions.values
-    if (!values) {
-      return []
-    } else {
-      return values
-    }
+    return sessions.valuesList
   }
 
   // Client should use this if cafe sessions are detected as expired
-  getRefreshedCafeSessions = async (): Promise<ReadonlyArray<ICafeSession>> => {
+  getRefreshedCafeSessions = async (): Promise<ReadonlyArray<pb.CafeSession.AsObject>> => {
     const sessions = await this.cafeSessions()
     if (!sessions) {
       return []
     }
-    const values: ReadonlyArray<ICafeSession> | undefined | null = sessions.values
-    if (!values) {
-      return []
-    } else {
-      const refreshedValues: ReadonlyArray<ICafeSession> = await Promise.all(
-        values
-          .map(async (session) => await this.refreshCafeSession(session.id!))
-          .filter((session) => session !== undefined) as ReadonlyArray<ICafeSession>
-      )
-      return refreshedValues
-    }
+    const refreshedValues = await Promise.all(
+      sessions.valuesList.map(async (session) => await this.refreshCafeSession(session.id))
+    )
+    const reduced = refreshedValues.reduce<pb.CafeSession.AsObject[]>((acc, val) => {
+      if (val) {
+        acc.push(val)
+      }
+      return acc
+    }, [])
+    return reduced
   }
 
   /* ------ INTERNAL METHODS ----- */
