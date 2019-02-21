@@ -112,7 +112,7 @@ export interface NotificationInfo {
   readonly read: boolean
 }
 
-export interface Overview {
+export interface Summary {
   readonly account_peer_cnt: number
   readonly thread_cnt: number
   readonly file_cnt: number
