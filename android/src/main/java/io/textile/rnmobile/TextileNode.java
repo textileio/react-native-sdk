@@ -472,15 +472,15 @@ public class TextileNode extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void overview(final Promise promise) {
+    public void summary(final Promise promise) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
                 try {
-                    promise.resolve(node.overview());
+                    promise.resolve(node.summary());
                 }
                 catch (Exception e) {
-                    promise.reject("overview", e);
+                    promise.reject("summary", e);
                 }
             }
         });

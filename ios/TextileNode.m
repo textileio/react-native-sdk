@@ -247,9 +247,9 @@ RCT_EXPORT_METHOD(notifications:(NSString*)offset limit:(NSInteger)limit resolve
   [self fulfillWithResult:result error:error resolver:resolve rejecter:reject];
 }
 
-RCT_EXPORT_METHOD(overview:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_EXPORT_METHOD(summary:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSError *error;
-  NSString *result = [self.node overview:&error];
+  NSString *result = [self.node summary:&error];
   [self fulfillWithResult:result error:error resolver:resolve rejecter:reject];
 }
 
