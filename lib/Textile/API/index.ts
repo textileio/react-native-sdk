@@ -12,7 +12,7 @@ import {
   FileData,
   LogLevel,
   NotificationInfo,
-  Overview,
+  Summary,
   SchemaType,
   ThreadInfo,
   ThreadSharing,
@@ -189,9 +189,9 @@ class API {
     return JSON.parse(result) as ReadonlyArray<NotificationInfo>
   }
 
-  overview = async (): Promise<Overview> => {
-    const result = await TextileNode.overview()
-    return JSON.parse(result) as Overview
+  summary = async (): Promise<Summary> => {
+    const result = await TextileNode.summary()
+    return JSON.parse(result) as Summary
   }
 
   peerId = async (): Promise<string> => {
