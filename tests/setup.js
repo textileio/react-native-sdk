@@ -82,25 +82,5 @@ jest.mock('react-native-fs', () => {
   }
 })
 
-jest.mock('CameraRoll', () => {
-  return {
-    getPhotos: jest.fn((payload) => new Promise((resolve) => {
-      // TODO: do something meaningful with first
-      // const { first } = payload
-      resolve({
-        edges: [
-          {
-            node: {
-              image: {
-                uri: '/disk/uri'
-              }
-            }
-          }
-        ]
-      })
-    }))
-  }
-})
-
 global.fetch = require('jest-fetch-mock')
 Enzyme.configure({ adapter: new Adapter() })

@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		A2B4A2FE21F3C01200450A68 /* CameraRoll.m in Sources */ = {isa = PBXBuildFile; fileRef = A2B4A2F821F3C01200450A68 /* CameraRoll.m */; };
 		A2B4A2FF21F3C01200450A68 /* Events.m in Sources */ = {isa = PBXBuildFile; fileRef = A2B4A2FB21F3C01200450A68 /* Events.m */; };
 		A2B4A30021F3C01200450A68 /* TextileNode.m in Sources */ = {isa = PBXBuildFile; fileRef = A2B4A2FD21F3C01200450A68 /* TextileNode.m */; };
 /* End PBXBuildFile section */
@@ -26,8 +25,6 @@
 
 /* Begin PBXFileReference section */
 		134814201AA4EA6300B7C361 /* libRNTextile.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libRNTextile.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		A2B4A2F821F3C01200450A68 /* CameraRoll.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CameraRoll.m; sourceTree = "<group>"; };
-		A2B4A2F921F3C01200450A68 /* CameraRoll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CameraRoll.h; sourceTree = "<group>"; };
 		A2B4A2FA21F3C01200450A68 /* Events.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Events.h; sourceTree = "<group>"; };
 		A2B4A2FB21F3C01200450A68 /* Events.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Events.m; sourceTree = "<group>"; };
 		A2B4A2FC21F3C01200450A68 /* TextileNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextileNode.h; sourceTree = "<group>"; };
@@ -56,8 +53,6 @@
 		58B511D21A9E6C8500147676 = {
 			isa = PBXGroup;
 			children = (
-				A2B4A2F921F3C01200450A68 /* CameraRoll.h */,
-				A2B4A2F821F3C01200450A68 /* CameraRoll.m */,
 				A2B4A2FA21F3C01200450A68 /* Events.h */,
 				A2B4A2FB21F3C01200450A68 /* Events.m */,
 				A2B4A2FC21F3C01200450A68 /* TextileNode.h */,
@@ -124,7 +119,6 @@
 			files = (
 				A2B4A2FF21F3C01200450A68 /* Events.m in Sources */,
 				A2B4A30021F3C01200450A68 /* TextileNode.m in Sources */,
-				A2B4A2FE21F3C01200450A68 /* CameraRoll.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

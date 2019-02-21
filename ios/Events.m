@@ -26,8 +26,7 @@ RCT_EXPORT_MODULE();
 
 // The list of available events
 - (NSArray<NSString *> *)supportedEvents {
-    return @[@"newLocalPhoto",
-            @"onOnline",
+    return @[@"onOnline",
             @"onThreadAdded",
             @"onThreadRemoved",
             @"onThreadUpdate",
