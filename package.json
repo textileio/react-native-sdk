@@ -1,6 +1,6 @@
 {
   "name": "@textile/react-native-sdk",
-  "version": "1.1.0-rc18",
+  "version": "1.1.0-rc19",
   "description": "## Getting started",
   "nativePackage": true,
   "main": "dist/index.js",
@@ -30,7 +30,6 @@
   "devDependencies": {
     "@types/enzyme": "^3.1.14",
     "@types/enzyme-adapter-react-16": "^1.0.3",
-    "@types/google-protobuf": "^3.2.7",
     "@types/jest": "^23.3.3",
     "@types/react": "^16.4.15",
     "@types/react-native": "^0.57.2",
@@ -64,6 +63,7 @@
   },
   "dependencies": {
     "@textile/go-mobile": "1.0.0-rc42",
+    "@types/google-protobuf": "^3.2.7",
     "buffer": "^5.2.1",
     "google-protobuf": "^3.7.0-rc.2"
   },

@@ -121,7 +121,7 @@ class Textile extends API {
       if (!sessions || sessions.valuesList.length < 1) {
         const cafeOverride = this._cafe.TEXTILE_CAFE_OVERRIDE
         if (cafeOverride) {
-          await this.registerCafe(cafeOverride as string, this._cafe.TEXTILE_CAFE_TOKEN)
+          await this.registerCafe(cafeOverride, this._cafe.TEXTILE_CAFE_TOKEN)
         } else if (this._cafe.TEXTILE_CAFE_GATEWAY_URL) {
           await this.discoverAndRegisterCafes()
         }
