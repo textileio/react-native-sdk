@@ -1,6 +1,6 @@
-import { Timestamp } from 'google-protobuf/google/protobuf/timestamp_pb'
+import { pb } from './'
 
-export function timestampToDate(timestamp?: Timestamp.AsObject) {
+export function timestampToDate(timestamp?: pb.google.protobuf.ITimestamp) {
   let millis: number
   if (!timestamp) {
     millis = 0

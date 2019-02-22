@@ -118,7 +118,7 @@ class Textile extends API {
 
     if (this._cafe) {
       const sessions = await this.cafeSessions()
-      if (!sessions || sessions.valuesList.length < 1) {
+      if (!sessions || sessions.values.length < 1) {
         const cafeOverride = this._cafe.TEXTILE_CAFE_OVERRIDE
         if (cafeOverride) {
           await this.registerCafe(cafeOverride, this._cafe.TEXTILE_CAFE_TOKEN)
@@ -223,24 +223,24 @@ class Textile extends API {
   }
 
   // Client should use this once account is onboarded to register with Cafe
-  getCafeSessions = async (): Promise<ReadonlyArray<pb.CafeSession.AsObject>> => {
+  getCafeSessions = async (): Promise<ReadonlyArray<pb.ICafeSession>> => {
     const sessions = await this.cafeSessions()
     if (!sessions) {
       return []
     }
-    return sessions.valuesList
+    return sessions.values
   }
 
   // Client should use this if cafe sessions are detected as expired
-  getRefreshedCafeSessions = async (): Promise<ReadonlyArray<pb.CafeSession.AsObject>> => {
+  getRefreshedCafeSessions = async (): Promise<ReadonlyArray<pb.ICafeSession>> => {
     const sessions = await this.cafeSessions()
     if (!sessions) {
       return []
     }
     const refreshedValues = await Promise.all(
-      sessions.valuesList.map(async (session) => await this.refreshCafeSession(session.id))
+      sessions.values.map(async (session) => await this.refreshCafeSession(session.id))
     )
-    const reduced = refreshedValues.reduce<pb.CafeSession.AsObject[]>((acc, val) => {
+    const reduced = refreshedValues.reduce<pb.ICafeSession[]>((acc, val) => {
       if (val) {
         acc.push(val)
       }
