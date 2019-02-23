@@ -236,12 +236,17 @@ class API {
       let stream: EmitterSubscription
       let streamError: EmitterSubscription
       // just a helper to dedup below
-      const cleanup = () => {
+      const finish = (error?: any) => {
         if (stream) {
           stream.remove()
         }
         if (streamError) {
           streamError.remove()
+        }
+        if (error) {
+          reject(error)
+        } else {
+          resolve()
         }
       }
       // wrap in a try to ensure we cleanup if an error
@@ -257,16 +262,12 @@ class API {
             case pb.QueryEvent.Type.DATA:
               const contact = pb.Contact.decode(queryEvent.data.value.value)
               handler(contact, !!queryEvent.data.local)
-              break
             case pb.QueryEvent.Type.DONE:
-              cleanup()
-              resolve()
-              break
+              finish()
           }
         })
-        streamError = NativeEvents.addListener('@textile/sdk/searchContactsError', (payload: any) => {
-          cleanup()
-          reject(payload)
+        streamError = NativeEvents.addListener('@textile/sdk/searchContactsError', (error: any) => {
+          finish(error)
         })
 
         const queryArray = pb.ContactQuery.encode(query).finish()
@@ -280,8 +281,7 @@ class API {
         await TextileNode.searchContacts(queryString, optionsString)
       } catch (error) {
         // specifically not finally here, because it should return before listeners complete
-        cleanup()
-        reject(error)
+        finish(error)
       }
     })
   }
