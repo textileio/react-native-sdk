@@ -161,11 +161,6 @@ class API {
     return JSON.parse(result) as FileData
   }
 
-  findContact = async (username: string, limit: number, wait: number): Promise<ContactInfoQueryResult> => {
-    const result = await TextileNode.findContact(username, limit, wait)
-    return JSON.parse(result) as ContactInfoQueryResult
-  }
-
   ignoreInviteViaNotification = async (id_: string): Promise<string> => {
     const result = await TextileNode.ignoreInviteViaNotification(id_)
     return result as string
