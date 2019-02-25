@@ -19,7 +19,7 @@
 @end
 
 @interface Callback()
-  @property (nonatomic, copy, nonnull) void (^completion)(NSData*, NSError*);
+@property (nonatomic, copy, nonnull) void (^completion)(NSData*, NSError*);
 @end
 
 @implementation Callback
@@ -57,7 +57,7 @@
 @interface TextileNode()
 
 @property (nonatomic, strong) MobileMobile *node;
-@property (readwrite, strong) NSMutableArray *cancellableSearchContacts;
+@property (readwrite, strong) MobileCancelFn *cancelContactsSearch;
 
 @end
 
@@ -324,9 +324,9 @@ RCT_EXPORT_METHOD(searchContacts:(NSString*)queryString options:(NSString*)optio
   NSData *query = [[NSData alloc] initWithBase64EncodedString:queryString options:0];
   NSData *options = [[NSData alloc] initWithBase64EncodedString:optionsString options:0];
 
-  if ([self.cancellableSearchContacts count] > 0) {
-    [[self.cancellableSearchContacts firstObject] call];
-    [self.cancellableSearchContacts removeAllObjects];
+  if (self.cancelContactsSearch) {
+    [self.cancelContactsSearch call];
+    self.cancelContactsSearch = nil;
   }
 
   MobileCancelFn *newCancellable = [self.node searchContacts:query options:options cb:[[Callback alloc] initWithCompletion:^ (NSData *payload, NSError *error) {
@@ -339,14 +339,14 @@ RCT_EXPORT_METHOD(searchContacts:(NSString*)queryString options:(NSString*)optio
       [Events emitEventWithName:@"@textile/sdk/searchContactsResult" andPayload:jsonString];
     }
   }] error:nil];
-  [self.cancellableSearchContacts addObject:[newCancellable class]];
+  self.cancelContactsSearch = newCancellable;
 }
 
 RCT_EXPORT_METHOD(cancelSearchContacts:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   @try {
-    if ([self.cancellableSearchContacts count] > 0) {
-      [[self.cancellableSearchContacts firstObject] call];
-      [self.cancellableSearchContacts removeAllObjects];
+    if (self.cancelContactsSearch) {
+      [self.cancelContactsSearch call];
+      self.cancelContactsSearch = nil;
     }
     resolve(@"success");
   }
