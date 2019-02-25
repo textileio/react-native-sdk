@@ -262,8 +262,10 @@ class API {
           case pb.QueryEvent.Type.DATA:
             const contact = pb.Contact.decode(queryEvent.data.value.value)
             handler({ type: 'result', contact, local: !!queryEvent.data.local })
+            break
           case pb.QueryEvent.Type.DONE:
             finish()
+            break
         }
       })
       streamError = NativeEvents.addListener('@textile/sdk/searchContactsError', (error: any) => {
