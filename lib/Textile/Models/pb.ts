@@ -1,2 +1,2 @@
-import * as pb from '@textile/go-mobile'
+import pb from '@textile/go-mobile'
 export { pb }

@@ -650,7 +650,7 @@ public class TextileNode extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void searchContacts(final String query, final String options, final Promise promise) {
+    public void searchContacts(final String query, final String options) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
@@ -682,7 +682,9 @@ public class TextileNode extends ReactContextBaseJavaModule {
                     TextileNode.cancellableSearchContacts = newCancel;
                 }
                 catch (Exception e) {
-                    promise.reject("searchContacts", e);
+                    WritableMap payload = new WritableNativeMap();
+                    payload.putString("message", e.getMessage());
+                    TextileNode.emitDeviceEvent("@textile/sdk/searchContactsError", payload);
                 }
             }
         });
