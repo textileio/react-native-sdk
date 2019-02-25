@@ -1,4 +1,10 @@
 import { AppStateStatus } from 'react-native'
+import { pb } from './pb'
+
+export interface ContactSearchResult {
+  contact: pb.IContact,
+  local: boolean
+}
 
 export interface BufferJSON {
   buffer: string

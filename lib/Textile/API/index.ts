@@ -1,13 +1,13 @@
-import {EmitterSubscription, NativeModules} from 'react-native'
-import {Buffer} from 'buffer'
+import { EmitterSubscription, NativeModules } from 'react-native'
+import { Buffer } from 'buffer'
 import NativeEvents from '../../NativeEvents'
+import { ContactSearchResult } from '../Models/SDK'
 
 import {
   File,
   BlockInfo,
   BufferJSON,
   ContactInfo,
-  ContactInfoQueryResult,
   ExternalInvite,
   FileData,
   LogLevel,
@@ -230,60 +230,58 @@ class API {
     return result as string
   }
 
-  searchContacts = async (query: pb.IContactQuery, options: pb.IQueryOptions, handler: (contact: pb.IContact, local: boolean) => void): Promise<{}> => {
-    return new Promise(async (resolve, reject) => {
-      // internal contact search result handler
-      let stream: EmitterSubscription
-      let streamError: EmitterSubscription
-      // just a helper to dedup below
-      const finish = (error?: any) => {
-        if (stream) {
-          stream.remove()
-        }
-        if (streamError) {
-          streamError.remove()
-        }
-        if (error) {
-          reject(error)
-        } else {
-          resolve()
-        }
+  searchContacts = (query: pb.IContactQuery, options: pb.IQueryOptions, handler: (event?: ContactSearchResult | 'DONE', error?: any) => void) => {
+    // internal contact search result handler
+    let stream: EmitterSubscription
+    let streamError: EmitterSubscription
+    // just a helper to dedup below
+    const finish = (error?: any) => {
+      if (stream) {
+        stream.remove()
       }
-      // wrap in a try to ensure we cleanup if an error
-      try {
-        stream = NativeEvents.addListener('@textile/sdk/searchContactsResult', (payload: BufferJSON) => {
-          const result = payload.buffer
-          if (!result) {
-              return
-          }
-          const buffer = Buffer.from(result, 'base64')
-          const queryEvent = pb.QueryEvent.decode(buffer)
-          switch (queryEvent.type) {
-            case pb.QueryEvent.Type.DATA:
-              const contact = pb.Contact.decode(queryEvent.data.value.value)
-              handler(contact, !!queryEvent.data.local)
-            case pb.QueryEvent.Type.DONE:
-              finish()
-          }
-        })
-        streamError = NativeEvents.addListener('@textile/sdk/searchContactsError', (error: any) => {
-          finish(error)
-        })
-
-        const queryArray = pb.ContactQuery.encode(query).finish()
-        const queryBuffer = Buffer.from(queryArray)
-        const queryString = queryBuffer.toString('base64')
-
-        const optionsArray = pb.QueryOptions.encode(options).finish()
-        const optionsBuffer = Buffer.from(optionsArray)
-        const optionsString = optionsBuffer.toString('base64')
-
-        await TextileNode.searchContacts(queryString, optionsString)
-      } catch (error) {
-        // specifically not finally here, because it should return before listeners complete
+      if (streamError) {
+        streamError.remove()
+      }
+      if (error) {
+        handler(undefined, error)
+      } else {
+        handler('DONE')
+      }
+    }
+    // wrap in a try to ensure we cleanup if an error
+    try {
+      stream = NativeEvents.addListener('@textile/sdk/searchContactsResult', (payload: BufferJSON) => {
+        const result = payload.buffer
+        if (!result) {
+            return
+        }
+        const buffer = Buffer.from(result, 'base64')
+        const queryEvent = pb.QueryEvent.decode(buffer)
+        switch (queryEvent.type) {
+          case pb.QueryEvent.Type.DATA:
+            const contact = pb.Contact.decode(queryEvent.data.value.value)
+            handler({ contact, local: !!queryEvent.data.local })
+          case pb.QueryEvent.Type.DONE:
+            finish()
+        }
+      })
+      streamError = NativeEvents.addListener('@textile/sdk/searchContactsError', (error: any) => {
         finish(error)
-      }
-    })
+      })
+
+      const queryArray = pb.ContactQuery.encode(query).finish()
+      const queryBuffer = Buffer.from(queryArray)
+      const queryString = queryBuffer.toString('base64')
+
+      const optionsArray = pb.QueryOptions.encode(options).finish()
+      const optionsBuffer = Buffer.from(optionsArray)
+      const optionsString = optionsBuffer.toString('base64')
+
+      TextileNode.searchContacts(queryString, optionsString)
+    } catch (error) {
+      // specifically not finally here, because it should return before listeners complete
+      finish(error)
+    }
   }
 
   cancelSearchContacts = async (): Promise<void> => {
