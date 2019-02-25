@@ -1,7 +1,7 @@
 import { EmitterSubscription, NativeModules } from 'react-native'
 import { Buffer } from 'buffer'
 import NativeEvents from '../../NativeEvents'
-import { ContactSearchResult } from '../Models/SDK'
+import { ContactSearchEvent } from '../Models/SDK'
 
 import {
   File,
@@ -230,7 +230,7 @@ class API {
     return result as string
   }
 
-  searchContacts = (query: pb.IContactQuery, options: pb.IQueryOptions, handler: (event?: ContactSearchResult | 'DONE', error?: any) => void) => {
+  searchContacts = (query: pb.IContactQuery, options: pb.IQueryOptions, handler: (event: ContactSearchEvent) => void) => {
     // internal contact search result handler
     let stream: EmitterSubscription
     let streamError: EmitterSubscription
@@ -243,9 +243,10 @@ class API {
         streamError.remove()
       }
       if (error) {
-        handler(undefined, error)
+        const message = error.message as string || error as string || 'unknown error'
+        handler({ type: 'error', error: message })
       } else {
-        handler('DONE')
+        handler({ type: 'complete' })
       }
     }
     // wrap in a try to ensure we cleanup if an error
@@ -260,7 +261,7 @@ class API {
         switch (queryEvent.type) {
           case pb.QueryEvent.Type.DATA:
             const contact = pb.Contact.decode(queryEvent.data.value.value)
-            handler({ contact, local: !!queryEvent.data.local })
+            handler({ type: 'result', contact, local: !!queryEvent.data.local })
           case pb.QueryEvent.Type.DONE:
             finish()
         }

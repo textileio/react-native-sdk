@@ -2,9 +2,21 @@ import { AppStateStatus } from 'react-native'
 import { pb } from './pb'
 
 export interface ContactSearchResult {
+  type: 'result'
   contact: pb.IContact,
   local: boolean
 }
+
+export interface ContactSearchError {
+  type: 'error'
+  error: string
+}
+
+export interface ContactSearchComplete {
+  type: 'complete'
+}
+
+export type ContactSearchEvent = ContactSearchResult | ContactSearchError | ContactSearchComplete
 
 export interface BufferJSON {
   buffer: string
