@@ -54,10 +54,13 @@ export interface StoredNodeState {
 }
 
 export type TextileAppStateStatus = AppStateStatus | 'unknown' | 'backgroundFromForeground'
+
+// TODO: remove capitalization
 export interface TextileConfig {
   RELEASE_TYPE?: string
   SELF_MANAGE_APP_STATE?: boolean
-  DATA_CONNECTIONS_ONLY?: boolean
+  MINIMUM_SLEEP_MINUTES?: number
+  RUN_BACKGROUND_TASK?: () => boolean
 }
 
 export interface TextileOptions {
