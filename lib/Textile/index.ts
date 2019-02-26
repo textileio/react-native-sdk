@@ -366,21 +366,15 @@ class Textile extends API {
     this.nextAppState(nextState)
   }
   private shouldRunBackgroundTask = async (): Promise<boolean> => {
-    const MINIMUM_MINUTES_BETWEEN_TASKS = 10
+    const MINIMUM_MINUTES_BETWEEN_TASKS = this._config.MINIMUM_SLEEP_MINUTES !== undefined ? this._config.MINIMUM_SLEEP_MINUTES : 10
     const now = Number((new Date()).getTime())
     const last = await this._store.getLastBackgroundEvent()
     // previous time set and set too recently
     if (last && (now - last) < 1000 * 60 * MINIMUM_MINUTES_BETWEEN_TASKS) {
       return false
     }
-    // To use enable this method on Android, AndroidManifest.xml must contain
-    // <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    if (this._config.DATA_CONNECTIONS_ONLY) {
-      // Avoid running background jobs when on inadequate connection
-      const netInfo = await NetInfo.getConnectionInfo()
-      if (netInfo.type === 'none' || netInfo.effectiveType === '2g') {
-        return false
-      }
+    if (this._config.RUN_BACKGROUND_TASK) {
+      return this._config.RUN_BACKGROUND_TASK()
     }
     return true
   }
