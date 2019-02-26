@@ -20,7 +20,6 @@ public class RNTextilePackage implements ReactPackage {
         List<NativeModule> modules = new ArrayList<>();
 
         modules.add(new TextileNode(reactContext));
-        modules.add(new CameraRoll(reactContext));
 
         return modules;
     }
