@@ -57,6 +57,7 @@ export type TextileAppStateStatus = AppStateStatus | 'unknown' | 'backgroundFrom
 export interface TextileConfig {
   RELEASE_TYPE?: string
   SELF_MANAGE_APP_STATE?: boolean
+  DATA_CONNECTIONS_ONLY?: boolean
 }
 
 export interface TextileOptions {
