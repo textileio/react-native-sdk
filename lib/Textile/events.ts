@@ -23,8 +23,6 @@ export type TextileEvents = 'newNodeState' |
                             'nodeOnline' |
                             'error' |
                             'onOnline' |
-                            'newLocalPhoto' |
-                            'newLocalPhoto' |
                             'onThreadUpdate' |
                             'onThreadAdded' |
                             'onThreadRemoved' |
@@ -51,7 +49,6 @@ export const publicEvents: {[key: string]: string} = {
   error: '@textile/shared/error',
   // NATIVE EVENTS
   onOnline: 'onOnline',
-  newLocalPhoto: 'newLocalPhoto',
   onThreadUpdate: 'onThreadUpdate',
   onThreadAdded: 'onThreadAdded',
   onThreadRemoved: 'onThreadRemoved',
@@ -61,8 +58,6 @@ export const publicEvents: {[key: string]: string} = {
 }
 
 const nativeEvents: TextileEvents[] = [
-  'newLocalPhoto',
-  'newLocalPhoto',
   'onThreadUpdate',
   'onThreadAdded',
   'onThreadRemoved',
