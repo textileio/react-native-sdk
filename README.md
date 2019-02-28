@@ -99,6 +99,9 @@ You need to now finish **Installing peerDependencies** and
 
 To jump right into a working app, see our demo [IPFS boilerplate app](https://github.com/textileio/react-native-boilerplate).
 
+## Advanced Boilerplate
+
+We also have a more advanced boilerplate that contains `react-navigation`, redux, and sagas together with Textile. Find that here, [advanced-react-native-boilerplate](https://github.com/textileio/advanced-react-native-boilerplate/tree/master).
 ## App Setup
 
 ### Stateful APIs
