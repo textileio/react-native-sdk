@@ -710,9 +710,10 @@
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@protobufjs/utf8/-/utf8-1.1.0.tgz#a777360b5b39a1a2e5106f8e858f2fd2d060c570"
 
-"@textile/go-mobile@1.0.0-rc44":
-  version "1.0.0-rc44"
-  resolved "https://registry.yarnpkg.com/@textile/go-mobile/-/go-mobile-1.0.0-rc44.tgz#58e08f89453c8362a21dfe0f2bf1d7d7ae8c618b"
+"@textile/go-mobile@1.0.0-rc47":
+  version "1.0.0-rc47"
+  resolved "https://registry.yarnpkg.com/@textile/go-mobile/-/go-mobile-1.0.0-rc47.tgz#1e50be2816a4fdba25e8c8735e078a82be6465b6"
+  integrity sha512-oraGPXi8JYKstBAEcnJL2OVemzR6xLOyxd3f5ijBq0TFpnTZX6s1tFXTR3A/KutJNA46pIwu4YwS4dNfD7cvpA==
   dependencies:
     protobufjs "^6.8.8"
 

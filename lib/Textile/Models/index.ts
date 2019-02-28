@@ -1,3 +1,2 @@
-export * from './API'
 export * from './SDK'
-export * from './pb'
+export * from '@textile/go-mobile'
