@@ -1,2 +1,4 @@
+import pb from '@textile/go-mobile'
+
 export * from './SDK'
-export * from '@textile/go-mobile'
+export { pb }

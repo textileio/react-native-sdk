@@ -1,11 +1,9 @@
-import API from '../API'
-import { pb } from '../Models'
-import { SchemaType, ThreadSharing, ThreadType } from '../Models'
+import * as Node from '../Node'
+import * as pb from '@textile/go-mobile'
 
 const threadId = 'QmdNgTtH468cqZFzXCi4sVSWTbJMWQbhYb8cBVyikP9LzW'
 const threadKey = 'VsHHHz8bC8fu9k78RaX8ujQsUzGzaUxwKJyLFKKDacUZoWJaouGnzUQwgmh5'
 const threadName = 'Great Name'
-const api = new API()
 
 describe('textile api', () => {
     describe('thread invites', () => {

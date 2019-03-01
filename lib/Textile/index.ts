@@ -8,7 +8,7 @@ import {
   NodeState,
   TextileConfig
 } from './Models'
-import API from './API'
+import API from './Node'
 import TextileStore from './store'
 import NativeEvents from '../NativeEvents'
 import TextileMigration from './migration'
@@ -105,7 +105,7 @@ class Textile extends API {
     if (needsMigration) {
       await this.migration.runFileMigration(this.repoPath)
     }
-    await this.newTextile(this.repoPath, debug)
+    await this.create(this.repoPath, debug)
 
     await this.updateNodeState(NodeState.created)
   }
