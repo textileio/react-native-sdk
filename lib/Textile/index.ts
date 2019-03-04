@@ -1,14 +1,13 @@
-import { AppState, AppStateStatus, DeviceEventEmitter, NetInfo } from 'react-native'
+import { AppState, AppStateStatus, DeviceEventEmitter } from 'react-native'
 import {
   CafeConfig,
   DiscoveredCafes,
   TextileAppStateStatus,
   TextileOptions,
-  WalletAccount,
   NodeState,
   TextileConfig
 } from './Models'
-import API from './Node'
+import * as Node from './Node'
 import TextileStore from './store'
 import NativeEvents from '../NativeEvents'
 import TextileMigration from './migration'
@@ -17,7 +16,6 @@ import { createTimeout, delay } from './helpers'
 import BackgroundTimer from 'react-native-background-timer'
 import BackgroundFetch from 'react-native-background-fetch'
 import RNFS from 'react-native-fs'
-
 import { pb } from './Models'
 
 const packageFile = require('./../../package.json')
@@ -30,7 +28,7 @@ export function BackgroundTask () {
   TextileEvents.backgroundTask()
 }
 
-class Textile extends API {
+class Textile {
   events = new Events()
   migration = new TextileMigration()
   _debug = false
@@ -43,7 +41,6 @@ class Textile extends API {
   repoPath = `${RNFS.DocumentDirectoryPath}/textile-go`
 
   constructor(options: TextileOptions) {
-    super()
     if (options.debug) {
       this._debug = true
     }
@@ -105,7 +102,7 @@ class Textile extends API {
     if (needsMigration) {
       await this.migration.runFileMigration(this.repoPath)
     }
-    await this.create(this.repoPath, debug)
+    await Node.create(this.repoPath, debug)
 
     await this.updateNodeState(NodeState.created)
   }
@@ -114,14 +111,14 @@ class Textile extends API {
 
     await this.updateNodeState(NodeState.starting)
 
-    await this.start()
+    await Node.start()
 
     if (this._cafe) {
-      const sessions = await this.cafeSessions()
-      if (!sessions || sessions.values.length < 1) {
+      const sessions = await Node.cafes.sessions()
+      if (!sessions || sessions.items.length < 1) {
         const cafeOverride = this._cafe.TEXTILE_CAFE_OVERRIDE
         if (cafeOverride) {
-          await this.registerCafe(cafeOverride, this._cafe.TEXTILE_CAFE_TOKEN)
+          await Node.cafes.register(cafeOverride, this._cafe.TEXTILE_CAFE_TOKEN)
         } else if (this._cafe.TEXTILE_CAFE_GATEWAY_URL) {
           await this.discoverAndRegisterCafes()
         }
@@ -187,8 +184,8 @@ class Textile extends API {
       if (this._cafe) {
         const cafes = await createTimeout(10000, this.discoverCafes())
         const discoveredCafes = cafes as DiscoveredCafes
-        await this.registerCafe(discoveredCafes.primary.url, this._cafe.TEXTILE_CAFE_TOKEN || '')
-        await this.registerCafe(discoveredCafes.secondary.url, this._cafe.TEXTILE_CAFE_TOKEN || '')
+        await Node.cafes.register(discoveredCafes.primary.url, this._cafe.TEXTILE_CAFE_TOKEN || '')
+        await Node.cafes.register(discoveredCafes.secondary.url, this._cafe.TEXTILE_CAFE_TOKEN || '')
       } else {
         TextileEvents.newError('no cafe config provided', 'cafeConfigError')
       }
@@ -205,8 +202,7 @@ class Textile extends API {
 
   appState = async (): Promise<TextileAppStateStatus> => {
     const storedState = await this._store.getAppState()
-    const currentState = storedState || 'unknown' as TextileAppStateStatus
-    return currentState
+    return storedState || 'unknown' as TextileAppStateStatus
   }
 
   nodeOnline = async (): Promise<boolean> => {
@@ -224,47 +220,46 @@ class Textile extends API {
 
   // Client should use this once account is onboarded to register with Cafe
   getCafeSessions = async (): Promise<ReadonlyArray<pb.ICafeSession>> => {
-    const sessions = await this.cafeSessions()
+    const sessions = await Node.cafes.sessions()
     if (!sessions) {
       return []
     }
-    return sessions.values
+    return sessions.items
   }
 
   // Client should use this if cafe sessions are detected as expired
   getRefreshedCafeSessions = async (): Promise<ReadonlyArray<pb.ICafeSession>> => {
-    const sessions = await this.cafeSessions()
+    const sessions = await Node.cafes.sessions()
     if (!sessions) {
       return []
     }
     const refreshedValues = await Promise.all(
-      sessions.values.map(async (session) => await this.refreshCafeSession(session.id))
+      sessions.items.map(async (session) => await Node.cafes.refreshSession(session.id))
     )
-    const reduced = refreshedValues.reduce<pb.ICafeSession[]>((acc, val) => {
+    return refreshedValues.reduce<pb.ICafeSession[]>((acc, val) => {
       if (val) {
         acc.push(val)
       }
       return acc
     }, [])
-    return reduced
   }
 
   /* ------ INTERNAL METHODS ----- */
   private initWallet = async () => {
     const debug = !this._config.RELEASE_TYPE || this._config.RELEASE_TYPE !== 'production'
     await this.updateNodeState(NodeState.creatingWallet)
-    const recoveryPhrase: string = await this.newWallet(12)
+    const recoveryPhrase: string = await Node.wallet.create(12)
     TextileEvents.setRecoveryPhrase(recoveryPhrase)
     await this.updateNodeState(NodeState.derivingAccount)
-    const walletAccount: WalletAccount = await this.walletAccountAt(recoveryPhrase, 0)
+    const walletAccount: pb.IMobileWalletAccount = await Node.wallet.accountAt(recoveryPhrase, 0)
     await this.updateNodeState(NodeState.initializingRepo)
-    await this.initRepo(walletAccount.seed, this.repoPath, true, debug)
+    await Node.init(walletAccount.seed, this.repoPath, true, debug)
     await this.updateNodeState(NodeState.walletInitSuccess)
     TextileEvents.walletInitSuccess()
   }
   private runRepoMigration = async () => {
     // instruct the node to export data to files
-    await this.migrateRepo(this.repoPath)
+    await Node.migrate(this.repoPath)
     // store the fact there is a pending migration in the preferences redux persisted state
     TextileEvents.migrationNeeded()
     await this.updateNodeState(NodeState.postMigration)
@@ -389,8 +384,7 @@ class Textile extends API {
       if (response.status < 200 || response.status > 299) {
         throw new Error(`Status code error: ${response.statusText}`)
       }
-      const discoveredCafes = await response.json() as DiscoveredCafes
-      return discoveredCafes
+      return await response.json() as DiscoveredCafes
     } else {
       TextileEvents.newError('no cafe config provided', 'cafeConfigError')
     }
@@ -427,7 +421,7 @@ class Textile extends API {
   /* ----- PRIVATE - EVENT EMITTERS ----- */
   private stopNode = async () => {
     await this.updateNodeState(NodeState.stopping)
-    await this.stop()
+    await Node.stop()
     await this._store.setNodeOnline(false)
     await this.updateNodeState(NodeState.stopped)
   }
@@ -449,20 +443,19 @@ class Textile extends API {
         }
       })
 
-      cancelSequence:
       while (!cancelled) {
           TextileEvents.stopNodeAfterDelayStarting()
-          await this.checkCafeMessages() // do a quick check for new messages
+          await Node.cafes.checkMessages() // do a quick check for new messages
           await delay(ms / 2)
           if (cancelled) { // cancelled by event, so abort sequence
             foregroundEvent.remove() // remove our event listener
-            break cancelSequence
+            break
           }
-          await this.checkCafeMessages()
+          await Node.cafes.checkMessages()
           await delay(ms / 2)
           if (cancelled) { // cancelled by event, so abort sequence
             foregroundEvent.remove() // remove our event listener
-            break cancelSequence
+            break
           }
           // enter stopping sequence
           foregroundEvent.remove() // remove our event listener

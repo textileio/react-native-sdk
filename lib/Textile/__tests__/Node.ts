@@ -2,52 +2,70 @@ import * as Node from '../Node'
 import * as pb from '@textile/go-mobile'
 
 const threadId = 'QmdNgTtH468cqZFzXCi4sVSWTbJMWQbhYb8cBVyikP9LzW'
-const threadKey = 'VsHHHz8bC8fu9k78RaX8ujQsUzGzaUxwKJyLFKKDacUZoWJaouGnzUQwgmh5'
+const threadKey = 'my-thread'
 const threadName = 'Great Name'
 
-describe('textile api', () => {
-    describe('thread invites', () => {
-        it('accept external thread invite', async () => {
-            const result = await api.acceptExternalInvite(threadId, threadKey)
-            expect(result).toEqual('SUCCESS')
-        })
-        it('add thread invite via notification', async () => {
-            const result = await api.acceptInviteViaNotification(threadId)
-            expect(result).toEqual('SUCCESS')
-        })
-        it('add external thread invite', async () => {
-            const result = await api.addExternalInvite(threadId)
-            expect(typeof result).toEqual('object')
-            expect(result).toHaveProperty('id')
-            expect(result.id).toEqual(threadId)
-        })
-    })
-    describe('threads', () => {
-        it('addSchema', async () => {
-            const result = await api.addSchema('{}')
+describe('textile node', () => {
+
+    describe('schemas', () => {
+        it('add', async () => {
+            const result = await Node.schemas.add('{}')
             expect(typeof result).toEqual('object')
             expect(result).toHaveProperty('mill')
         })
-        it('addThread', async () => {
-            const result = await api.addThread(
-                threadKey,
-                threadName,
-                ThreadType.PRIVATE,
-                ThreadSharing.INVITE_ONLY,
-                [],
-                SchemaType.MEDIA)
+    })
+
+    describe('threads', () => {
+        it('add', async () => {
+            const config = pb.AddThreadConfig.create({
+                key: threadKey,
+                name: threadName,
+                schema: pb.AddThreadConfig.Schema.create({
+                    id: '',
+                    json: '',
+                    preset: pb.AddThreadConfig.Schema.Preset.MEDIA
+                }),
+                type: pb.Thread.Type.Private,
+                sharing: pb.Thread.Sharing.InviteOnly,
+                members: [],
+                force: false
+            })
+            const result = await Node.threads.add(config)
             expect(typeof result).toEqual('object')
             expect(result).toHaveProperty('key')
             expect(result.key).toEqual(threadKey)
             expect(result).toHaveProperty('name')
             expect(result.name).toEqual(threadName)
         })
-        it('addFiles', async () => {
-            const dir: pb.IDirectory = { files: {} }
-            const result = await api.addFiles(dir, threadId, 'here we go')
+    })
+
+    describe('files', () => {
+        it('add', async () => {
+            const dir: pb.IDirectory = {files: {}}
+            const result = await Node.files.add(dir, threadId, 'here we go')
             expect(typeof result).toEqual('object')
-            expect(result).toHaveProperty('thread_id')
-            expect(result.thread_id).toEqual(threadId)
+            expect(result).toHaveProperty('thread')
+            expect(result.thread).toEqual(threadId)
+        })
+    })
+
+    describe('invites', () => {
+        it('add external invite', async () => {
+            const result = await Node.invites.addExternal(threadId)
+            expect(typeof result).toEqual('object')
+            expect(result).toHaveProperty('id')
+            expect(result.id).toEqual(threadId)
+        })
+        it('accept external invite', async () => {
+            const result = await Node.invites.acceptExternal('invite_id', 'key')
+            expect(result).toEqual('block')
+        })
+    })
+
+    describe('notifications', () => {
+        it('accept invite via notification', async () => {
+            const result = await Node.notifications.acceptInvite('notification_id')
+            expect(result).toEqual('block')
         })
     })
 })
