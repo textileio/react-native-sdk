@@ -210,16 +210,16 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				FRAMEWORK_SEARCH_PATHS = (
-					"$(SRCROOT)/../node_modules/@textile/go-mobile/ios/**",
-					"$(SRCROOT)/../../go-mobile/ios/**",
+					"$(SRCROOT)/../node_modules/@textile/go-mobile/dist/ios/**",
+					"$(SRCROOT)/../../go-mobile/dist/ios/**",
 				);
 				HEADER_SEARCH_PATHS = (
-					"$(SRCROOT)/../node_modules/@textile/go-mobile/ios/**",
-					"$(SRCROOT)/../../go-mobile/ios/**",
+					"$(SRCROOT)/../node_modules/@textile/go-mobile/dist/ios/**",
+					"$(SRCROOT)/../../go-mobile/dist/ios/**",
 				);
 				LIBRARY_SEARCH_PATHS = (
-					"$(SRCROOT)/../node_modules/@textile/go-mobile/ios/**",
-					"$(SRCROOT)/../../go-mobile/ios/**",
+					"$(SRCROOT)/../node_modules/@textile/go-mobile/dist/ios/**",
+					"$(SRCROOT)/../../go-mobile/dist/ios/**",
 				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = RNTextile;
@@ -231,16 +231,16 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				FRAMEWORK_SEARCH_PATHS = (
-					"$(SRCROOT)/../node_modules/@textile/go-mobile/ios/**",
-					"$(SRCROOT)/../../go-mobile/ios/**",
+					"$(SRCROOT)/../node_modules/@textile/go-mobile/dist/ios/**",
+					"$(SRCROOT)/../../go-mobile/dist/ios/**",
 				);
 				HEADER_SEARCH_PATHS = (
-					"$(SRCROOT)/../node_modules/@textile/go-mobile/ios/**",
-					"$(SRCROOT)/../../go-mobile/ios/**",
+					"$(SRCROOT)/../node_modules/@textile/go-mobile/dist/ios/**",
+					"$(SRCROOT)/../../go-mobile/dist/ios/**",
 				);
 				LIBRARY_SEARCH_PATHS = (
-					"$(SRCROOT)/../node_modules/@textile/go-mobile/ios/**",
-					"$(SRCROOT)/../../go-mobile/ios/**",
+					"$(SRCROOT)/../node_modules/@textile/go-mobile/dist/ios/**",
+					"$(SRCROOT)/../../go-mobile/dist/ios/**",
 				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = RNTextile;

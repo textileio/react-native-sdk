@@ -26,15 +26,7 @@ RCT_EXPORT_MODULE();
 
 // The list of available events
 - (NSArray<NSString *> *)supportedEvents {
-    return @[@"onOnline",
-            @"onThreadAdded",
-            @"onThreadRemoved",
-            @"onThreadUpdate",
-            @"onAccountPeerAdded",
-            @"onAccountPeerRemoved",
-            @"onNotification",
-            @"@textile/sdk/searchContactsResult",
-            @"@textile/sdk/searchContactsError"];
+    return @[@"NODE_START", @"NODE_ONLINE", @"NODE_STOP", @"WALLET_UPDATE", @"THREAD_UPDATE", @"NOTIFICATION", @"QUEUE_RESPONSE"];
 }
 
 // This function listens for the events we want to send out and will then pass the
