@@ -1,3 +1,4 @@
-export * from './API'
+import pb from '@textile/go-mobile'
+
 export * from './SDK'
-export * from './pb'
+export { pb }

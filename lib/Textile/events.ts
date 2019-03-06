@@ -20,15 +20,8 @@ export type TextileEvents = 'newNodeState' |
                             'setRecoveryPhrase' |
                             'walletInitSuccess' |
                             'backgroundTask' |
-                            'nodeOnline' |
                             'error' |
-                            'onOnline' |
-                            'onThreadUpdate' |
-                            'onThreadAdded' |
-                            'onThreadRemoved' |
-                            'onNotification' |
-                            'onAccountPeerAdded' |
-                            'onAccountPeerRemoved'
+                            'NODE_START' | 'NODE_ONLINE' | 'NODE_STOP' | 'WALLET_UPDATE' | 'THREAD_UPDATE' | 'NOTIFICATION' | 'QUEUE_RESPONSE'
 
 export const publicEvents: {[key: string]: string} = {
   newNodeState: '@textile/shared/newNodeState',
@@ -48,22 +41,16 @@ export const publicEvents: {[key: string]: string} = {
   backgroundTask: '@textile/shared/backgroundTask',
   error: '@textile/shared/error',
   // NATIVE EVENTS
-  onOnline: 'onOnline',
-  onThreadUpdate: 'onThreadUpdate',
-  onThreadAdded: 'onThreadAdded',
-  onThreadRemoved: 'onThreadRemoved',
-  onNotification: 'onNotification',
-  onAccountPeerAdded: 'onAccountPeerAdded',
-  onAccountPeerRemoved: 'onAccountPeerRemoved'
+  NODE_START: 'NODE_START',
+  NODE_ONLINE: 'NODE_ONLINE',
+  NODE_STOP: 'NODE_STOP',
+  WALLET_UPDATE: 'WALLET_UPDATE',
+  THREAD_UPDATE: 'THREAD_UPDATE',
+  NOTIFICATION: 'NOTIFICATION',
+  QUEUE_RESPONSE: 'QUEUE_RESPONSE'
 }
 
-const nativeEvents: TextileEvents[] = [
-  'onThreadUpdate',
-  'onThreadAdded',
-  'onThreadRemoved',
-  'onNotification',
-  'onAccountPeerAdded',
-  'onAccountPeerRemoved']
+const nativeEvents: TextileEvents[] = ['NODE_START', 'NODE_ONLINE', 'NODE_STOP', 'WALLET_UPDATE', 'THREAD_UPDATE', 'NOTIFICATION', 'QUEUE_RESPONSE']
 
 // Keys used only inside the SDK, not to be modified by the client
 export const privateEvents: {[key: string]: string} = {

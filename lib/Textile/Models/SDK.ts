@@ -1,25 +1,17 @@
 import { AppStateStatus } from 'react-native'
-import { pb } from './pb'
 
-export interface ContactSearchResult {
-  type: 'result'
-  contact: pb.IContact,
-  local: boolean
+export interface DiscoveredCafe {
+  readonly peer: string
+  readonly address: string
+  readonly api: string
+  readonly protocol: string
+  readonly node: string
+  readonly url: string
 }
 
-export interface ContactSearchError {
-  type: 'error'
-  error: string
-}
-
-export interface ContactSearchComplete {
-  type: 'complete'
-}
-
-export type ContactSearchEvent = ContactSearchResult | ContactSearchError | ContactSearchComplete
-
-export interface BufferJSON {
-  buffer: string
+export interface DiscoveredCafes {
+  readonly primary: DiscoveredCafe
+  readonly secondary: DiscoveredCafe
 }
 
 export interface CafeConfig {
@@ -43,11 +35,6 @@ export enum NodeState {
   'postMigration' = 'postMigration'
 }
 
-export enum SchemaType {
-  MEDIA = 'MEDIA',
-  CAMERA_ROLL = 'CAMERA_ROLL',
-  JSON = 'JSON'
-}
 export interface StoredNodeState {
   state: NodeState
   error?: string

@@ -1,6 +1,6 @@
-import * as API from './Textile/API'
 import Events, { TextileEvents } from './Textile/events'
 import Textile, { BackgroundTask } from './Textile'
+import * as API from './Textile/API'
 import * as util from './util'
 
 export { Textile, API, Events, BackgroundTask, TextileEvents, util }

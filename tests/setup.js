@@ -13,7 +13,7 @@ jest.mock('react-native', () => {
     AsyncStorage: new AsyncStorage(),
     DeviceEventEmitter: new DeviceEvent(),
     NativeModules: {
-      TextileNode 
+      TextileNode
     },
     Platform: {
       OS: 'android',

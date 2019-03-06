@@ -7,17 +7,11 @@ import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
-import com.facebook.react.bridge.WritableMap;
-import com.facebook.react.bridge.WritableNativeMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
-
-import org.json.JSONObject;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
-import mobile.AddThreadConfig;
-import mobile.CancelFn;
 import mobile.Event;
 import mobile.Messenger;
 import mobile.Mobile;
@@ -26,6 +20,7 @@ import mobile.InitConfig;
 import mobile.MigrateConfig;
 import mobile.RunConfig;
 import mobile.Callback;
+import mobile.SearchHandle;
 
 public class TextileNode extends ReactContextBaseJavaModule {
     public static final String REACT_CLASS = "TextileNode";
@@ -33,230 +28,21 @@ public class TextileNode extends ReactContextBaseJavaModule {
 
     // made public so external native libraries can interact
     public static Mobile_ node = null;
-    public static CancelFn cancellableSearchContacts = null;
+    private static SearchHandle searchHandle = null;
 
     private Executor executor = Executors.newSingleThreadExecutor();
 
     public TextileNode(ReactApplicationContext context) {
-        // Pass in the context to the constructor and save it so you can emit events
-        // https://facebook.github.io/react-native/docs/native-modules-android.html#the-toast-module
         super(context);
-
         reactContext = context;
     }
 
     @Override
     public String getName() {
-        // Tell React the name of the module
-        // https://facebook.github.io/react-native/docs/native-modules-android.html#the-toast-module
         return REACT_CLASS;
     }
 
-    @ReactMethod
-    public void acceptExternalInvite(final String id_, final String key, final Promise promise) {
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    promise.resolve(node.acceptExternalInvite(id_, key));
-                }
-                catch (Exception e) {
-                    promise.reject("acceptExternalInvite", e);
-                }
-            }
-        });
-    }
-
-    @ReactMethod
-    public void acceptInviteViaNotification(final String id_, final Promise promise) {
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    promise.resolve(node.acceptInviteViaNotification(id_));
-                }
-                catch (Exception e) {
-                    promise.reject("acceptInviteViaNotification", e);
-                }
-            }
-        });
-    }
-
-    @ReactMethod
-    public void addContact(final String contactJsonString, final Promise promise) {
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    node.addContact(contactJsonString);
-                    promise.resolve(null);
-                }
-                catch (Exception e) {
-                    promise.reject("addContact", e);
-                }
-            }
-        });
-    }
-
-    @ReactMethod
-    public void addExternalInvite(final String threadId, final Promise promise) {
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    promise.resolve(node.addExternalInvite(threadId));
-                }
-                catch (Exception e) {
-                    promise.reject("addExternalInvite", e);
-                }
-            }
-        });
-    }
-
-    @ReactMethod
-    public void addSchema(final String jsonstr, final Promise promise) {
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    promise.resolve(node.addSchema(jsonstr));
-                }
-                catch (Exception e) {
-                    promise.reject("addSchema", e);
-                }
-            }
-        });
-    }
-
-    @ReactMethod
-    public void addThread(final String key, final String name, final String type, final String sharing, final String members, final String schema, final Boolean media, final Boolean cameraRoll, final Promise promise) {
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    AddThreadConfig config = new AddThreadConfig();
-                    config.setKey(key);
-                    config.setName(name);
-                    config.setType(type);
-                    config.setSharing(sharing);
-                    config.setMembers(members);
-                    config.setSchema(schema);
-                    config.setMedia(media);
-                    config.setCameraRoll(cameraRoll);
-                    promise.resolve(node.addThread(config));
-                }
-                catch (Exception e) {
-                    promise.reject("addThread", e);
-                }
-            }
-        });
-    }
-
-    @ReactMethod
-    public void addComment(final String blockId, final String body, final Promise promise) {
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    promise.resolve(node.addComment(blockId, body));
-                }
-                catch (Exception e) {
-                    promise.reject("addComment", e);
-                }
-            }
-        });
-    }
-
-    @ReactMethod
-    public void addFiles(final String dir, final String threadId, final String caption, final Promise promise) {
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    byte[] bytes = Base64.decode(dir, Base64.DEFAULT);
-                    promise.resolve(node.addFiles(bytes, threadId, caption));
-                }
-                catch (Exception e) {
-                    promise.reject("addFiles", e);
-                }
-            }
-        });
-    }
-
-    @ReactMethod
-    public void addFilesByTarget(final String target, final String threadId, final String caption, final Promise promise) {
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    promise.resolve(node.addFilesByTarget(target, threadId, caption));
-                }
-                catch (Exception e) {
-                    promise.reject("addFilesByTarget", e);
-                }
-            }
-        });
-    }
-
-    @ReactMethod
-    public void addIgnore(final String blockId, final Promise promise) {
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    promise.resolve(node.addIgnore(blockId));
-                }
-                catch (Exception e) {
-                    promise.reject("addIgnore", e);
-                }
-            }
-        });
-    }
-
-    @ReactMethod
-    public void addInvite(final String threadId, final String inviteeId, final Promise promise) {
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    promise.resolve(node.addInvite(threadId, inviteeId));
-                }
-                catch (Exception e) {
-                    promise.reject("addInvite", e);
-                }
-            }
-        });
-    }
-
-    @ReactMethod
-    public void addLike(final String blockId, final Promise promise) {
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    promise.resolve(node.addLike(blockId));
-                }
-                catch (Exception e) {
-                    promise.reject("addLike", e);
-                }
-            }
-        });
-    }
-
-    @ReactMethod
-    public void addMessage(final String threadId, final String body, final Promise promise) {
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    promise.resolve(node.addMessage(threadId, body));
-                }
-                catch (Exception e) {
-                    promise.reject("addMessage", e);
-                }
-            }
-        });
-    }
+    // Account ---------------->
 
     @ReactMethod
     public void address(final Promise promise) {
@@ -274,15 +60,97 @@ public class TextileNode extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void avatar(final Promise promise) {
+    public void seed(final Promise promise) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
                 try {
-                    promise.resolve(node.avatar());
+                    promise.resolve(node.seed());
                 }
                 catch (Exception e) {
-                    promise.reject("avatar", e);
+                    promise.reject("seed", e);
+                }
+            }
+        });
+    }
+
+    @ReactMethod
+    public void encrypt(final String inputStr, final Promise promise) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    promise.resolve(encode(node.encrypt(decode(inputStr))));
+                }
+                catch (Exception e) {
+                    promise.reject("encrypt", e);
+                }
+            }
+        });
+    }
+
+    @ReactMethod
+    public void decrypt(final String inputStr, final Promise promise) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    promise.resolve(encode(node.decrypt(decode(inputStr))));
+                }
+                catch (Exception e) {
+                    promise.reject("decrypt", e);
+                }
+            }
+        });
+    }
+
+    @ReactMethod
+    public void accountPeers(final Promise promise) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    promise.resolve(encode(node.accountPeers()));
+                }
+                catch (Exception e) {
+                    promise.reject("accountPeers", e);
+                }
+            }
+        });
+    }
+
+    @ReactMethod
+    public void findThreadBackups(final String queryStr, final String optionsStr, final Promise promise) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    if (TextileNode.searchHandle != null) {
+                        TextileNode.searchHandle.cancel();
+                    }
+                    TextileNode.searchHandle = node.findThreadBackups(decode(queryStr), decode(optionsStr));
+                }
+                catch (Exception e) {
+                    promise.reject("findThreadBackups", e);
+                }
+            }
+        });
+    }
+
+
+    // Cafes ---------------->
+
+    @ReactMethod
+    public void registerCafe(final String peerId, final String token, final Promise promise) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    node.registerCafe(peerId, token);
+                    promise.resolve(null);
+                }
+                catch (Exception e) {
+                    promise.reject("registerCafe", e);
                 }
             }
         });
@@ -294,7 +162,7 @@ public class TextileNode extends ReactContextBaseJavaModule {
             @Override
             public void run() {
                 try {
-                    promise.resolve(stringEncode(node.cafeSession(peerId)));
+                    promise.resolve(encode(node.cafeSession(peerId)));
                 }
                 catch (Exception e) {
                     promise.reject("cafeSession", e);
@@ -309,7 +177,7 @@ public class TextileNode extends ReactContextBaseJavaModule {
             @Override
             public void run() {
                 try {
-                    promise.resolve(stringEncode(node.cafeSessions()));
+                    promise.resolve(encode(node.cafeSessions()));
                 }
                 catch (Exception e) {
                     promise.reject("cafeSessions", e);
@@ -319,76 +187,15 @@ public class TextileNode extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void checkCafeMessages(final Promise promise) {
+    public void refreshCafeSession(final String peerId, final Promise promise) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
                 try {
-                    node.checkCafeMessages();
-                    promise.resolve(null);
+                    promise.resolve(encode(node.refreshCafeSession(peerId)));
                 }
                 catch (Exception e) {
-                    promise.reject("checkCafeMessages", e);
-                }
-            }
-        });
-    }
-
-    @ReactMethod
-    public void contact(final String id_, final Promise promise) {
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    promise.resolve(node.contact(id_));
-                }
-                catch (Exception e) {
-                    promise.reject("contact", e);
-                }
-            }
-        });
-    }
-
-    @ReactMethod
-    public void contactThreads(final String id_, final Promise promise) {
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    promise.resolve(node.contactThreads(id_));
-                }
-                catch (Exception e) {
-                    promise.reject("contactThreads", e);
-                }
-            }
-        });
-    }
-
-    @ReactMethod
-    public void contacts(final Promise promise) {
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    promise.resolve(node.contacts());
-                }
-                catch (Exception e) {
-                    promise.reject("contacts", e);
-                }
-            }
-        });
-    }
-
-    @ReactMethod
-    public void countUnreadNotifications(final Promise promise) {
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    promise.resolve(node.countUnreadNotifications());
-                }
-                catch (Exception e) {
-                    promise.reject("countUnreadNotifications", e);
+                    promise.reject("refreshCafeSession", e);
                 }
             }
         });
@@ -411,208 +218,83 @@ public class TextileNode extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void fileData(final String hash, final Promise promise) {
+    public void checkCafeMessages(final Promise promise) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
                 try {
-                    promise.resolve(node.fileData(hash));
-                }
-                catch (Exception e) {
-                    promise.reject("fileData", e);
-                }
-            }
-        });
-    }
-
-    @ReactMethod
-    public void ignoreInviteViaNotification(final String id_, final Promise promise) {
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    node.ignoreInviteViaNotification(id_);
+                    node.checkCafeMessages();
                     promise.resolve(null);
                 }
                 catch (Exception e) {
-                    promise.reject("ignoreInviteViaNotification", e);
+                    promise.reject("checkCafeMessages", e);
                 }
             }
         });
     }
 
+
+    // Comments ---------------->
+
     @ReactMethod
-    public void imageFileDataForMinWidth(final String pth, final Integer minWidth, final Promise promise) {
+    public void addComment(final String blockId, final String body, final Promise promise) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
                 try {
-                    promise.resolve(node.imageFileDataForMinWidth(pth, minWidth));
+                    promise.resolve(node.addComment(blockId, body));
                 }
                 catch (Exception e) {
-                    promise.reject("imageFileDataForMinWidth", e);
+                    promise.reject("addComment", e);
                 }
             }
         });
     }
 
-    @ReactMethod
-    public void notifications(final String offset, final Integer limit, final Promise promise) {
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    promise.resolve(node.notifications(offset, limit));
-                }
-                catch (Exception e) {
-                    promise.reject("notifications", e);
-                }
-            }
-        });
-    }
+
+    // Contacts ---------------->
 
     @ReactMethod
-    public void summary(final Promise promise) {
+    public void addContact(final String contactStr, final Promise promise) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
                 try {
-                    promise.resolve(node.summary());
-                }
-                catch (Exception e) {
-                    promise.reject("summary", e);
-                }
-            }
-        });
-    }
-
-    @ReactMethod
-    public void peerId(final Promise promise) {
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    promise.resolve(node.peerId());
-                }
-                catch (Exception e) {
-                    promise.reject("peerId", e);
-                }
-            }
-        });
-    }
-
-    @ReactMethod
-    public void prepareFiles(final String path, final String threadId, final Promise promise) {
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    promise.resolve(stringEncode(node.prepareFiles(path, threadId)));
-                }
-                catch (Exception e) {
-                    promise.reject("prepareFiles", e);
-                }
-            }
-        });
-    }
-
-    @ReactMethod
-    public void prepareFilesAsync(final String path, final String threadId, final Promise promise) {
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    node.prepareFilesAsync(path, threadId, new Callback() {
-                        @Override
-                        public void call(byte[] bytes, Exception e) {
-                            if (e == null) {
-                                promise.resolve(stringEncode(bytes));
-                            } else {
-                                promise.reject("prepareFilesAsync", e);
-                            }
-                        }
-                    });
-                }
-                catch (Exception e) {
-                    promise.reject("prepareFilesAsync", e);
-                }
-            }
-        });
-    }
-
-    @ReactMethod
-    public void profile(final Promise promise) {
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    promise.resolve(node.profile());
-                }
-                catch (Exception e) {
-                    promise.reject("profile", e);
-                }
-            }
-        });
-    }
-
-    @ReactMethod
-    public void readAllNotifications(final Promise promise) {
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    node.readAllNotifications();
+                    node.addContact(decode(contactStr));
                     promise.resolve(null);
                 }
                 catch (Exception e) {
-                    promise.reject("readAllNotifications", e);
+                    promise.reject("addContact", e);
                 }
             }
         });
     }
 
     @ReactMethod
-    public void readNotification(final String id_, final Promise promise) {
+    public void contact(final String id_, final Promise promise) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
                 try {
-                    node.readNotification(id_);
-                    promise.resolve(null);
+                    promise.resolve(encode(node.contact(id_)));
                 }
                 catch (Exception e) {
-                    promise.reject("readNotification", e);
+                    promise.reject("contact", e);
                 }
             }
         });
     }
 
     @ReactMethod
-    public void refreshCafeSession(final String peerId, final Promise promise) {
+    public void contacts(final Promise promise) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
                 try {
-                    promise.resolve(stringEncode(node.refreshCafeSession(peerId)));
+                    promise.resolve(encode(node.contacts()));
                 }
                 catch (Exception e) {
-                    promise.reject("refreshCafeSession", e);
-                }
-            }
-        });
-    }
-
-    @ReactMethod
-    public void registerCafe(final String peerId, final String token, final Promise promise) {
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    node.registerCafe(peerId, token);
-                    promise.resolve(null);
-                }
-                catch (Exception e) {
-                    promise.reject("registerCafe", e);
+                    promise.reject("contacts", e);
                 }
             }
         });
@@ -635,122 +317,484 @@ public class TextileNode extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void removeThread(final String id_, final Promise promise) {
+    public void contactThreads(final String id_, final Promise promise) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
                 try {
-                    promise.resolve(node.removeThread(id_));
+                    promise.resolve(encode(node.contactThreads(id_)));
                 }
                 catch (Exception e) {
-                    promise.reject("removeThread", e);
+                    promise.reject("contactThreads", e);
                 }
             }
         });
     }
 
     @ReactMethod
-    public void searchContacts(final String query, final String options) {
+    public void searchContacts(final String queryStr, final String optionsStr, final Promise promise) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
                 try {
-                    byte[] queryBytes = Base64.decode(query, Base64.DEFAULT);
-                    byte[] optionsBytes = Base64.decode(options, Base64.DEFAULT);
-                    if (TextileNode.cancellableSearchContacts != null) {
-                        TextileNode.cancellableSearchContacts.call();
+                    if (TextileNode.searchHandle != null) {
+                        TextileNode.searchHandle.cancel();
                     }
-                    CancelFn newCancel = node.searchContacts(queryBytes, optionsBytes, new Callback() {
+                    TextileNode.searchHandle = node.searchContacts(decode(queryStr), decode(optionsStr));
+                }
+                catch (Exception e) {
+                    promise.reject("searchContacts", e);
+                }
+            }
+        });
+    }
+
+
+    // Feed ---------------->
+
+    @ReactMethod
+    public void feed(final String reqStr, final Promise promise) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    promise.resolve(encode(node.feed(decode(reqStr))));
+                }
+                catch (Exception e) {
+                    promise.reject("feed", e);
+                }
+            }
+        });
+    }
+
+
+    // Files ---------------->
+
+    @ReactMethod
+    public void prepareFiles(final String path, final String threadId, final Promise promise) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    promise.resolve(encode(node.prepareFiles(path, threadId)));
+                }
+                catch (Exception e) {
+                    promise.reject("prepareFiles", e);
+                }
+            }
+        });
+    }
+
+    @ReactMethod
+    public void prepareFilesAsync(final String path, final String threadId, final Promise promise) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    node.prepareFilesAsync(path, threadId, new Callback() {
                         @Override
-                        public void call(byte[] bytes, Exception e) {
+                        public void call(byte[] data, Exception e) {
                             if (e == null) {
-                                if (bytes != null) {
-                                    String base64 = Base64.encodeToString(bytes, Base64.DEFAULT);
-                                    WritableMap payload = new WritableNativeMap();
-                                    payload.putString("buffer", base64);
-                                    TextileNode.emitDeviceEvent("@textile/sdk/searchContactsResult", payload);
-                                } else {
-                                    TextileNode.emitDeviceEvent("@textile/sdk/searchContactsResult", null);
-                                }
+                                promise.resolve(encode(data));
                             } else {
-                                WritableMap payload = new WritableNativeMap();
-                                payload.putString("message", e.getMessage());
-                                TextileNode.emitDeviceEvent("@textile/sdk/searchContactsError", payload);
+                                promise.reject("prepareFilesAsync", e);
                             }
                         }
                     });
-                    TextileNode.cancellableSearchContacts = newCancel;
                 }
                 catch (Exception e) {
-                    WritableMap payload = new WritableNativeMap();
-                    payload.putString("message", e.getMessage());
-                    TextileNode.emitDeviceEvent("@textile/sdk/searchContactsError", payload);
+                    promise.reject("prepareFilesAsync", e);
                 }
             }
         });
     }
 
     @ReactMethod
-    public void cancelSearchContacts(final Promise promise) {
+    public void addFiles(final String dirStr, final String threadId, final String caption, final Promise promise) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
                 try {
-                    if (TextileNode.cancellableSearchContacts != null) {
-                        TextileNode.cancellableSearchContacts.call();
-                        TextileNode.cancellableSearchContacts = null;
-                    }
-                    promise.resolve(null);
+                    promise.resolve(encode(node.addFiles(decode(dirStr), threadId, caption)));
                 }
                 catch (Exception e) {
-                    promise.reject("cancelSearchContacts", e);
+                    promise.reject("addFiles", e);
                 }
             }
         });
     }
 
     @ReactMethod
-    public void seed(final Promise promise) {
+    public void addFilesByTarget(final String target, final String threadId, final String caption, final Promise promise) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
                 try {
-                    promise.resolve(node.seed());
+                    promise.resolve(encode(node.addFilesByTarget(target, threadId, caption)));
                 }
                 catch (Exception e) {
-                    promise.reject("seed", e);
+                    promise.reject("addFilesByTarget", e);
                 }
             }
         });
     }
 
     @ReactMethod
-    public void setAvatar(final String id_, final Promise promise) {
+    public void files(final String offset, final Integer limit, final String threadId, final Promise promise) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
                 try {
-                    node.setAvatar(id_);
-                    promise.resolve(null);
+                    promise.resolve(encode(node.files(offset, limit, threadId)));
                 }
                 catch (Exception e) {
-                    promise.reject("setAvatar", e);
+                    promise.reject("files", e);
                 }
             }
         });
     }
 
     @ReactMethod
-    public void setLogLevels(final String levels, final Promise promise) {
+    public void fileData(final String hash, final Promise promise) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
                 try {
-                    node.setLogLevels(levels);
+                    promise.resolve(node.fileData(hash));
+                }
+                catch (Exception e) {
+                    promise.reject("fileData", e);
+                }
+            }
+        });
+    }
+
+    @ReactMethod
+    public void imageFileDataForMinWidth(final String pth, final Integer minWidth, final Promise promise) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    promise.resolve(node.imageFileDataForMinWidth(pth, minWidth));
+                }
+                catch (Exception e) {
+                    promise.reject("imageFileDataForMinWidth", e);
+                }
+            }
+        });
+    }
+
+
+    // Flags ---------------->
+
+    @ReactMethod
+    public void addFlag(final String blockId, final Promise promise) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    promise.resolve(node.addFlag(blockId));
+                }
+                catch (Exception e) {
+                    promise.reject("addFlag", e);
+                }
+            }
+        });
+    }
+
+
+    // Ignores ---------------->
+
+    @ReactMethod
+    public void addIgnore(final String blockId, final Promise promise) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    promise.resolve(node.addIgnore(blockId));
+                }
+                catch (Exception e) {
+                    promise.reject("addIgnore", e);
+                }
+            }
+        });
+    }
+
+
+    // Invites ---------------->
+
+    @ReactMethod
+    public void addInvite(final String threadId, final String inviteeId, final Promise promise) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    promise.resolve(node.addInvite(threadId, inviteeId));
+                }
+                catch (Exception e) {
+                    promise.reject("addInvite", e);
+                }
+            }
+        });
+    }
+
+    @ReactMethod
+    public void addExternalInvite(final String threadId, final Promise promise) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    promise.resolve(encode(node.addExternalInvite(threadId)));
+                }
+                catch (Exception e) {
+                    promise.reject("addExternalInvite", e);
+                }
+            }
+        });
+    }
+
+    @ReactMethod
+    public void acceptExternalInvite(final String id_, final String key, final Promise promise) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    promise.resolve(node.acceptExternalInvite(id_, key));
+                }
+                catch (Exception e) {
+                    promise.reject("acceptExternalInvite", e);
+                }
+            }
+        });
+    }
+
+
+    // Ipfs ---------------->
+
+    @ReactMethod
+    public void peerId(final Promise promise) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    promise.resolve(node.peerId());
+                }
+                catch (Exception e) {
+                    promise.reject("peerId", e);
+                }
+            }
+        });
+    }
+
+    @ReactMethod
+    public void dataAtPath(final String path, final Promise promise) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    promise.resolve(encode(node.dataAtPath(path)));
+                }
+                catch (Exception e) {
+                    promise.reject("dataAtPath", e);
+                }
+            }
+        });
+    }
+
+
+    // Likes ---------------->
+
+    @ReactMethod
+    public void addLike(final String blockId, final Promise promise) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    promise.resolve(node.addLike(blockId));
+                }
+                catch (Exception e) {
+                    promise.reject("addLike", e);
+                }
+            }
+        });
+    }
+
+
+    // Logs ---------------->
+
+    @ReactMethod
+    public void setLogLevels(final String levelStr, final Promise promise) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    node.setLogLevel(decode(levelStr));
                     promise.resolve(null);
                 }
                 catch (Exception e) {
                     promise.reject("setLogLevels", e);
+                }
+            }
+        });
+    }
+
+
+    // Messages ---------------->
+
+    @ReactMethod
+    public void addMessage(final String threadId, final String body, final Promise promise) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    promise.resolve(node.addMessage(threadId, body));
+                }
+                catch (Exception e) {
+                    promise.reject("addMessage", e);
+                }
+            }
+        });
+    }
+
+    @ReactMethod
+    public void messages(final String offset, final Integer limit, final String threadId, final Promise promise) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    promise.resolve(encode(node.messages(offset, limit, threadId)));
+                }
+                catch (Exception e) {
+                    promise.reject("messages", e);
+                }
+            }
+        });
+    }
+
+
+    // Notifications ---------------->
+
+    @ReactMethod
+    public void notifications(final String offset, final Integer limit, final Promise promise) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    promise.resolve(encode(node.notifications(offset, limit)));
+                }
+                catch (Exception e) {
+                    promise.reject("notifications", e);
+                }
+            }
+        });
+    }
+
+    @ReactMethod
+    public void countUnreadNotifications(final Promise promise) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    promise.resolve(node.countUnreadNotifications());
+                }
+                catch (Exception e) {
+                    promise.reject("countUnreadNotifications", e);
+                }
+            }
+        });
+    }
+
+    @ReactMethod
+    public void readNotification(final String id_, final Promise promise) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    node.readNotification(id_);
+                    promise.resolve(null);
+                }
+                catch (Exception e) {
+                    promise.reject("readNotification", e);
+                }
+            }
+        });
+    }
+
+    @ReactMethod
+    public void readAllNotifications(final Promise promise) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    node.readAllNotifications();
+                    promise.resolve(null);
+                }
+                catch (Exception e) {
+                    promise.reject("readAllNotifications", e);
+                }
+            }
+        });
+    }
+
+    @ReactMethod
+    public void acceptInviteViaNotification(final String id_, final Promise promise) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    promise.resolve(node.acceptInviteViaNotification(id_));
+                }
+                catch (Exception e) {
+                    promise.reject("acceptInviteViaNotification", e);
+                }
+            }
+        });
+    }
+
+    @ReactMethod
+    public void ignoreInviteViaNotification(final String id_, final Promise promise) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    node.ignoreInviteViaNotification(id_);
+                    promise.resolve(null);
+                }
+                catch (Exception e) {
+                    promise.reject("ignoreInviteViaNotification", e);
+                }
+            }
+        });
+    }
+
+
+    // Profile ---------------->
+
+    @ReactMethod
+    public void profile(final Promise promise) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    promise.resolve(encode(node.profile()));
+                }
+                catch (Exception e) {
+                    promise.reject("profile", e);
+                }
+            }
+        });
+    }
+
+    @ReactMethod
+    public void username(final Promise promise) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    promise.resolve(node.username());
+                }
+                catch (Exception e) {
+                    promise.reject("username", e);
                 }
             }
         });
@@ -773,93 +817,98 @@ public class TextileNode extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void start(final Promise promise) {
+    public void avatar(final Promise promise) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
                 try {
-                    node.start();
+                    promise.resolve(node.avatar());
+                }
+                catch (Exception e) {
+                    promise.reject("avatar", e);
+                }
+            }
+        });
+    }
+
+    @ReactMethod
+    public void setAvatar(final String id_, final Promise promise) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    node.setAvatar(id_);
                     promise.resolve(null);
                 }
                 catch (Exception e) {
-                    promise.reject("start", e);
+                    promise.reject("setAvatar", e);
+                }
+            }
+        });
+    }
+
+
+    // Schemas ---------------->
+
+    @ReactMethod
+    public void addSchema(final String nodeStr, final Promise promise) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    promise.resolve(encode(node.addSchema(decode(nodeStr))));
+                }
+                catch (Exception e) {
+                    promise.reject("addSchema", e);
+                }
+            }
+        });
+    }
+
+
+    // Threads ---------------->
+
+    @ReactMethod
+    public void addThread(final String configStr, final Promise promise) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    promise.resolve(encode(node.addThread(decode(configStr))));
+                }
+                catch (Exception e) {
+                    promise.reject("addThread", e);
                 }
             }
         });
     }
 
     @ReactMethod
-    public void stop(final Promise promise) {
+    public void addOrUpdateThread(final String threadStr, final Promise promise) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
                 try {
-                    node.stop();
+                    node.addOrUpdateThread(decode(threadStr));
                     promise.resolve(null);
                 }
                 catch (Exception e) {
-                    promise.reject("stop", e);
+                    promise.reject("addOrUpdateThread", e);
                 }
             }
         });
     }
 
     @ReactMethod
-    public void feed(final String offset, final Integer limit, final Integer mode, final String threadId, final Promise promise) {
+    public void thread(final String threadId, final Promise promise) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
                 try {
-                    int m = mode != null ? mode : 0;
-                    promise.resolve(stringEncode(node.feed(offset, limit, threadId, m)));
+                    promise.resolve(encode(node.thread(threadId)));
                 }
                 catch (Exception e) {
-                    promise.reject("feed", e);
-                }
-            }
-        });
-    }
-
-    @ReactMethod
-    public void files(final String offset, final Integer limit, final String threadId, final Promise promise) {
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    promise.resolve(stringEncode(node.files(offset, limit, threadId)));
-                }
-                catch (Exception e) {
-                    promise.reject("files", e);
-                }
-            }
-        });
-    }
-
-    @ReactMethod
-    public void messages(final String offset, final Integer limit, final String threadId, final Promise promise) {
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    promise.resolve(stringEncode(node.messages(offset, limit, threadId)));
-                }
-                catch (Exception e) {
-                    promise.reject("messages", e);
-                }
-            }
-        });
-    }
-
-    @ReactMethod
-    public void threadInfo(final String threadId, final Promise promise) {
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    promise.resolve(node.threadInfo(threadId));
-                }
-                catch (Exception e) {
-                    promise.reject("threadInfo", e);
+                    promise.reject("thread", e);
                 }
             }
         });
@@ -871,7 +920,7 @@ public class TextileNode extends ReactContextBaseJavaModule {
             @Override
             public void run() {
                 try {
-                    promise.resolve(node.threads());
+                    promise.resolve(encode(node.threads()));
                 }
                 catch (Exception e) {
                     promise.reject("threads", e);
@@ -881,30 +930,49 @@ public class TextileNode extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void username(final Promise promise) {
+    public void removeThread(final String id_, final Promise promise) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
                 try {
-                    promise.resolve(node.username());
+                    promise.resolve(node.removeThread(id_));
                 }
                 catch (Exception e) {
-                    promise.reject("username", e);
+                    promise.reject("removeThread", e);
+                }
+            }
+        });
+    }
+
+
+    // Mobile ---------------->
+
+    @ReactMethod
+    public void newWallet(final Integer wordCount, final Promise promise) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    promise.resolve(Mobile.newWallet(wordCount));
+                }
+                catch (Exception e) {
+                    promise.reject("newWallet", e);
                 }
             }
         });
     }
 
     @ReactMethod
-    public void version(final Promise promise) {
+    public void walletAccountAt(final String phrase, final Integer index, final String password, final Promise promise) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
                 try {
-                    promise.resolve(node.version());
+                    String p = password != null ? password : "";
+                    promise.resolve(encode(Mobile.walletAccountAt(phrase, index, p)));
                 }
                 catch (Exception e) {
-                    promise.reject("version", e);
+                    promise.reject("walletAccountAt", e);
                 }
             }
         });
@@ -962,13 +1030,7 @@ public class TextileNode extends ReactContextBaseJavaModule {
                         node = Mobile.newTextile(config, new Messenger() {
                             @Override
                             public void notify(Event event) {
-                                try {
-                                    WritableMap payload = JsonConvert.jsonToReact(new JSONObject(event.getPayload()));
-                                    TextileNode.emitDeviceEvent(event.getName(), payload);
-                                }
-                                catch (Exception e) {
-                                    //
-                                }
+                                TextileNode.emitDeviceEvent(event.getName(), encode(event.getData()));
                             }
                         });
                         promise.resolve(null);
@@ -984,47 +1046,120 @@ public class TextileNode extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void newWallet(final Integer wordCount, final Promise promise) {
+    public void start(final Promise promise) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
                 try {
-                    promise.resolve(Mobile.newWallet(wordCount));
+                    node.start();
+                    promise.resolve(null);
                 }
                 catch (Exception e) {
-                    promise.reject("newWallet", e);
+                    promise.reject("start", e);
                 }
             }
         });
     }
 
     @ReactMethod
-    public void walletAccountAt(final String phrase, final Integer index, final String password, final Promise promise) {
+    public void stop(final Promise promise) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
                 try {
-                    String p = password != null ? password : "";
-                    promise.resolve(Mobile.walletAccountAt(phrase, index, p));
+                    node.stop();
+                    promise.resolve(null);
                 }
                 catch (Exception e) {
-                    promise.reject("walletAccountAt", e);
+                    promise.reject("stop", e);
                 }
             }
         });
     }
 
-    private static void emitDeviceEvent(String eventName, @Nullable WritableMap eventData) {
-        // A method for emitting from the native side to JS
-        // https://facebook.github.io/react-native/docs/native-modules-android.html#sending-events-to-javascript
+    @ReactMethod
+    public void version(final Promise promise) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    promise.resolve(node.version());
+                }
+                catch (Exception e) {
+                    promise.reject("version", e);
+                }
+            }
+        });
+    }
+
+    @ReactMethod
+    public void gitSummary(final Promise promise) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    promise.resolve(node.gitSummary());
+                }
+                catch (Exception e) {
+                    promise.reject("gitSummary", e);
+                }
+            }
+        });
+    }
+
+    @ReactMethod
+    public void summary(final Promise promise) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    promise.resolve(node.summary());
+                }
+                catch (Exception e) {
+                    promise.reject("summary", e);
+                }
+            }
+        });
+    }
+
+
+    // Helpers ---------------->
+
+    @ReactMethod
+    public void cancelSearch(final Promise promise) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    if (TextileNode.searchHandle != null) {
+                        TextileNode.searchHandle.cancel();
+                        TextileNode.searchHandle = null;
+                    }
+                    promise.resolve(null);
+                }
+                catch (Exception e) {
+                    promise.reject("cancelSearch", e);
+                }
+            }
+        });
+    }
+
+    private static void emitDeviceEvent(String eventName, @Nullable String eventData) {
         reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(eventName, eventData);
     }
 
-    private static String stringEncode(byte[] data) {
+    private static String encode(byte[] data) {
         if (data == null) {
             return "";
         }
         return Base64.encodeToString(data, Base64.DEFAULT);
+    }
+
+    private static byte[] decode(String str) {
+        if (str.equals("")) {
+            return null;
+        }
+        return Base64.decode(str, Base64.DEFAULT);
     }
 
 }
