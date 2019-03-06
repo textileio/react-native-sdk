@@ -30,13 +30,11 @@ export async function list(offset: string, limit: number, threadId?: string): Pr
   return pb.FilesList.decode(Buffer.from(result, 'base64'))
 }
 
-export async function data(hash: string): Promise<pb.IMobileFileData> {
-  const result = await TextileNode.fileData(hash)
-  return pb.MobileFileData.decode(Buffer.from(result, 'base64'))
+export async function data(hash: string): Promise<string> {
+  return await TextileNode.fileData(hash)
 }
 
 // Note: pth is <target>/<index>, e.g., "Qm.../0"
-export async function imageDataForMinWidth(pth: string, minWidth: number): Promise<pb.IMobileFileData> {
-  const result = await TextileNode.imageFileDataForMinWidth(pth, minWidth)
-  return pb.MobileFileData.decode(Buffer.from(result, 'base64'))
+export async function imageDataForMinWidth(pth: string, minWidth: number): Promise<string> {
+  return await TextileNode.imageFileDataForMinWidth(pth, minWidth)
 }
