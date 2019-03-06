@@ -969,7 +969,7 @@ public class TextileNode extends ReactContextBaseJavaModule {
             public void run() {
                 try {
                     String p = password != null ? password : "";
-                    promise.resolve(Mobile.walletAccountAt(phrase, index, p));
+                    promise.resolve(encode(Mobile.walletAccountAt(phrase, index, p)));
                 }
                 catch (Exception e) {
                     promise.reject("walletAccountAt", e);

@@ -477,7 +477,7 @@ RCT_EXPORT_METHOD(walletAccountAt:(NSString*)phrase index:(NSInteger)index passw
   NSString *p = password ? password : @"";
   NSError *error;
   NSData *result = MobileWalletAccountAt(phrase, index, p, &error); // return seed and address
-  [self fulfillWithResult:result error:error resolver:resolve rejecter:reject];
+  [self fulfillWithResult:[result base64EncodedStringWithOptions:0] error:error resolver:resolve rejecter:reject];
 }
 
 RCT_EXPORT_METHOD(initRepo:(NSString*)seed repoPath:(NSString*)repoPath logToDisk:(BOOL)logToDisk debug:(BOOL)debug resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
