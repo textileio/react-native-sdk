@@ -851,12 +851,12 @@ public class TextileNode extends ReactContextBaseJavaModule {
     // Schemas ---------------->
 
     @ReactMethod
-    public void addSchema(final String jsonstr, final Promise promise) {
+    public void addSchema(final String nodeStr, final Promise promise) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
                 try {
-                    promise.resolve(encode(node.addSchema(jsonstr)));
+                    promise.resolve(encode(node.addSchema(decode(nodeStr))));
                 }
                 catch (Exception e) {
                     promise.reject("addSchema", e);

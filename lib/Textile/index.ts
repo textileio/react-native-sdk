@@ -7,7 +7,7 @@ import {
   NodeState,
   TextileConfig
 } from './Models'
-import * as Node from './Node'
+import * as API from './API'
 import TextileStore from './store'
 import NativeEvents from '../NativeEvents'
 import TextileMigration from './migration'
@@ -53,7 +53,7 @@ class Textile {
   tearDown() {
     // Clear on out too if detected to help speed up any startup time
     // Clear all our listeners
-    this._nativeEvents.removeListener('onOnline', this.onOnlineCallback)
+    this._nativeEvents.removeListener('NODE_ONLINE', this.onOnlineCallback)
     DeviceEventEmitter.removeListener(TextileEvents.privateEvents.backgroundTask, this.backgroundTaskCallback)
     DeviceEventEmitter.removeListener(TextileEvents.privateEvents.createAndStartNode, this.createAndStartNodeCallback)
     if (this._config.SELF_MANAGE_APP_STATE) {
@@ -102,7 +102,7 @@ class Textile {
     if (needsMigration) {
       await this.migration.runFileMigration(this.repoPath)
     }
-    await Node.create(this.repoPath, debug)
+    await API.create(this.repoPath, debug)
 
     await this.updateNodeState(NodeState.created)
   }
@@ -111,14 +111,14 @@ class Textile {
 
     await this.updateNodeState(NodeState.starting)
 
-    await Node.start()
+    await API.start()
 
     if (this._cafe) {
-      const sessions = await Node.cafes.sessions()
+      const sessions = await API.cafes.sessions()
       if (!sessions || sessions.items.length < 1) {
         const cafeOverride = this._cafe.TEXTILE_CAFE_OVERRIDE
         if (cafeOverride) {
-          await Node.cafes.register(cafeOverride, this._cafe.TEXTILE_CAFE_TOKEN)
+          await API.cafes.register(cafeOverride, this._cafe.TEXTILE_CAFE_TOKEN)
         } else if (this._cafe.TEXTILE_CAFE_GATEWAY_URL) {
           await this.discoverAndRegisterCafes()
         }
@@ -184,8 +184,8 @@ class Textile {
       if (this._cafe) {
         const cafes = await createTimeout(10000, this.discoverCafes())
         const discoveredCafes = cafes as DiscoveredCafes
-        await Node.cafes.register(discoveredCafes.primary.url, this._cafe.TEXTILE_CAFE_TOKEN || '')
-        await Node.cafes.register(discoveredCafes.secondary.url, this._cafe.TEXTILE_CAFE_TOKEN || '')
+        await API.cafes.register(discoveredCafes.primary.url, this._cafe.TEXTILE_CAFE_TOKEN || '')
+        await API.cafes.register(discoveredCafes.secondary.url, this._cafe.TEXTILE_CAFE_TOKEN || '')
       } else {
         TextileEvents.newError('no cafe config provided', 'cafeConfigError')
       }
@@ -220,7 +220,7 @@ class Textile {
 
   // Client should use this once account is onboarded to register with Cafe
   getCafeSessions = async (): Promise<ReadonlyArray<pb.ICafeSession>> => {
-    const sessions = await Node.cafes.sessions()
+    const sessions = await API.cafes.sessions()
     if (!sessions) {
       return []
     }
@@ -229,12 +229,12 @@ class Textile {
 
   // Client should use this if cafe sessions are detected as expired
   getRefreshedCafeSessions = async (): Promise<ReadonlyArray<pb.ICafeSession>> => {
-    const sessions = await Node.cafes.sessions()
+    const sessions = await API.cafes.sessions()
     if (!sessions) {
       return []
     }
     const refreshedValues = await Promise.all(
-      sessions.items.map(async (session) => await Node.cafes.refreshSession(session.id))
+      sessions.items.map(async (session) => await API.cafes.refreshSession(session.id))
     )
     return refreshedValues.reduce<pb.ICafeSession[]>((acc, val) => {
       if (val) {
@@ -248,18 +248,18 @@ class Textile {
   private initWallet = async () => {
     const debug = !this._config.RELEASE_TYPE || this._config.RELEASE_TYPE !== 'production'
     await this.updateNodeState(NodeState.creatingWallet)
-    const recoveryPhrase: string = await Node.wallet.create(12)
+    const recoveryPhrase: string = await API.wallet.create(12)
     TextileEvents.setRecoveryPhrase(recoveryPhrase)
     await this.updateNodeState(NodeState.derivingAccount)
-    const walletAccount: pb.IMobileWalletAccount = await Node.wallet.accountAt(recoveryPhrase, 0)
+    const walletAccount: pb.IMobileWalletAccount = await API.wallet.accountAt(recoveryPhrase, 0)
     await this.updateNodeState(NodeState.initializingRepo)
-    await Node.init(walletAccount.seed, this.repoPath, true, debug)
+    await API.init(walletAccount.seed, this.repoPath, true, debug)
     await this.updateNodeState(NodeState.walletInitSuccess)
     TextileEvents.walletInitSuccess()
   }
   private runRepoMigration = async () => {
     // instruct the node to export data to files
-    await Node.migrate(this.repoPath)
+    await API.migrate(this.repoPath)
     // store the fact there is a pending migration in the preferences redux persisted state
     TextileEvents.migrationNeeded()
     await this.updateNodeState(NodeState.postMigration)
@@ -289,7 +289,7 @@ class Textile {
       queriedAppState = await this.getCurrentState()
     }
     // Setup our within sdk listeners
-    this._nativeEvents.addListener('onOnline', this.onOnlineCallback)
+    this._nativeEvents.addListener('NODE_ONLINE', this.onOnlineCallback)
 
     DeviceEventEmitter.addListener(TextileEvents.privateEvents.backgroundTask, this.backgroundTaskCallback)
 
@@ -421,7 +421,7 @@ class Textile {
   /* ----- PRIVATE - EVENT EMITTERS ----- */
   private stopNode = async () => {
     await this.updateNodeState(NodeState.stopping)
-    await Node.stop()
+    await API.stop()
     await this._store.setNodeOnline(false)
     await this.updateNodeState(NodeState.stopped)
   }
@@ -445,13 +445,13 @@ class Textile {
 
       while (!cancelled) {
           TextileEvents.stopNodeAfterDelayStarting()
-          await Node.cafes.checkMessages() // do a quick check for new messages
+          await API.cafes.checkMessages() // do a quick check for new messages
           await delay(ms / 2)
           if (cancelled) { // cancelled by event, so abort sequence
             foregroundEvent.remove() // remove our event listener
             break
           }
-          await Node.cafes.checkMessages()
+          await API.cafes.checkMessages()
           await delay(ms / 2)
           if (cancelled) { // cancelled by event, so abort sequence
             foregroundEvent.remove() // remove our event listener

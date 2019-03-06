@@ -424,9 +424,9 @@ RCT_EXPORT_METHOD(setAvatar:(NSString*)id_ resolver:(RCTPromiseResolveBlock)reso
 
 #pragma mark - Schemas ---------------->
 
-RCT_EXPORT_METHOD(addSchema:(NSString*)jsonstr resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_EXPORT_METHOD(addSchema:(NSString*)nodeStr resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSError *error;
-  NSData *result = [self.node addSchema:jsonstr error:&error];
+  NSData *result = [self.node addSchema:[[NSData alloc] initWithBase64EncodedString:nodeStr options:0] error:&error];
   [self fulfillWithResult:[result base64EncodedStringWithOptions:0] error:error resolver:resolve rejecter:reject];
 }
 
