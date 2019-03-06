@@ -3,7 +3,7 @@
 #elif __has_include("RCTBridgeModule.h")
 #import “RCTBridgeModule.h”
 #else
-#import "React/RCTBridgeModule.h" // Required when used as a Pod in a Swift project
+#import "React/RCTBridgeModule.h"
 #endif
 
 #import <React/RCTBridge.h>
@@ -14,9 +14,7 @@
 @end
 
 @interface RCTBridge (TextileNode)
-/**
- * The shared Textile node instance
- */
+
 @property (nonatomic, readonly) TextileNode *textileNode;
 
 @end
