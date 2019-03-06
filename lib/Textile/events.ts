@@ -20,7 +20,6 @@ export type TextileEvents = 'newNodeState' |
                             'setRecoveryPhrase' |
                             'walletInitSuccess' |
                             'backgroundTask' |
-                            'nodeOnline' |
                             'error' |
                             'NODE_START' | 'NODE_ONLINE' | 'NODE_STOP' | 'WALLET_UPDATE' | 'THREAD_UPDATE' | 'NOTIFICATION' | 'QUEUE_RESPONSE'
 
