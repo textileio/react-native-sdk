@@ -6,13 +6,13 @@ const { TextileNode } = NativeModules
 
 export async function add(config: pb.IAddThreadConfig): Promise<pb.IThread> {
   const payload = pb.AddThreadConfig.encode(config).finish()
-  const result = await TextileNode.addThread(payload)
+  const result = await TextileNode.addThread(Buffer.from(payload).toString('base64'))
   return pb.Thread.decode(Buffer.from(result, 'base64'))
 }
 
 export async function addOrUpdate(thread: pb.IThread): Promise<void> {
   const payload = pb.Thread.encode(thread).finish()
-  return await TextileNode.addOrUpdateThread(payload)
+  return await TextileNode.addOrUpdateThread(Buffer.from(payload).toString('base64'))
 }
 
 export async function get(threadId: string): Promise<pb.IThread> {

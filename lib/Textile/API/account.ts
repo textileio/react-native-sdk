@@ -20,7 +20,7 @@ export async function encrypt(input: Buffer): Promise<Buffer> {
 }
 
 export async function decrypt(input: Buffer): Promise<Buffer> {
-  const result = await TextileNode.encrypt(input.toString('base64'))
+  const result = await TextileNode.decrypt(input.toString('base64'))
   return Buffer.from(result, 'base64')
 }
 
