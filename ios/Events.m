@@ -43,22 +43,19 @@ RCT_EXPORT_MODULE();
 {
   NSArray *eventDetails = [notification.userInfo valueForKey:@"detail"];
   NSString *eventName = [eventDetails objectAtIndex:0];
-  NSDictionary *eventData = [eventDetails objectAtIndex:1];
-
+  id eventData;
+  if (eventDetails.count > 1) {
+    eventData = [eventDetails objectAtIndex:1];
+  }
   [self sendEventWithName:eventName body:eventData];
 }
 
-+ (void)emitEventWithName:(NSString *)name andPayload:(NSString *)payload
++ (void)emitEventWithName:(NSString *)name andPayload:(NSString *)base64string
 {
-  NSData *data = [payload dataUsingEncoding:NSUTF8StringEncoding];
-  NSError *error;
-  NSDictionary *json = data ? [NSJSONSerialization JSONObjectWithData:data options:0 error:&error] : @{};
-  if (!error) {
-    NSDictionary *eventDetail = @{@"detail":@[name,json]};
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"event-emitted"
-                                                        object:self
-                                                      userInfo:eventDetail];
-  }
+  NSDictionary *eventDetail = @{@"detail": base64string ? @[name, base64string] : @[name]};
+  [[NSNotificationCenter defaultCenter] postNotificationName:@"event-emitted"
+                                                      object:self
+                                                    userInfo:eventDetail];
 }
 
 @end
