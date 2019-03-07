@@ -23,7 +23,7 @@
 RCT_EXPORT_MODULE();
 
 - (NSArray<NSString *> *)supportedEvents {
-    return @[@"NODE_START", @"NODE_ONLINE", @"NODE_STOP", @"WALLET_UPDATE", @"THREAD_UPDATE", @"NOTIFICATION", @"QUEUE_RESPONSE"];
+    return @[@"NODE_START", @"NODE_ONLINE", @"NODE_STOP", @"WALLET_UPDATE", @"THREAD_UPDATE", @"NOTIFICATION", @"QUERY_RESPONSE"];
 }
 
 - (void)startObserving
