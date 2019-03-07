@@ -15,8 +15,8 @@ export async function prepareAsync(path: string, threadId: string): Promise<pb.I
 }
 
 export async function add(dir: pb.IDirectory, threadId: string, caption?: string): Promise<pb.IBlock> {
-  const payload = Buffer.from(pb.Directory.encode(dir).finish()).toString('base64')
-  const result = await TextileNode.addFiles(payload, threadId, caption)
+  const payload = pb.Directory.encode(dir).finish()
+  const result = await TextileNode.addFiles(Buffer.from(payload).toString('base64'), threadId, caption)
   return pb.Block.decode(Buffer.from(result, 'base64'))
 }
 
