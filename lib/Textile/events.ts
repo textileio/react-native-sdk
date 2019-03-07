@@ -21,7 +21,7 @@ export type TextileEvents = 'newNodeState' |
                             'walletInitSuccess' |
                             'backgroundTask' |
                             'error' |
-                            'NODE_START' | 'NODE_ONLINE' | 'NODE_STOP' | 'WALLET_UPDATE' | 'THREAD_UPDATE' | 'NOTIFICATION' | 'QUEUE_RESPONSE'
+                            'NODE_START' | 'NODE_ONLINE' | 'NODE_STOP' | 'WALLET_UPDATE' | 'THREAD_UPDATE' | 'NOTIFICATION' | 'QUERY_RESPONSE'
 
 export const publicEvents: {[key: string]: string} = {
   newNodeState: '@textile/shared/newNodeState',
@@ -47,10 +47,10 @@ export const publicEvents: {[key: string]: string} = {
   WALLET_UPDATE: 'WALLET_UPDATE',
   THREAD_UPDATE: 'THREAD_UPDATE',
   NOTIFICATION: 'NOTIFICATION',
-  QUEUE_RESPONSE: 'QUEUE_RESPONSE'
+  QUERY_RESPONSE: 'QUERY_RESPONSE'
 }
 
-const nativeEvents: TextileEvents[] = ['NODE_START', 'NODE_ONLINE', 'NODE_STOP', 'WALLET_UPDATE', 'THREAD_UPDATE', 'NOTIFICATION', 'QUEUE_RESPONSE']
+const nativeEvents: TextileEvents[] = ['NODE_START', 'NODE_ONLINE', 'NODE_STOP', 'WALLET_UPDATE', 'THREAD_UPDATE', 'NOTIFICATION', 'QUERY_RESPONSE']
 
 // Keys used only inside the SDK, not to be modified by the client
 export const privateEvents: {[key: string]: string} = {
