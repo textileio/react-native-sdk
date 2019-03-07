@@ -51,11 +51,14 @@ RCT_EXPORT_MODULE();
 + (void)emitEventWithName:(NSString *)name andPayload:(NSString *)payload
 {
   NSData *data = [payload dataUsingEncoding:NSUTF8StringEncoding];
-  NSDictionary *json = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
-  NSDictionary *eventDetail = @{@"detail":@[name,json]};
-  [[NSNotificationCenter defaultCenter] postNotificationName:@"event-emitted"
-                                                      object:self
-                                                    userInfo:eventDetail];
+  NSError *error;
+  NSDictionary *json = data ? [NSJSONSerialization JSONObjectWithData:data options:0 error:&error] : @{};
+  if (!error) {
+    NSDictionary *eventDetail = @{@"detail":@[name,json]};
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"event-emitted"
+                                                        object:self
+                                                      userInfo:eventDetail];
+  }
 }
 
 @end
