@@ -136,8 +136,9 @@ class Events {
         this.subscriptions.push(event)
         return event
       }
+    } else {
+      throw new Error(`@textile/react-native-sdk: no event type: ${type}`)
     }
-    throw new Error(`@textile/react-native-sdk: no event type: ${type}`)
   }
 
   removeListener = (type: TextileEvents, listener: (data: any) => void) => {
@@ -147,8 +148,9 @@ class Events {
       } else {
         DeviceEventEmitter.removeListener(publicEvents[type as string], listener)
       }
+    } else {
+      throw new Error(`@textile/react-native-sdk: no event type: ${type}`)
     }
-    throw new Error(`@textile/react-native-sdk: no event type: ${type}`)
   }
 
   removeAllListeners = () => {
