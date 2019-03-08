@@ -39,5 +39,5 @@ export async function search(query: pb.IContactQuery, options: pb.IQueryOptions)
 }
 
 export async function cancelSearch(): Promise<void> {
-  return await TextileNode.cancelSearchContacts()
+  return await TextileNode.cancelSearch()
 }
