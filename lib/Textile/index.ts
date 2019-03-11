@@ -28,17 +28,21 @@ export function BackgroundTask () {
   TextileEvents.backgroundTask()
 }
 
+/**
+ * The Textile Object
+ * @param {TextileOptions} options
+ */
 class Textile {
-  events = new Events()
-  migration = new TextileMigration()
-  _debug = false
-  _store = new TextileStore()
-  _nativeEvents = NativeEvents
-  _config: TextileConfig = {}
-  _cafe?: CafeConfig
-  _initialized = false
+  private events = new Events()
+  private migration = new TextileMigration()
+  private _debug = false
+  private _store = new TextileStore()
+  private _nativeEvents = NativeEvents
+  private _config: TextileConfig = {}
+  private _cafe?: CafeConfig
+  private _initialized = false
 
-  repoPath = `${RNFS.DocumentDirectoryPath}/textile-go`
+  private repoPath = `${RNFS.DocumentDirectoryPath}/textile-go`
 
   constructor(options: TextileOptions) {
     if (options.debug) {
@@ -49,7 +53,15 @@ class Textile {
     }
   }
 
-  // De-register the listeners
+  /**
+   * Cleans up all open event listeners.
+   *
+   * Textile.tearDown should be called whenever your app is going to exit memory.
+   *
+   * ```typescript
+   * Textile.tearDown();
+   * ```
+   */
   tearDown() {
     // Clear on out too if detected to help speed up any startup time
     // Clear all our listeners
@@ -63,8 +75,18 @@ class Textile {
     }
   }
 
-  // setup should only be run where the class will remain persistent so that
-  // listeners will be wired in to one instance only,
+  /**
+   * The primary Setup method to call when first loading Textile in your app.
+   *
+   * You should call Textile.setup() as early in your app as possible. This is the
+   * sole initialized copy of Textile, for all other Textile requests you will use
+   * the API or events.
+   *
+   * ```typescript
+   * import Textile from '@textile/react-native-sdk';
+   * Textile.setup();
+   * ```
+   */
   setup = async (config?: TextileConfig, cafe?: CafeConfig) => {
     // if config provided, set it
     if (config) {
@@ -77,59 +99,17 @@ class Textile {
     return this.initializeAppState()
   }
 
-  isInitializedCheck = () => {
-    if (!this._initialized) {
-      TextileEvents.nonInitializedError()
-      if (this._debug) {
-        console.error('@textile/react-native-sdk: Attempt to call a Textile instance method on an uninitialized instance')
-      }
-    }
-  }
-
-  /* ---- STATE BASED METHODS ----- */
-  //  All methods here should only be called as the result of a sequenced kicked off
-  //  By an event and detected by the persistent instance that executed setup()
-  getCurrentState = () => {
-    const currentAppState = AppState.currentState
-    return currentAppState || 'unknown'
-  }
-
-  // Simply create the node, useful only if you want to create in advance of starting
-  createNode = async () => {
-    const debug = !this._config.RELEASE_TYPE || this._config.RELEASE_TYPE === 'development'
-    await this.updateNodeState(NodeState.creating)
-    const needsMigration = await this.migration.requiresFileMigration(this.repoPath)
-    if (needsMigration) {
-      await this.migration.runFileMigration(this.repoPath)
-    }
-    await API.create(this.repoPath, debug)
-
-    await this.updateNodeState(NodeState.created)
-  }
-
-  startNode = async () => {
-
-    await this.updateNodeState(NodeState.starting)
-
-    await API.start()
-
-    if (this._cafe) {
-      const sessions = await API.cafes.sessions()
-      if (!sessions || sessions.items.length < 1) {
-        const cafeOverride = this._cafe.TEXTILE_CAFE_OVERRIDE
-        if (cafeOverride) {
-          await API.cafes.register(cafeOverride, this._cafe.TEXTILE_CAFE_TOKEN)
-        } else if (this._cafe.TEXTILE_CAFE_GATEWAY_URL) {
-          await this.discoverAndRegisterCafes()
-        }
-      }
-    }
-    await this.updateNodeState(NodeState.started)
-    TextileEvents.startNodeFinished()
-  }
-
-  // Start the node, create it if it doesn't exist. Safe to call on every start.
-  createAndStartNode = async () => {
+  /**
+   * Create and start the node in one call. This is a combination of Textile.create and Textile.start.
+   * The nodeCreateAndStart method will add additional helpers to manage starting the node in any state.
+   *
+   * Textile class must have been previously initialized.
+   *
+   * ```typescript
+   * Textile.nodeCreateAndStart();
+   * ```
+   */
+  nodeCreateAndStart = async () => {
     // TODO
     /* In redux/saga world, we did a // yield call(() => task.done) to ensure this wasn't called
     while already running. Do we need the same check to ensure it doesn't happen here?
@@ -147,8 +127,8 @@ class Textile {
     }
     try {
 
-      await this.createNode()
-      await this.startNode()
+      await this.nodeCreate()
+      await this.nodeStart()
 
     } catch (error) {
       try {
@@ -156,12 +136,12 @@ class Textile {
           // perform the repo migration
           await this.runRepoMigration()
           // call the create/start sequence again
-          await this.createAndStartNode()
+          await this.nodeCreateAndStart()
         } else if (error.message === INIT_NEEDED_ERROR) {
           // initialize our wallet
           await this.initWallet()
           // call the create/start sequence again
-          await this.createAndStartNode()
+          await this.nodeCreateAndStart()
         } else {
           TextileEvents.newError(error.message, 'startNodeError')
           await this.updateNodeStateError(error)
@@ -173,12 +153,64 @@ class Textile {
     }
   }
 
-  // Useful if an app wishes to shut down the node
-  shutDown = async () => {
-    await this.stopNode()
+  /**
+   * Initialize a node, including wallet and data repo.
+   * Textile class must have been previously initialized.
+   *
+   * ```typescript
+   * Textile.nodeCreate();
+   * ```
+   */
+  nodeCreate = async () => {
+    const debug = !this._config.RELEASE_TYPE || this._config.RELEASE_TYPE === 'development'
+    await this.updateNodeState(NodeState.creating)
+    const needsMigration = await this.migration.requiresFileMigration(this.repoPath)
+    if (needsMigration) {
+      await this.migration.runFileMigration(this.repoPath)
+    }
+    await API.create(this.repoPath, debug)
+
+    await this.updateNodeState(NodeState.created)
   }
 
-  discoverAndRegisterCafes = async () => {
+  /**
+   * Start a node to connect to the IPFS network, peers, etc.
+   * Textile node must have been previously started.
+   *
+   * ```typescript
+   * Textile.nodeCreate();
+   * ```
+   */
+  nodeStart = async () => {
+
+    await this.updateNodeState(NodeState.starting)
+
+    await API.start()
+
+    if (this._cafe) {
+      const sessions = await API.cafes.sessions()
+      if (!sessions || sessions.items.length < 1) {
+        const cafeOverride = this._cafe.TEXTILE_CAFE_OVERRIDE
+        if (cafeOverride) {
+          await API.cafes.register(cafeOverride, this._cafe.TEXTILE_CAFE_TOKEN)
+        } else if (this._cafe.TEXTILE_CAFE_GATEWAY_URL) {
+          await this.cafesDiscoverAndRegister()
+        }
+      }
+    }
+    await this.updateNodeState(NodeState.started)
+    TextileEvents.startNodeFinished()
+  }
+
+  /**
+   * Connect to a remote Cafe. the Cafe config must be provided to Textile.setup to then discover and register.
+   * Textile node must have be started.
+   *
+   * ```typescript
+   * Textile.cafesDiscoverAndRegister();
+   * ```
+   */
+  cafesDiscoverAndRegister = async () => {
     this.isInitializedCheck()
     try {
       if (this._cafe) {
@@ -195,22 +227,49 @@ class Textile {
     }
   }
 
-  /* ----- STATE FREE PUBLIC SELECTORS ----- */
-  isInitialized = () => {
+  /**
+   * Selector to determine if the Textile class has been initialized.
+   *
+   * ```typescript
+   * const isInitialized = Textile.getInitialized();
+   * ```
+   */
+  getInitialized = () => {
     return this._initialized
   }
 
-  appState = async (): Promise<TextileAppStateStatus> => {
+  /**
+   * Selector to determine if the current AppState (TextileAppStateStatus)
+   *
+   * ```typescript
+   * const appState = Textile.getAppState();
+   * ```
+   */
+  getAppState = async (): Promise<TextileAppStateStatus> => {
     const storedState = await this._store.getAppState()
     return storedState || 'unknown' as TextileAppStateStatus
   }
 
-  nodeOnline = async (): Promise<boolean> => {
+  /**
+   * Selector to determine if the node is online.
+   *
+   * ```typescript
+   * const nodeOnline = Textile.getNodeOnline();
+   * ```
+   */
+  getNodeOnline = async (): Promise<boolean> => {
     const online = await this._store.getNodeOnline()
     return !!online // store can return void, in which case default return false
   }
 
-  nodeState = async (): Promise<NodeState> => {
+  /**
+   * Selector to determine the current Node State (NodeState)
+   *
+   * ```typescript
+   * const nodeState = Textile.getNodeState();
+   * ```
+   */
+  getNodeState = async (): Promise<NodeState> => {
     const storedState = await this._store.getNodeState()
     if (!storedState) {
       return NodeState.nonexistent
@@ -218,7 +277,14 @@ class Textile {
     return storedState.state
   }
 
-  // Client should use this once account is onboarded to register with Cafe
+  /**
+   * Selector to get the current Cafe Sessions, used for HTTP requests to the Cafe.
+   * Should be called after Cafe is registered
+   *
+   * ```typescript
+   * const cafeSessions = Textile.getCafeSessions();
+   * ```
+   */
   getCafeSessions = async (): Promise<ReadonlyArray<pb.ICafeSession>> => {
     const sessions = await API.cafes.sessions()
     if (!sessions) {
@@ -227,7 +293,13 @@ class Textile {
     return sessions.items
   }
 
-  // Client should use this if cafe sessions are detected as expired
+  /**
+   * Selector to get the refreshed Cafe Sessions. This should only be called if a Cafe rejects a request due to expired an session.
+   *
+   * ```typescript
+   * Textile.getRefreshedCafeSessions();
+   * ```
+   */
   getRefreshedCafeSessions = async (): Promise<ReadonlyArray<pb.ICafeSession>> => {
     const sessions = await API.cafes.sessions()
     if (!sessions) {
@@ -245,6 +317,19 @@ class Textile {
   }
 
   /* ------ INTERNAL METHODS ----- */
+
+  private getCurrentState = () => {
+    const currentAppState = AppState.currentState
+    return currentAppState || 'unknown'
+  }
+  private isInitializedCheck = () => {
+    if (!this._initialized) {
+      TextileEvents.nonInitializedError()
+      if (this._debug) {
+        console.error('@textile/react-native-sdk: Attempt to call a Textile instance method on an uninitialized instance')
+      }
+    }
+  }
   private initWallet = async () => {
     const debug = !this._config.RELEASE_TYPE || this._config.RELEASE_TYPE !== 'production'
     await this.updateNodeState(NodeState.creatingWallet)
@@ -271,7 +356,7 @@ class Textile {
       await TextileEvents.appStateChange(previousState, newState)
     }
     if (newState === 'active' || newState === 'background') {
-      await this.createAndStartNode()
+      await this.nodeCreateAndStart()
     }
     if (newState === 'background' || newState === 'backgroundFromForeground') {
       await this.backgroundTaskRace()
@@ -354,7 +439,7 @@ class Textile {
     this.nextAppState(payload.nextState)
   }
   private createAndStartNodeCallback = () => {
-    this.createAndStartNode()
+    this.nodeCreateAndStart()
   }
   private nextStateCallback = (nextState: AppStateStatus) => {
     TextileEvents.appNextState(nextState)
@@ -397,7 +482,7 @@ class Textile {
   }
   private nextAppState = async (nextState: AppStateStatus) => {
     try {
-      const previousState = await this.appState()
+      const previousState = await this.getAppState()
       const newState: TextileAppStateStatus = nextState === 'background' && (
           previousState === 'active' || previousState === 'inactive'
       ) ? 'backgroundFromForeground' : nextState

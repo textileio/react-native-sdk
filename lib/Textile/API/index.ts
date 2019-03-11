@@ -30,19 +30,27 @@ export async function init(seed: string, repoPath: string, logToDisk: boolean, d
 export async function migrate(repoPath: string): Promise<void> {
   await TextileNode.migrateRepo(repoPath)
 }
-
+/**
+ * Create the repo node. Handled by Textile.nodeCreate.
+ */
 export async function create(repoPath: string, debug: boolean): Promise<void> {
   await TextileNode.newTextile(repoPath, debug)
 }
-
+/**
+ * Start the Textile Node. Handled by Textile.nodeStart.
+ */
 export async function start(): Promise<void> {
   await TextileNode.start()
 }
-
+/**
+ * Stop the Textile Node.
+ */
 export async function stop(): Promise<void> {
   await TextileNode.stop()
 }
-
+/**
+ * Get the Textile node version
+ */
 export async function version(): Promise<string> {
   const result = await TextileNode.version()
   return result as string

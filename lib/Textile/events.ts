@@ -125,6 +125,20 @@ class Events {
 
   subscriptions: EmitterSubscription[] = []
 
+  /**
+   * Subscribe to any TextileEvent
+   *
+   * Events listeners can be added anywhere in your app, as long as the primary Textile.setup step is run somewhere too.
+   *
+   * ```typescript
+   * import { Events } from '@textile/react-native-sdk';
+   * 
+   * const textileEvents = Events()
+   * textileEvents.addListener('newNodeState', function(payload) {
+   *    // Handle new node state.
+   * });
+   * ```
+   */
   addListener = (type: TextileEvents, listener: (data: any) => void, context?: any): EmitterSubscription => {
     if (Object.keys(publicEvents).indexOf(type) >= 0) {
       if (nativeEvents.indexOf(type) >= 0) {
@@ -141,6 +155,9 @@ class Events {
     }
   }
 
+  /**
+   * Remove any existing listener.
+   */
   removeListener = (type: TextileEvents, listener: (data: any) => void) => {
     if (Object.keys(publicEvents).indexOf(type) >= 0) {
       if (nativeEvents.indexOf(type) >= 0) {
@@ -153,6 +170,9 @@ class Events {
     }
   }
 
+  /**
+   * Remove all listeners
+   */
   removeAllListeners = () => {
     for (const subscription of this.subscriptions) {
       subscription.remove()
