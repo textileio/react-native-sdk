@@ -900,6 +900,22 @@ public class TextileNode extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
+    public void rename(final String threadId, final String name, final Promise promise) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    node.renameThread(threadId, name);
+                    promise.resolve(null);
+                }
+                catch (Exception e) {
+                    promise.reject("renameThread", e);
+                }
+            }
+        });
+    }
+
+    @ReactMethod
     public void thread(final String threadId, final Promise promise) {
         executor.execute(new Runnable() {
             @Override
@@ -924,6 +940,21 @@ public class TextileNode extends ReactContextBaseJavaModule {
                 }
                 catch (Exception e) {
                     promise.reject("threads", e);
+                }
+            }
+        });
+    }
+
+    @ReactMethod
+    public void peers(final String threadId, final Promise promise) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    promise.resolve(encode(node.threadPeers(threadId)));
+                }
+                catch (Exception e) {
+                    promise.reject("threadPeers", e);
                 }
             }
         });

@@ -15,6 +15,10 @@ export async function addOrUpdate(thread: pb.IThread): Promise<void> {
   return await TextileNode.addOrUpdateThread(Buffer.from(payload).toString('base64'))
 }
 
+export async function renameThread(threadId: string, name: string): Promise<void> {
+  return await TextileNode.renameThread(threadId, name)
+}
+
 export async function get(threadId: string): Promise<pb.IThread> {
   const result = await TextileNode.thread(threadId)
   return pb.Thread.decode(Buffer.from(result, 'base64'))
@@ -23,6 +27,11 @@ export async function get(threadId: string): Promise<pb.IThread> {
 export async function list(): Promise<pb.IThreadList> {
   const result = await TextileNode.threads()
   return pb.ThreadList.decode(Buffer.from(result, 'base64'))
+}
+
+export async function peers(threadId: string): Promise<pb.IContactList> {
+  const result = await TextileNode.peers(threadId)
+  return pb.ContactList.decode(Buffer.from(result, 'base64'))
 }
 
 export async function remove(id_: string): Promise<string> {
