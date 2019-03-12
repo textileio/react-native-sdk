@@ -449,7 +449,7 @@ RCT_EXPORT_METHOD(addOrUpdateThread:(NSString*)threadStr resolver:(RCTPromiseRes
 
 RCT_EXPORT_METHOD(rename:(NSString*)threadId name:(NSString*)name resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSError *error;
-  NSData *result = [self.node renameThread:threadId name:name error:&error];
+  [self.node renameThread:threadId name:name error:&error];
   [self fulfillWithResult:nil error:error resolver:resolve rejecter:reject];
 }
 
