@@ -22,6 +22,12 @@ export async function addOrUpdate(thread: pb.IThread): Promise<void> {
 }
 
 /**
+ * Rename a Thread by ThreadId.
+ */
+export async function renameThread(threadId: string, name: string): Promise<void> {
+  return await TextileNode.renameThread(threadId, name)
+}
+/**
  * Get Thread details by ThreadId.
  */
 export async function get(threadId: string): Promise<pb.IThread> {
@@ -37,9 +43,17 @@ export async function list(): Promise<pb.IThreadList> {
   return pb.ThreadList.decode(Buffer.from(result, 'base64'))
 }
 
+<<<<<<< HEAD
 /**
  * Remove a Thread by ThreadId.
  */
+=======
+export async function peers(threadId: string): Promise<pb.IContactList> {
+  const result = await TextileNode.peers(threadId)
+  return pb.ContactList.decode(Buffer.from(result, 'base64'))
+}
+
+>>>>>>> master
 export async function remove(id_: string): Promise<string> {
   const result = await TextileNode.removeThread(id_)
   return result as string

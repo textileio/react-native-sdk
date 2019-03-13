@@ -12,14 +12,6 @@ export async function add(threadId: string, inviteeId: string): Promise<string> 
 }
 
 /**
- * Remove a Thread invite by ID.
- */
-export async function remove(id_: string): Promise<string> {
-  const result = await TextileNode.removeThread(id_)
-  return result as string
-}
-
-/**
  * Add an external Thread invite, returning an HTTPS link.
  */
 export async function addExternal(threadId: string): Promise<pb.INewInvite> {
