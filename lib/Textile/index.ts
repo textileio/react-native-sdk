@@ -11,7 +11,7 @@ import * as API from './API'
 import TextileStore from './store'
 import NativeEvents from '../NativeEvents'
 import TextileMigration from './migration'
-import Events, * as TextileEvents from './events'
+import * as TextileEvents from './internalEvents'
 import { createTimeout, delay } from './helpers'
 import BackgroundTimer from 'react-native-background-timer'
 import BackgroundFetch from 'react-native-background-fetch'
@@ -19,7 +19,7 @@ import RNFS from 'react-native-fs'
 import { pb } from './Models'
 
 const packageFile = require('./../../package.json')
-export const VERSION = packageFile.version
+const VERSION: string = packageFile.version
 
 const MIGRATION_NEEDED_ERROR = 'repo needs migration'
 const INIT_NEEDED_ERROR = 'repo does not exist, initialization is required'
@@ -29,7 +29,14 @@ const INIT_NEEDED_ERROR = 'repo does not exist, initialization is required'
  * @param {TextileOptions} options
  */
 class Textile {
-  private events = new Events()
+  /**
+   * Get the current version of `go-textile` running in the SDK.
+   *
+   * ```typescript
+   * Textile.node_version;
+   * ```
+   */
+  node_version: string = VERSION
   private migration = new TextileMigration()
   private _debug = false
   private _store = new TextileStore()

@@ -13,8 +13,8 @@
   "scripts": {
     "build": "rm -rf dist/ && tsc",
     "lint": "rm -rf dist/ && tsc; tslint -c tslint.json --project .",
-    "test": "rm -rf dist/ && tsc; jest --no-watchman",
-    "docs": "documentation readme src/** --section=API --readme-file docs/README.md"
+    "test": "jest --no-watchman",
+    "docs": "./node_modules/typedoc/bin/typedoc"
   },
   "keywords": [
     "react-native"

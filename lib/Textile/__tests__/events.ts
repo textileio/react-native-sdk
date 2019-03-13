@@ -18,7 +18,8 @@ jest.mock('react-native', () => {
   }
 })
 
-import TextileEvents, {appStateChange} from '../events'
+import TextileEvents from '../events'
+import { appStateChange } from '../internalEvents'
 
 describe('rn events', () => {
   describe('correctly fire', () => {
