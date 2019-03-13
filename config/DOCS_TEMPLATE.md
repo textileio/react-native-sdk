@@ -1,5 +1,5 @@
 
-React Native Docs
+React Native Textile Docs
 =====================
 
 Installation
