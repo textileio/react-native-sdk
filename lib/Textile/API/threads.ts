@@ -43,17 +43,16 @@ export async function list(): Promise<pb.IThreadList> {
   return pb.ThreadList.decode(Buffer.from(result, 'base64'))
 }
 
-<<<<<<< HEAD
 /**
- * Remove a Thread by ThreadId.
+ * Request all Peers in a Thread by ThreadId.
  */
-=======
 export async function peers(threadId: string): Promise<pb.IContactList> {
   const result = await TextileNode.peers(threadId)
   return pb.ContactList.decode(Buffer.from(result, 'base64'))
 }
-
->>>>>>> master
+/**
+ * Remove a Thread by ThreadId.
+ */
 export async function remove(id_: string): Promise<string> {
   const result = await TextileNode.removeThread(id_)
   return result as string

@@ -1,3 +1,4 @@
+/* tslint:disable:completed-docs */
 export function createTimeout(ms: number, promise: Promise<any>): Promise<any> {
   return new Promise((resolve, reject) => {
     setTimeout(() => {

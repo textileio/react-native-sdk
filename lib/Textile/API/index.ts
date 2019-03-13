@@ -22,11 +22,15 @@ import * as threads from './threads'
 import * as wallet from './wallet'
 
 const { TextileNode } = NativeModules
-
+/**
+ * Initialize a new Textile Wallet
+ */
 export async function init(seed: string, repoPath: string, logToDisk: boolean, debug: boolean): Promise<void> {
   return await TextileNode.initRepo(seed, repoPath, logToDisk, debug)
 }
-
+/**
+ * Manually migrate the repo to a new path.
+ */
 export async function migrate(repoPath: string): Promise<void> {
   await TextileNode.migrateRepo(repoPath)
 }
@@ -55,12 +59,16 @@ export async function version(): Promise<string> {
   const result = await TextileNode.version()
   return result as string
 }
-
+/**
+ * Get the latest git summary
+ */
 export async function gitSummary(): Promise<string> {
   const result = await TextileNode.gitSummary()
   return result as string
 }
-
+/**
+ * Get the summary of node data
+ */
 export async function summary(): Promise<pb.ISummary> {
   const result = await TextileNode.summary()
   return pb.Summary.decode(Buffer.from(result, 'base64'))

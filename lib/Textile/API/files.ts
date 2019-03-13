@@ -48,7 +48,7 @@ export async function data(hash: string): Promise<string> {
 
 /**
  * Get the best size image from a Thread with MEDIA type thread given a minimum width.
- * 
+ *
  * Note: pth is <target>/<index>, e.g., "Qm.../0"
  */
 export async function imageDataForMinWidth(pth: string, minWidth: number): Promise<string> {

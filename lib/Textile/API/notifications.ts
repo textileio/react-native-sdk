@@ -4,7 +4,6 @@ import { pb } from '../Models'
 
 const { TextileNode } = NativeModules
 
-
 /**
  * List all Notifications.
  */
