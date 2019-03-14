@@ -6,6 +6,10 @@ const { TextileNode } = NativeModules
 
 /**
  * Get the account address.
+ *
+ * ```typescript
+ * const address = API.account.address();
+ * ```
  */
 export async function address(): Promise<string> {
   const result = await TextileNode.address()
@@ -14,6 +18,10 @@ export async function address(): Promise<string> {
 
 /**
  * Get the account seed phrase to display to user.
+ *
+ * ```typescript
+ * const seed = API.account.seed();
+ * ```
  */
 export async function seed(): Promise<string> {
   const result = await TextileNode.seed()
@@ -22,6 +30,10 @@ export async function seed(): Promise<string> {
 
 /**
  * Encrypt any file with the account address.
+ *
+ * ```typescript
+ * const encrypted = API.account.encrypt(Buffer.from(JSON.stringify({foo:"bar"})));
+ * ```
  */
 export async function encrypt(input: Buffer): Promise<Buffer> {
   const result = await TextileNode.encrypt(input.toString('base64'))
@@ -30,6 +42,10 @@ export async function encrypt(input: Buffer): Promise<Buffer> {
 
 /**
  * Decrypt a file previously encrypted with the account address.
+ *
+ * ```typescript
+ * const decrypted = API.account.decrypt(encrypted);
+ * ```
  */
 export async function decrypt(input: Buffer): Promise<Buffer> {
   const result = await TextileNode.decrypt(input.toString('base64'))
@@ -38,6 +54,10 @@ export async function decrypt(input: Buffer): Promise<Buffer> {
 
 /**
  * List all Contacts.
+ *
+ * ```typescript
+ * const contacts: pb.IContactList = API.account.peers();
+ * ```
  */
 export async function peers(): Promise<pb.IContactList> {
   const result = await TextileNode.accountPeers()
@@ -46,6 +66,10 @@ export async function peers(): Promise<pb.IContactList> {
 
 /**
  * Locate all Thread backups.
+ * ```typescript
+ * const backups = API.account.findThreadBackups(query, options);
+ * ```
+ * @hidden
  */
 export async function findThreadBackups(query: pb.IThreadBackupQuery, options: pb.IQueryOptions): Promise<string> {
   return TextileNode.findThreadBackups(

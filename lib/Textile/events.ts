@@ -4,7 +4,13 @@ import {
 import NativeEvents from '../NativeEvents'
 import { backgroundTask as internalBackgroundTask } from './internalEvents'
 
-// subscription keys that can be joined/left by client
+/**
+ * TextileEvents contain all of the event types you can subscribe to.
+ *
+ * ```typescript
+ * Textile.addListener('newNodeState', callback);
+ * ```
+ */
 export type TextileEvents = 'newNodeState' |
                             'createAndStartNode' |
                             'startNodeFinished' |

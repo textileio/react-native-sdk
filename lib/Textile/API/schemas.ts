@@ -6,6 +6,9 @@ const { TextileNode } = NativeModules
 
 /**
  * Add a new Schema for use when creating new Threads.
+ * ```typescript
+ * API.schemas.add(node);
+ * ```
  */
 export async function add(node: pb.INode): Promise<pb.FileIndex> {
   const payload = pb.Node.encode(node).finish()

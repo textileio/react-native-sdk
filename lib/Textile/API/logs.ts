@@ -6,6 +6,9 @@ const { TextileNode } = NativeModules
 
 /**
  * Set the logging level for the Textile node.
+ * ```typescript
+ * API.logs.setLevel(level);
+ * ```
  */
 export async function setLevel(level: pb.ILogLevel): Promise<void> {
   const payload = pb.LogLevel.encode(level).finish()

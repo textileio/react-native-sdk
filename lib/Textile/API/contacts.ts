@@ -35,6 +35,9 @@ export async function remove(id_: string): Promise<void> {
 }
 /**
  * List all Threads in common with a Contact.
+ * ```typescript
+ * API.contacts.threads(id);
+ * ```
  */
 export async function threads(id_: string): Promise<pb.IThreadList> {
   const result = await TextileNode.contactThreads(id_)
@@ -42,6 +45,9 @@ export async function threads(id_: string): Promise<pb.IThreadList> {
 }
 /**
  * Search for Contacts over network.
+ * ```typescript
+ * API.contacts.search(query, options);
+ * ```
  */
 export async function search(query: pb.IContactQuery, options: pb.IQueryOptions): Promise<string> {
   return TextileNode.searchContacts(
@@ -51,6 +57,9 @@ export async function search(query: pb.IContactQuery, options: pb.IQueryOptions)
 }
 /**
  * Cancel an ongoing contact search.
+ * ```typescript
+ * API.contacts.cancelSearch();
+ * ```
  */
 export async function cancelSearch(): Promise<void> {
   return await TextileNode.cancelSearch()

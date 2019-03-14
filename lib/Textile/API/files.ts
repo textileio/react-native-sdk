@@ -5,6 +5,9 @@ import { pb } from '../Models'
 const { TextileNode } = NativeModules
 /**
  * Use a Thread's Mill to prepare a raw file for adding to a Thread.
+ * ```typescript
+ * API.files.prepare(path, threadId);
+ * ```
  */
 export async function prepare(path: string, threadId: string): Promise<pb.IMobilePreparedFiles> {
   const result = await TextileNode.prepareFiles(path, threadId)
@@ -12,6 +15,9 @@ export async function prepare(path: string, threadId: string): Promise<pb.IMobil
 }
 /**
  * prepare by async
+ * ```typescript
+ * API.files.prepareAsync(path, threadId);
+ * ```
  */
 export async function prepareAsync(path: string, threadId: string): Promise<pb.IMobilePreparedFiles> {
   const result = await TextileNode.prepareFilesAsync(path, threadId)
@@ -19,6 +25,9 @@ export async function prepareAsync(path: string, threadId: string): Promise<pb.I
 }
 /**
  * Add a file object to a Thread. Must match Thread schema definition.
+ * ```typescript
+ * API.files.add(dir, threadId);
+ * ```
  */
 export async function add(dir: pb.IDirectory, threadId: string, caption?: string): Promise<pb.IBlock> {
   const payload = pb.Directory.encode(dir).finish()
@@ -27,6 +36,9 @@ export async function add(dir: pb.IDirectory, threadId: string, caption?: string
 }
 /**
  * Add a file by target.
+ * ```typescript
+ * API.files.addByTarget(target, threadId);
+ * ```
  */
 export async function addByTarget(target: string, threadId: string, caption?: string): Promise<pb.IBlock> {
   const result = await TextileNode.addFilesByTarget(target, threadId, caption)
@@ -34,6 +46,9 @@ export async function addByTarget(target: string, threadId: string, caption?: st
 }
 /**
  * List all files or files in a known Thread.
+ * ```typescript
+ * API.files.list(offset, limit);
+ * ```
  */
 export async function list(offset: string, limit: number, threadId?: string): Promise<pb.IFilesList> {
   const result = await TextileNode.files(offset, limit, threadId)
@@ -41,6 +56,9 @@ export async function list(offset: string, limit: number, threadId?: string): Pr
 }
 /**
  * Get the raw data for a file at an IPFS hash.
+ * ```typescript
+ * API.files.fileData(hash);
+ * ```
  */
 export async function data(hash: string): Promise<string> {
   return await TextileNode.fileData(hash)
@@ -50,6 +68,9 @@ export async function data(hash: string): Promise<string> {
  * Get the best size image from a Thread with MEDIA type thread given a minimum width.
  *
  * Note: pth is <target>/<index>, e.g., "Qm.../0"
+ * ```typescript
+ * API.files.imageDataForMinWidth(path, minWidth);
+ * ```
  */
 export async function imageDataForMinWidth(pth: string, minWidth: number): Promise<string> {
   return await TextileNode.imageFileDataForMinWidth(pth, minWidth)

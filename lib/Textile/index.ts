@@ -28,7 +28,7 @@ const INIT_NEEDED_ERROR = 'repo does not exist, initialization is required'
  * The Textile Object
  * @param {TextileOptions} options
  */
-class Textile {
+export default class Textile {
   /**
    * Get the current version of `go-textile` running in the SDK.
    *
@@ -560,5 +560,3 @@ class Textile {
     }
   }
 }
-
-export default Textile

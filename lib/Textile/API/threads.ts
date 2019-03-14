@@ -6,6 +6,9 @@ const { TextileNode } = NativeModules
 
 /**
  * Add a new Thread.
+ * ```typescript
+ * API.threads.add(config);
+ * ```
  */
 export async function add(config: pb.IAddThreadConfig): Promise<pb.IThread> {
   const payload = pb.AddThreadConfig.encode(config).finish()
@@ -15,6 +18,9 @@ export async function add(config: pb.IAddThreadConfig): Promise<pb.IThread> {
 
 /**
  * Add a Thread or update metadata if new.
+ * ```typescript
+ * API.threads.addOrUpdate(thread);
+ * ```
  */
 export async function addOrUpdate(thread: pb.IThread): Promise<void> {
   const payload = pb.Thread.encode(thread).finish()
@@ -23,12 +29,18 @@ export async function addOrUpdate(thread: pb.IThread): Promise<void> {
 
 /**
  * Rename a Thread by ThreadId.
+ * ```typescript
+ * API.threads.renameThread(threadId, name);
+ * ```
  */
 export async function renameThread(threadId: string, name: string): Promise<void> {
   return await TextileNode.renameThread(threadId, name)
 }
 /**
  * Get Thread details by ThreadId.
+ * ```typescript
+ * API.threads.get(threadId);
+ * ```
  */
 export async function get(threadId: string): Promise<pb.IThread> {
   const result = await TextileNode.thread(threadId)
@@ -37,6 +49,9 @@ export async function get(threadId: string): Promise<pb.IThread> {
 
 /**
  * List all Threads.
+ * ```typescript
+ * API.threads.list();
+ * ```
  */
 export async function list(): Promise<pb.IThreadList> {
   const result = await TextileNode.threads()
@@ -45,6 +60,9 @@ export async function list(): Promise<pb.IThreadList> {
 
 /**
  * Request all Peers in a Thread by ThreadId.
+ * ```typescript
+ * API.threads.peers(threadId);
+ * ```
  */
 export async function peers(threadId: string): Promise<pb.IContactList> {
   const result = await TextileNode.peers(threadId)
@@ -52,6 +70,9 @@ export async function peers(threadId: string): Promise<pb.IContactList> {
 }
 /**
  * Remove a Thread by ThreadId.
+ * ```typescript
+ * API.threads.remove(id);
+ * ```
  */
 export async function remove(id_: string): Promise<string> {
   const result = await TextileNode.removeThread(id_)
