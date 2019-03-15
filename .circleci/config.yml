@@ -45,7 +45,7 @@ jobs:
                 key: node-v1-{{ checksum "package.json" }}-{{ arch }}
                 paths:
                     - node_modules
-    tests:
+    test:
         <<: *defaults
         steps:
             - restore_cache: # If any cache exists, it'll way speedup these checkouts
@@ -106,7 +106,7 @@ workflows:
     react-native-sdk:
         jobs:
             - lint
-            - tests:
+            - test:
                 requires:
                     - lint
             - deploy:
