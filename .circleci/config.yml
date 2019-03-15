@@ -1,10 +1,13 @@
 version: 2.1
 
+defaults: &defaults
+    working_directory: ~/react-native-sdk
+    docker:
+        - image: circleci/node:8
+
 jobs:
     lint:
-        working_directory: ~/react-native-sdk
-        docker:
-            - image: circleci/node:8
+        <<: *defaults
         steps:
             - restore_cache: # If any cache exists, it'll way speedup these checkouts
                 keys:
@@ -42,10 +45,8 @@ jobs:
                 key: node-v1-{{ checksum "package.json" }}-{{ arch }}
                 paths:
                     - node_modules
-    tests:
-        working_directory: ~/textile-mobile
-        docker:
-            - image: circleci/node:8
+    test:
+        <<: *defaults
         steps:
             - restore_cache: # If any cache exists, it'll way speedup these checkouts
                 keys:
@@ -81,10 +82,39 @@ jobs:
 
             - store_artifacts:
                 path: test-results
+    deploy:
+        <<: *defaults
+        steps:
+            - checkout
+            - attach_workspace:
+                at: ~/react-native-sdk
+            - run:
+                name: Install dependencies
+                command: yarn install
+            - run:
+                name: Build package
+                command: yarn build
+            - run:
+                name: Authenticate with registry
+                command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/react-native-sdk/.npmrc
+            - run:
+                name: Publish package
+                command: npm publish --access=public --tag=next
 
 workflows:
     version: 2
     react-native-sdk:
         jobs:
             - lint
-            - tests
+            - test:
+                requires:
+                    - lint
+            - deploy:
+                requires:
+                    - lint
+                    - test
+                filters:
+                    tags:
+                        only: /^v.*/
+                    branches:
+                        ignore: /.*/
