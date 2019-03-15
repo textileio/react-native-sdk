@@ -65,7 +65,7 @@
     "typescript": "^3.1.1"
   },
   "dependencies": {
-    "@textile/go-mobile": "1.0.0-rc54",
+    "@textile/go-mobile": "1.0.0-rc55",
     "buffer": "^5.2.1"
   },
   "directories": {
