@@ -1,10 +1,16 @@
 import {
   DeviceEventEmitter, EmitterSubscription
 } from 'react-native'
-import { NodeState, TextileAppStateStatus } from './Models'
 import NativeEvents from '../NativeEvents'
+import { backgroundTask as internalBackgroundTask } from './internalEvents'
 
-// subscription keys that can be joined/left by client
+/**
+ * TextileEvents contain all of the event types you can subscribe to.
+ *
+ * ```typescript
+ * Textile.addListener('newNodeState', callback);
+ * ```
+ */
 export type TextileEvents = 'newNodeState' |
                             'createAndStartNode' |
                             'startNodeFinished' |
@@ -52,79 +58,37 @@ export const publicEvents: {[key: string]: string} = {
 
 const nativeEvents: TextileEvents[] = ['NODE_START', 'NODE_ONLINE', 'NODE_STOP', 'WALLET_UPDATE', 'THREAD_UPDATE', 'NOTIFICATION', 'QUERY_RESPONSE']
 
-// Keys used only inside the SDK, not to be modified by the client
-export const privateEvents: {[key: string]: string} = {
-  backgroundTask: '@textile/internal/backgroundTask',
-  createAndStartNode: '@textile/internal/createAndStartNode',
-  appNextState: '@textile/internal/appNextState'
-}
-
-export function newError(message: string, type: string) {
-  DeviceEventEmitter.emit(publicEvents.error, {type, message})
-}
-
-export function nonInitializedError() {
-  newError('nonInitializedError', 'Error: Attempt to use a Textile method reserved for an initialized instance.')
-}
-export function backgroundTask () {
-  DeviceEventEmitter.emit(privateEvents.backgroundTask)
-  DeviceEventEmitter.emit(publicEvents.backgroundTask)
-}
-
-export function newNodeState (state: NodeState) {
-  DeviceEventEmitter.emit(publicEvents.newNodeState, {state})
-}
-export function createAndStartNode () {
-  DeviceEventEmitter.emit(privateEvents.createAndStartNode)
-  DeviceEventEmitter.emit(publicEvents.createAndStartNode)
-}
-
-export function startNodeFinished () {
-  DeviceEventEmitter.emit(publicEvents.startNodeFinished)
-}
-
-export function stopNodeAfterDelayStarting () {
-  DeviceEventEmitter.emit(publicEvents.stopNodeAfterDelayStarting)
-}
-
-export function stopNodeAfterDelayCancelled () {
-  DeviceEventEmitter.emit(publicEvents.stopNodeAfterDelayCancelled)
-}
-
-export function stopNodeAfterDelayFinishing () {
-  DeviceEventEmitter.emit(publicEvents.stopNodeAfterDelayFinishing)
-}
-
-export function stopNodeAfterDelayComplete () {
-  DeviceEventEmitter.emit(publicEvents.stopNodeAfterDelayComplete)
-}
-export function appStateChange (previousState: TextileAppStateStatus, newState: TextileAppStateStatus) {
-  DeviceEventEmitter.emit(publicEvents.appStateChange, {previousState: previousState as string, newState: newState as string})
-}
-
-export function updateProfile () {
-  DeviceEventEmitter.emit(publicEvents.updateProfile)
-}
-export function walletInitSuccess () {
-  DeviceEventEmitter.emit(publicEvents.walletInitSuccess)
-}
-
-export function setRecoveryPhrase (recoveryPhrase: string) {
-  DeviceEventEmitter.emit(publicEvents.setRecoveryPhrase, {recoveryPhrase})
-}
-export function migrationNeeded () {
-  DeviceEventEmitter.emit(publicEvents.migrationNeeded)
-}
-
-export function appNextState (nextState: string) {
-  DeviceEventEmitter.emit(privateEvents.appNextState, {nextState})
-  DeviceEventEmitter.emit(publicEvents.appNextState, {nextState})
+/**
+ * Notify Textile at the start of a new background sessions.
+ *
+ * ```typescript
+ * import { BackgroundTask } from '@textile/react-native-sdk';
+ *
+ * BackgroundTask();
+ * ```
+ */
+export function BackgroundTask () {
+  internalBackgroundTask()
 }
 
 class Events {
 
   subscriptions: EmitterSubscription[] = []
 
+  /**
+   * Subscribe to any TextileEvent
+   *
+   * Events listeners can be added anywhere in your app, as long as the primary Textile.setup step is run somewhere too.
+   *
+   * ```typescript
+   * import { Events } from '@textile/react-native-sdk';
+   *
+   * const textileEvents = Events()
+   * textileEvents.addListener('newNodeState', function(payload) {
+   *    // Handle new node state.
+   * });
+   * ```
+   */
   addListener = (type: TextileEvents, listener: (data: any) => void, context?: any): EmitterSubscription => {
     if (Object.keys(publicEvents).indexOf(type) >= 0) {
       if (nativeEvents.indexOf(type) >= 0) {
@@ -141,6 +105,9 @@ class Events {
     }
   }
 
+  /**
+   * Remove any existing listener.
+   */
   removeListener = (type: TextileEvents, listener: (data: any) => void) => {
     if (Object.keys(publicEvents).indexOf(type) >= 0) {
       if (nativeEvents.indexOf(type) >= 0) {
@@ -153,6 +120,9 @@ class Events {
     }
   }
 
+  /**
+   * Remove all listeners
+   */
   removeAllListeners = () => {
     for (const subscription of this.subscriptions) {
       subscription.remove()

@@ -4,11 +4,23 @@ import { pb } from '../Models'
 
 const { TextileNode } = NativeModules
 
+/**
+ * Add a new message to a Thread.
+ * ```typescript
+ * API.messages.add(threadId, body);
+ * ```
+ */
 export async function add(threadId: string, body: string): Promise<string> {
   const result = await TextileNode.addMessage(threadId, body)
   return result as string
 }
 
+/**
+ * List all messages or list all messages in a Thread.
+ * ```typescript
+ * API.messages.list(offset, limit);
+ * ```
+ */
 export async function list(offset: string, limit: number, threadId?: string): Promise<pb.ITextList> {
   const result = await TextileNode.messages(offset, limit, threadId)
   return pb.TextList.decode(Buffer.from(result, 'base64'))

@@ -54,6 +54,13 @@
     "max-classes-per-file": false,
     "object-literal-sort-keys": false,
     "ordered-imports": false,
+    "completed-docs": [
+      true,
+      {
+        "functions": {"visibilities": ["exported"]},
+        "methods": {"visibilities": ["exported"], "locations": "instance", "privacies": ["public"]}
+      }
+    ],
     // begin bandaids
     "no-empty": false,
     "space-before-function-paren": false,

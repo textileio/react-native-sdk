@@ -23,36 +23,75 @@ import * as wallet from './wallet'
 
 const { TextileNode } = NativeModules
 
+/**
+ * Initialize a new Textile Wallet
+ * ```typescript
+ * API.init(seed, repo, logToDisk, debug);
+ * ```
+ */
 export async function init(seed: string, repoPath: string, logToDisk: boolean, debug: boolean): Promise<void> {
   return await TextileNode.initRepo(seed, repoPath, logToDisk, debug)
 }
-
+/**
+ * Manually migrate the repo to a new path.
+ * @hidden
+ */
 export async function migrate(repoPath: string): Promise<void> {
   await TextileNode.migrateRepo(repoPath)
 }
-
+/**
+ * Create the repo node. Handled by Textile.nodeCreate.
+ * ```typescript
+ * API.create(repo, debug);
+ * ```
+ */
 export async function create(repoPath: string, debug: boolean): Promise<void> {
   await TextileNode.newTextile(repoPath, debug)
 }
-
+/**
+ * Start the Textile Node. Handled by Textile.nodeStart.
+ * ```typescript
+ * API.start();
+ * ```
+ */
 export async function start(): Promise<void> {
   await TextileNode.start()
 }
-
+/**
+ * Stop the Textile Node.
+ * ```typescript
+ * API.stop();
+ * ```
+ */
 export async function stop(): Promise<void> {
   await TextileNode.stop()
 }
-
+/**
+ * Get the Textile node version
+ * ```typescript
+ * API.version();
+ * ```
+ */
 export async function version(): Promise<string> {
   const result = await TextileNode.version()
   return result as string
 }
-
+/**
+ * Get the latest git summary
+ * ```typescript
+ * API.gitSummary();
+ * ```
+ */
 export async function gitSummary(): Promise<string> {
   const result = await TextileNode.gitSummary()
   return result as string
 }
-
+/**
+ * Get the summary of node data
+ * ```typescript
+ * API.summary();
+ * ```
+ */
 export async function summary(): Promise<pb.ISummary> {
   const result = await TextileNode.summary()
   return pb.Summary.decode(Buffer.from(result, 'base64'))
