@@ -6,7 +6,7 @@ defaults: &defaults
         - image: circleci/node:8
 
 jobs:
-    lint:
+    lint-test:
         <<: *defaults
         steps:
             - restore_cache: # If any cache exists, it'll way speedup these checkouts
@@ -45,29 +45,6 @@ jobs:
                 key: node-v1-{{ checksum "package.json" }}-{{ arch }}
                 paths:
                     - node_modules
-    test:
-        <<: *defaults
-        steps:
-            - restore_cache: # If any cache exists, it'll way speedup these checkouts
-                keys:
-                    - source-v2-{{ arch }}-{{ .Branch }}-{{ .Revision }}
-                    - source-v2-{{ arch }}-{{ .Branch }}-
-                    - source-v2-{{ arch }}-
-
-            - checkout
-
-            - save_cache:
-                key: source-v2-{{ arch }}-{{ .Branch }}-{{ .Revision }}
-                paths:
-                    - ".git"
-
-            - restore_cache:
-                key: yarn-v1-{{ checksum "yarn.lock" }}-{{ arch }}
-
-            - restore_cache:
-                key: node-v1-{{ checksum "package.json" }}-{{ arch }}
-
-            - run: yarn install
 
             - run:
                 name: jest tests
@@ -105,14 +82,8 @@ workflows:
     version: 2
     react-native-sdk:
         jobs:
-            - lint
-            - test:
-                requires:
-                    - lint
+            - lint-test
             - deploy:
-                requires:
-                    - lint
-                    - test
                 filters:
                     tags:
                         only: /^v.*/
