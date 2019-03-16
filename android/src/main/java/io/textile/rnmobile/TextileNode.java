@@ -371,12 +371,12 @@ public class TextileNode extends ReactContextBaseJavaModule {
     // Files ---------------->
 
     @ReactMethod
-    public void prepareFiles(final String dataStr, final String threadId, final Promise promise) {
+    public void prepareFiles(final String strBase64, final String threadId, final Promise promise) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
                 try {
-                    node.prepareFiles(decode(dataStr), threadId, new Callback() {
+                    node.prepareFiles(strBase64, threadId, new Callback() {
                         @Override
                         public void call(byte[] data, Exception e) {
                             if (e == null) {
@@ -395,12 +395,12 @@ public class TextileNode extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void prepareFilesSync(final String dataStr, final String threadId, final Promise promise) {
+    public void prepareFilesSync(final String strBase64, final String threadId, final Promise promise) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
                 try {
-                    promise.resolve(encode(node.prepareFilesSync(decode(dataStr), threadId)));
+                    promise.resolve(encode(node.prepareFilesSync(strBase64, threadId)));
                 }
                 catch (Exception e) {
                     promise.reject("prepareFilesSync", e);

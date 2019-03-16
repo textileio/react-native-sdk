@@ -225,11 +225,11 @@ RCT_EXPORT_METHOD(feed:(NSString*)reqStr resolver:(RCTPromiseResolveBlock)resolv
 
 #pragma mark - Files ---------------->
 
-RCT_EXPORT_METHOD(prepareFiles:(NSString*)dataStr threadId:(NSString*)threadId resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_EXPORT_METHOD(prepareFiles:(NSString*)strBase64 threadId:(NSString*)threadId resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-  NSData *fileData = [[NSData alloc] initWithBase64EncodedString:dataStr options:0];
+  // NSData *fileData = [[NSData alloc] initWithBase64EncodedString:dataStr options:0];
 
-  [self.node prepareFiles:fileData threadId:threadId cb:[[Callback alloc] initWithCompletion:^ (NSData *data, NSError *error) {
+  [self.node prepareFiles:strBase64 threadId:threadId cb:[[Callback alloc] initWithCompletion:^ (NSData *data, NSError *error) {
     if (error) {
       reject(@(error.code).stringValue, error.localizedDescription, error);
     } else {
@@ -238,10 +238,10 @@ RCT_EXPORT_METHOD(prepareFiles:(NSString*)dataStr threadId:(NSString*)threadId r
   }]];
 }
 
-RCT_EXPORT_METHOD(prepareFilesSync:(NSString*)dataStr threadId:(NSString*)threadId resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_EXPORT_METHOD(prepareFilesSync:(NSString*)strBase64 threadId:(NSString*)threadId resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSError *error;
-  NSData *fileData = [[NSData alloc] initWithBase64EncodedString:dataStr options:0];
-  NSData *result = [self.node prepareFilesSync:fileData threadId:threadId error:&error];
+  // NSData *fileData = [[NSData alloc] initWithBase64EncodedString:dataStr options:0];
+  NSData *result = [self.node prepareFilesSync:strBase64 threadId:threadId error:&error];
   [self fulfillWithResult:[result base64EncodedStringWithOptions:0] error:error resolver:resolve rejecter:reject];
 }
 

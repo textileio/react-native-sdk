@@ -4,7 +4,7 @@ import { pb } from '../Models'
 
 const { TextileNode } = NativeModules
 /**
- * Use a Thread's Mill to prepare a file data for adding to a Thread.
+ * Use a Thread's Mill to prepare a file data (as bse64 string)  for adding to a Thread.
  * ```typescript
  * API.files.prepareFiles(data, threadId);
  * ```
@@ -14,7 +14,7 @@ export async function prepareFiles(data: string, threadId: string): Promise<pb.I
   return pb.MobilePreparedFiles.decode(Buffer.from(result, 'base64'))
 }
 /**
- * Use a Thread's Mill to synchronously prepare a file data for adding to a Thread.
+ * Use a Thread's Mill to synchronously prepare a file data (as bse64 string) for adding to a Thread.
  * ```typescript
  * API.files.prepareFiles(data, threadId);
  * ```
@@ -24,7 +24,7 @@ export async function prepareFilesSync(data: string, threadId: string): Promise<
   return pb.MobilePreparedFiles.decode(Buffer.from(result, 'base64'))
 }
 /**
- * Use a Thread's Mill to prepare a raw file for adding to a Thread.
+ * Use a Thread's Mill to prepare a file for adding to a Thread.
  * ```typescript
  * API.files.prepareFilesByPath(path, threadId);
  * ```
@@ -34,7 +34,7 @@ export async function prepareFilesByPath(path: string, threadId: string): Promis
   return pb.MobilePreparedFiles.decode(Buffer.from(result, 'base64'))
 }
 /**
- * Use a Thread's Mill to synchronously prepare a raw file for adding to a Thread.
+ * Use a Thread's Mill to synchronously prepare a file for adding to a Thread.
  * ```typescript
  * API.files.prepareFilesByPathSync(path, threadId);
  * ```
