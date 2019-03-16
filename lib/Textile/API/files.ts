@@ -4,23 +4,43 @@ import { pb } from '../Models'
 
 const { TextileNode } = NativeModules
 /**
- * Use a Thread's Mill to prepare a raw file for adding to a Thread.
+ * Use a Thread's Mill to prepare a file data for adding to a Thread.
  * ```typescript
- * API.files.prepare(path, threadId);
+ * API.files.prepareFiles(data, threadId);
  * ```
  */
-export async function prepare(path: string, threadId: string): Promise<pb.IMobilePreparedFiles> {
-  const result = await TextileNode.prepareFiles(path, threadId)
+export async function prepareFiles(data: string, threadId: string): Promise<pb.IMobilePreparedFiles> {
+  const result = await TextileNode.prepareFiles(data, threadId)
   return pb.MobilePreparedFiles.decode(Buffer.from(result, 'base64'))
 }
 /**
- * prepare by async
+ * Use a Thread's Mill to synchronously prepare a file data for adding to a Thread.
  * ```typescript
- * API.files.prepareAsync(path, threadId);
+ * API.files.prepareFiles(data, threadId);
  * ```
  */
-export async function prepareAsync(path: string, threadId: string): Promise<pb.IMobilePreparedFiles> {
-  const result = await TextileNode.prepareFilesAsync(path, threadId)
+export async function prepareFilesSync(data: string, threadId: string): Promise<pb.IMobilePreparedFiles> {
+  const result = await TextileNode.prepareFilesSync(data, threadId)
+  return pb.MobilePreparedFiles.decode(Buffer.from(result, 'base64'))
+}
+/**
+ * Use a Thread's Mill to prepare a raw file for adding to a Thread.
+ * ```typescript
+ * API.files.prepareFilesByPath(path, threadId);
+ * ```
+ */
+export async function prepareFilesByPath(path: string, threadId: string): Promise<pb.IMobilePreparedFiles> {
+  const result = await TextileNode.prepareFilesByPath(path, threadId)
+  return pb.MobilePreparedFiles.decode(Buffer.from(result, 'base64'))
+}
+/**
+ * Use a Thread's Mill to synchronously prepare a raw file for adding to a Thread.
+ * ```typescript
+ * API.files.prepareFilesByPathSync(path, threadId);
+ * ```
+ */
+export async function prepareFilesByPathSync(path: string, threadId: string): Promise<pb.IMobilePreparedFiles> {
+  const result = await TextileNode.prepareFilesByPathSync(path, threadId)
   return pb.MobilePreparedFiles.decode(Buffer.from(result, 'base64'))
 }
 /**
