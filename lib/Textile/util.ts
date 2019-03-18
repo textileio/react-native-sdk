@@ -1,5 +1,12 @@
 import { pb } from './Models'
 
+/**
+ * Converts a protobuf timestamp into a Javascript Date
+ *
+ * ```typescript
+ * utils.timestampToDate(timestamp);
+ * ```
+ */
 export function timestampToDate(timestamp?: pb.google.protobuf.ITimestamp) {
   let millis: number
   if (!timestamp) {

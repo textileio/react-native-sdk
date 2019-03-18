@@ -240,6 +240,7 @@ API.data('QmTgtbb4LckHaXh1YhpNcBu48cFY8zgT1Lh49q7q7ksf3M');
 * [stop](#stop)
 * [summary](#summary)
 * [threads](#threads)
+* [timestampToDate](#timestamptodate)
 * [username](#username)
 * [version](#version)
 
@@ -797,7 +798,7 @@ ___
 
 ▸ **prepareFiles**(data: *`string`*, threadId: *`string`*): `Promise`<`IMobilePreparedFiles`>
 
-Use a Thread's Mill to prepare a file data for adding to a Thread.
+Use a Thread's Mill to prepare a file data (as bse64 string) for adding to a Thread.
 
 ```typescript
 API.files.prepareFiles(data, threadId);
@@ -819,7 +820,7 @@ ___
 
 ▸ **prepareFilesByPath**(path: *`string`*, threadId: *`string`*): `Promise`<`IMobilePreparedFiles`>
 
-Use a Thread's Mill to prepare a raw file for adding to a Thread.
+Use a Thread's Mill to prepare a file for adding to a Thread.
 
 ```typescript
 API.files.prepareFilesByPath(path, threadId);
@@ -841,7 +842,7 @@ ___
 
 ▸ **prepareFilesByPathSync**(path: *`string`*, threadId: *`string`*): `Promise`<`IMobilePreparedFiles`>
 
-Use a Thread's Mill to synchronously prepare a raw file for adding to a Thread.
+Use a Thread's Mill to synchronously prepare a file for adding to a Thread.
 
 ```typescript
 API.files.prepareFilesByPathSync(path, threadId);
@@ -863,7 +864,7 @@ ___
 
 ▸ **prepareFilesSync**(data: *`string`*, threadId: *`string`*): `Promise`<`IMobilePreparedFiles`>
 
-Use a Thread's Mill to synchronously prepare a file data for adding to a Thread.
+Use a Thread's Mill to synchronously prepare a file data (as bse64 string) for adding to a Thread.
 
 ```typescript
 API.files.prepareFiles(data, threadId);
@@ -1197,6 +1198,27 @@ API.contacts.threads(id);
 | id_ | `string` |
 
 **Returns:** `Promise`<`IThreadList`>
+
+___
+<a id="timestamptodate"></a>
+
+###  timestampToDate
+
+▸ **timestampToDate**(timestamp?: *`pb.google.protobuf.ITimestamp`*): `Date`
+
+Converts a protobuf timestamp into a Javascript Date
+
+```typescript
+utils.timestampToDate(timestamp);
+```
+
+**Parameters:**
+
+| Name | Type |
+| ------ | ------ |
+| `Optional` timestamp | `pb.google.protobuf.ITimestamp` |
+
+**Returns:** `Date`
 
 ___
 <a id="username"></a>
