@@ -219,8 +219,10 @@ API.data('QmTgtbb4LckHaXh1YhpNcBu48cFY8zgT1Lh49q7q7ksf3M');
 * [list](#list)
 * [peerId](#peerid)
 * [peers](#peers)
-* [prepare](#prepare)
-* [prepareAsync](#prepareasync)
+* [prepareFiles](#preparefiles)
+* [prepareFilesByPath](#preparefilesbypath)
+* [prepareFilesByPathSync](#preparefilesbypathsync)
+* [prepareFilesSync](#preparefilessync)
 * [read](#read)
 * [readAll](#readall)
 * [refreshSession](#refreshsession)
@@ -238,6 +240,7 @@ API.data('QmTgtbb4LckHaXh1YhpNcBu48cFY8zgT1Lh49q7q7ksf3M');
 * [stop](#stop)
 * [summary](#summary)
 * [threads](#threads)
+* [timestampToDate](#timestamptodate)
 * [username](#username)
 * [version](#version)
 
@@ -789,16 +792,38 @@ const contacts: pb.IContactList = API.account.peers();
 **Returns:** `Promise`<`IContactList`>
 
 ___
-<a id="prepare"></a>
+<a id="preparefiles"></a>
 
-###  prepare
+###  prepareFiles
 
-▸ **prepare**(path: *`string`*, threadId: *`string`*): `Promise`<`IMobilePreparedFiles`>
+▸ **prepareFiles**(data: *`string`*, threadId: *`string`*): `Promise`<`IMobilePreparedFiles`>
 
-Use a Thread's Mill to prepare a raw file for adding to a Thread.
+Use a Thread's Mill to prepare a file data (as bse64 string) for adding to a Thread.
 
 ```typescript
-API.files.prepare(path, threadId);
+API.files.prepareFiles(data, threadId);
+```
+
+**Parameters:**
+
+| Name | Type |
+| ------ | ------ |
+| data | `string` |
+| threadId | `string` |
+
+**Returns:** `Promise`<`IMobilePreparedFiles`>
+
+___
+<a id="preparefilesbypath"></a>
+
+###  prepareFilesByPath
+
+▸ **prepareFilesByPath**(path: *`string`*, threadId: *`string`*): `Promise`<`IMobilePreparedFiles`>
+
+Use a Thread's Mill to prepare a file for adding to a Thread.
+
+```typescript
+API.files.prepareFilesByPath(path, threadId);
 ```
 
 **Parameters:**
@@ -811,16 +836,16 @@ API.files.prepare(path, threadId);
 **Returns:** `Promise`<`IMobilePreparedFiles`>
 
 ___
-<a id="prepareasync"></a>
+<a id="preparefilesbypathsync"></a>
 
-###  prepareAsync
+###  prepareFilesByPathSync
 
-▸ **prepareAsync**(path: *`string`*, threadId: *`string`*): `Promise`<`IMobilePreparedFiles`>
+▸ **prepareFilesByPathSync**(path: *`string`*, threadId: *`string`*): `Promise`<`IMobilePreparedFiles`>
 
-prepare by async
+Use a Thread's Mill to synchronously prepare a file for adding to a Thread.
 
 ```typescript
-API.files.prepareAsync(path, threadId);
+API.files.prepareFilesByPathSync(path, threadId);
 ```
 
 **Parameters:**
@@ -828,6 +853,28 @@ API.files.prepareAsync(path, threadId);
 | Name | Type |
 | ------ | ------ |
 | path | `string` |
+| threadId | `string` |
+
+**Returns:** `Promise`<`IMobilePreparedFiles`>
+
+___
+<a id="preparefilessync"></a>
+
+###  prepareFilesSync
+
+▸ **prepareFilesSync**(data: *`string`*, threadId: *`string`*): `Promise`<`IMobilePreparedFiles`>
+
+Use a Thread's Mill to synchronously prepare a file data (as bse64 string) for adding to a Thread.
+
+```typescript
+API.files.prepareFiles(data, threadId);
+```
+
+**Parameters:**
+
+| Name | Type |
+| ------ | ------ |
+| data | `string` |
 | threadId | `string` |
 
 **Returns:** `Promise`<`IMobilePreparedFiles`>
@@ -1151,6 +1198,27 @@ API.contacts.threads(id);
 | id_ | `string` |
 
 **Returns:** `Promise`<`IThreadList`>
+
+___
+<a id="timestamptodate"></a>
+
+###  timestampToDate
+
+▸ **timestampToDate**(timestamp?: *`pb.google.protobuf.ITimestamp`*): `Date`
+
+Converts a protobuf timestamp into a Javascript Date
+
+```typescript
+utils.timestampToDate(timestamp);
+```
+
+**Parameters:**
+
+| Name | Type |
+| ------ | ------ |
+| `Optional` timestamp | `pb.google.protobuf.ITimestamp` |
+
+**Returns:** `Date`
 
 ___
 <a id="username"></a>

@@ -1,6 +1,6 @@
 {
   "name": "@textile/react-native-sdk",
-  "version": "1.1.0-rc41",
+  "version": "1.1.0-rc42",
   "description": "## Getting started",
   "nativePackage": true,
   "main": "dist/index.js",
@@ -65,7 +65,7 @@
     "typescript": "^3.1.1"
   },
   "dependencies": {
-    "@textile/go-mobile": "1.0.0-rc55",
+    "@textile/go-mobile": "0.1.10-rc1",
     "buffer": "^5.2.1"
   },
   "directories": {
