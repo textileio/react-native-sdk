@@ -371,12 +371,21 @@ public class TextileNode extends ReactContextBaseJavaModule {
     // Files ---------------->
 
     @ReactMethod
-    public void prepareFiles(final String path, final String threadId, final Promise promise) {
+    public void prepareFiles(final String strBase64, final String threadId, final Promise promise) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
                 try {
-                    promise.resolve(encode(node.prepareFiles(path, threadId)));
+                    node.prepareFiles(strBase64, threadId, new Callback() {
+                        @Override
+                        public void call(byte[] data, Exception e) {
+                            if (e == null) {
+                                promise.resolve(encode(data));
+                            } else {
+                                promise.reject("prepareFiles", e);
+                            }
+                        }
+                    });
                 }
                 catch (Exception e) {
                     promise.reject("prepareFiles", e);
@@ -386,24 +395,54 @@ public class TextileNode extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void prepareFilesAsync(final String path, final String threadId, final Promise promise) {
+    public void prepareFilesSync(final String strBase64, final String threadId, final Promise promise) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
                 try {
-                    node.prepareFilesAsync(path, threadId, new Callback() {
+                    promise.resolve(encode(node.prepareFilesSync(strBase64, threadId)));
+                }
+                catch (Exception e) {
+                    promise.reject("prepareFilesSync", e);
+                }
+            }
+        });
+    }
+
+    @ReactMethod
+    public void prepareFilesByPath(final String path, final String threadId, final Promise promise) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    node.prepareFilesByPath(path, threadId, new Callback() {
                         @Override
                         public void call(byte[] data, Exception e) {
                             if (e == null) {
                                 promise.resolve(encode(data));
                             } else {
-                                promise.reject("prepareFilesAsync", e);
+                                promise.reject("prepareFilesByPath", e);
                             }
                         }
                     });
                 }
                 catch (Exception e) {
-                    promise.reject("prepareFilesAsync", e);
+                    promise.reject("prepareFilesByPath", e);
+                }
+            }
+        });
+    }
+
+    @ReactMethod
+    public void prepareFilesByPathSync(final String path, final String threadId, final Promise promise) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    promise.resolve(encode(node.prepareFilesByPathSync(path, threadId)));
+                }
+                catch (Exception e) {
+                    promise.reject("prepareFilesByPathSync", e);
                 }
             }
         });
