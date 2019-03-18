@@ -37,6 +37,12 @@ export default class Textile {
    * ```
    */
   node_version: string = VERSION
+  /**
+   * @hidden
+   * ```
+   */
+  repoPath = `${RNFS.DocumentDirectoryPath}/textile-go`
+
   private migration = new TextileMigration()
   private _debug = false
   private _store = new TextileStore()
@@ -44,8 +50,6 @@ export default class Textile {
   private _config: TextileConfig = {}
   private _cafe?: CafeConfig
   private _initialized = false
-
-  private repoPath = `${RNFS.DocumentDirectoryPath}/textile-go`
 
   constructor(options: TextileOptions) {
     if (options.debug) {
