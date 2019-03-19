@@ -69,6 +69,18 @@ RCT_EXPORT_MODULE();
   return dispatch_queue_create("io.textile.TextileNodeQueue", DISPATCH_QUEUE_SERIAL);
 }
 
+- (void)fulfillWithResult:(id)result nilDefault:(id)nilDefault error:(NSError*)error resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject {
+  if (!error) {
+    if (result != nil) {
+      resolve(result);
+    } else {
+      resolve(nilDefault);
+    }
+  } else {
+    reject(@(error.code).stringValue, error.localizedDescription, error);
+  }
+}
+
 - (void)fulfillWithResult:(id)result error:(NSError*)error resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject {
   if (!error) {
     resolve(result);
@@ -91,19 +103,19 @@ RCT_EXPORT_METHOD(seed:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejec
 RCT_EXPORT_METHOD(encrypt:(NSString*)inputStr resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSError *error;
   NSData *result = [self.node encrypt:[[NSData alloc]initWithBase64EncodedString:inputStr options:0] error:&error];
-  [self fulfillWithResult:[result base64EncodedStringWithOptions:0] error:error resolver:resolve rejecter:reject];
+  [self fulfillWithResult:[result base64EncodedStringWithOptions:0] nilDefault:@"" error:error resolver:resolve rejecter:reject];
 }
 
 RCT_EXPORT_METHOD(decrypt:(NSString*)inputStr resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSError *error;
   NSData *result = [self.node decrypt:[[NSData alloc]initWithBase64EncodedString:inputStr options:0] error:&error];
-  [self fulfillWithResult:[result base64EncodedStringWithOptions:0] error:error resolver:resolve rejecter:reject];
+  [self fulfillWithResult:[result base64EncodedStringWithOptions:0] nilDefault:@"" error:error resolver:resolve rejecter:reject];
 }
 
 RCT_EXPORT_METHOD(accountPeers:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSError *error;
   NSData *result = [self.node accountPeers:&error];
-  [self fulfillWithResult:[result base64EncodedStringWithOptions:0] error:error resolver:resolve rejecter:reject];
+  [self fulfillWithResult:[result base64EncodedStringWithOptions:0] nilDefault:@"" error:error resolver:resolve rejecter:reject];
 }
 
 RCT_EXPORT_METHOD(findThreadBackups:(NSString*)queryStr options:(NSString*)optionsStr resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
@@ -131,19 +143,19 @@ RCT_EXPORT_METHOD(registerCafe:(NSString*)peerId token:(NSString*)token resolver
 RCT_EXPORT_METHOD(cafeSession:(NSString*)peerId resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSError *error;
   NSData *result = [self.node cafeSession:peerId error:&error];
-  [self fulfillWithResult:[result base64EncodedStringWithOptions:0] error:error resolver:resolve rejecter:reject];
+  [self fulfillWithResult:[result base64EncodedStringWithOptions:0] nilDefault:@"" error:error resolver:resolve rejecter:reject];
 }
 
 RCT_EXPORT_METHOD(cafeSessions:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSError *error;
   NSData *result = [self.node cafeSessions:&error];
-  [self fulfillWithResult:[result base64EncodedStringWithOptions:0] error:error resolver:resolve rejecter:reject];
+  [self fulfillWithResult:[result base64EncodedStringWithOptions:0] nilDefault:@"" error:error resolver:resolve rejecter:reject];
 }
 
 RCT_EXPORT_METHOD(refreshCafeSession:(NSString*)peerId resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSError *error;
   NSData *result = [self.node refreshCafeSession:peerId error:&error];
-  [self fulfillWithResult:[result base64EncodedStringWithOptions:0] error:error resolver:resolve rejecter:reject];
+  [self fulfillWithResult:[result base64EncodedStringWithOptions:0] nilDefault:@"" error:error resolver:resolve rejecter:reject];
 }
 
 RCT_EXPORT_METHOD(deregisterCafe:(NSString*)peerId resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
@@ -179,13 +191,13 @@ RCT_EXPORT_METHOD(addContact:(NSString*)contactStr resolver:(RCTPromiseResolveBl
 RCT_EXPORT_METHOD(contact:(NSString*)id_ resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSError *error;
   NSData *result = [self.node contact:id_ error:&error];
-  [self fulfillWithResult:[result base64EncodedStringWithOptions:0] error:error resolver:resolve rejecter:reject];
+  [self fulfillWithResult:[result base64EncodedStringWithOptions:0] nilDefault:@"" error:error resolver:resolve rejecter:reject];
 }
 
 RCT_EXPORT_METHOD(contacts:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSError *error;
   NSData *result = [self.node contacts:&error];
-  [self fulfillWithResult:[result base64EncodedStringWithOptions:0] error:error resolver:resolve rejecter:reject];
+  [self fulfillWithResult:[result base64EncodedStringWithOptions:0] nilDefault:@"" error:error resolver:resolve rejecter:reject];
 }
 
 RCT_EXPORT_METHOD(removeContact:(NSString*)id_ resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
@@ -197,7 +209,7 @@ RCT_EXPORT_METHOD(removeContact:(NSString*)id_ resolver:(RCTPromiseResolveBlock)
 RCT_EXPORT_METHOD(contactThreads:(NSString*)id_ resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSError *error;
   NSData *result = [self.node contactThreads:id_ error:&error];
-  [self fulfillWithResult:[result base64EncodedStringWithOptions:0] error:error resolver:resolve rejecter:reject];
+  [self fulfillWithResult:[result base64EncodedStringWithOptions:0] nilDefault:@"" error:error resolver:resolve rejecter:reject];
 }
 
 RCT_EXPORT_METHOD(searchContacts:(NSString*)queryStr options:(NSString*)optionsStr resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
@@ -219,7 +231,7 @@ RCT_EXPORT_METHOD(searchContacts:(NSString*)queryStr options:(NSString*)optionsS
 RCT_EXPORT_METHOD(feed:(NSString*)reqStr resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSError *error;
   NSData *result = [self.node feed:[[NSData alloc] initWithBase64EncodedString:reqStr options:0] error:&error];
-  [self fulfillWithResult:[result base64EncodedStringWithOptions:0] error:error resolver:resolve rejecter:reject];
+  [self fulfillWithResult:[result base64EncodedStringWithOptions:0] nilDefault:@"" error:error resolver:resolve rejecter:reject];
 }
 
 
@@ -242,7 +254,7 @@ RCT_EXPORT_METHOD(prepareFilesSync:(NSString*)strBase64 threadId:(NSString*)thre
   NSError *error;
   // NSData *fileData = [[NSData alloc] initWithBase64EncodedString:dataStr options:0];
   NSData *result = [self.node prepareFilesSync:strBase64 threadId:threadId error:&error];
-  [self fulfillWithResult:[result base64EncodedStringWithOptions:0] error:error resolver:resolve rejecter:reject];
+  [self fulfillWithResult:[result base64EncodedStringWithOptions:0] nilDefault:@"" error:error resolver:resolve rejecter:reject];
 }
 
 RCT_EXPORT_METHOD(prepareFilesByPath:(NSString*)path threadId:(NSString*)threadId resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
@@ -258,7 +270,7 @@ RCT_EXPORT_METHOD(prepareFilesByPath:(NSString*)path threadId:(NSString*)threadI
 RCT_EXPORT_METHOD(prepareFilesByPathSync:(NSString*)path threadId:(NSString*)threadId resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSError *error;
   NSData *result = [self.node prepareFilesByPathSync:path threadId:threadId error:&error];
-  [self fulfillWithResult:[result base64EncodedStringWithOptions:0] error:error resolver:resolve rejecter:reject];
+  [self fulfillWithResult:[result base64EncodedStringWithOptions:0] nilDefault:@"" error:error resolver:resolve rejecter:reject];
 }
 
 RCT_EXPORT_METHOD(addFiles:(NSString*)dirStr threadId:(NSString*)threadId caption:(NSString*)caption resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
@@ -271,18 +283,18 @@ RCT_EXPORT_METHOD(addFiles:(NSString*)dirStr threadId:(NSString*)threadId captio
 RCT_EXPORT_METHOD(addFilesByTarget:(NSString*)target threadId:(NSString*)threadId caption:(NSString*)caption resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSError *error;
   NSData *result = [self.node addFilesByTarget:target threadId:threadId caption:caption error:&error];
-  [self fulfillWithResult:[result base64EncodedStringWithOptions:0] error:error resolver:resolve rejecter:reject];
+  [self fulfillWithResult:[result base64EncodedStringWithOptions:0] nilDefault:@"" error:error resolver:resolve rejecter:reject];
 }
 
 RCT_EXPORT_METHOD(files:(NSString*)offset limit:(NSInteger)limit threadId:(NSString*)threadId resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSError *error;
   NSData *result = [self.node files:offset limit:limit threadId:threadId error:&error];
-  [self fulfillWithResult:[result base64EncodedStringWithOptions:0] error:error resolver:resolve rejecter:reject];
+  [self fulfillWithResult:[result base64EncodedStringWithOptions:0] nilDefault:@"" error:error resolver:resolve rejecter:reject];
 }
 
 RCT_EXPORT_METHOD(fileData:(NSString*)hash resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSError *error;
-  [self fulfillWithResult:[self _fileData:hash error:&error] error:error resolver:resolve rejecter:reject];
+  [self fulfillWithResult:[self _fileData:hash error:&error] nilDefault:@"" error:error resolver:resolve rejecter:reject];
 }
 
 RCT_EXPORT_METHOD(imageFileDataForMinWidth:(NSString*)pth minWidth:(NSInteger)minWidth resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
@@ -318,7 +330,7 @@ RCT_EXPORT_METHOD(addInvite:(NSString*)threadId inviteeId:(NSString*)inviteeId r
 RCT_EXPORT_METHOD(addExternalInvite:(NSString*)threadId resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSError *error;
   NSData *result = [self.node addExternalInvite:threadId error:&error];
-  [self fulfillWithResult:[result base64EncodedStringWithOptions:0] error:error resolver:resolve rejecter:reject];
+  [self fulfillWithResult:[result base64EncodedStringWithOptions:0] nilDefault:@"" error:error resolver:resolve rejecter:reject];
 }
 
 RCT_EXPORT_METHOD(acceptExternalInvite:(NSString*)id_ key:(NSString*)key resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
@@ -338,7 +350,7 @@ RCT_EXPORT_METHOD(peerId:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRej
 RCT_EXPORT_METHOD(dataAtPath:(NSString*)pth resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSError *error;
   NSData *result = [self.node dataAtPath:pth error:&error];
-  [self fulfillWithResult:[result base64EncodedStringWithOptions:0] error:error resolver:resolve rejecter:reject];
+  [self fulfillWithResult:[result base64EncodedStringWithOptions:0] nilDefault:@"" error:error resolver:resolve rejecter:reject];
 }
 
 
@@ -369,7 +381,7 @@ RCT_EXPORT_METHOD(addMessage:(NSString*)threadId body:(NSString*)body resolver:(
 RCT_EXPORT_METHOD(messages:(NSString*)offset limit:(NSInteger)limit threadId:(NSString*)threadId resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSError *error;
   NSData *result = [self.node messages:offset limit:limit threadId:threadId error:&error];
-  [self fulfillWithResult:[result base64EncodedStringWithOptions:0] error:error resolver:resolve rejecter:reject];
+  [self fulfillWithResult:[result base64EncodedStringWithOptions:0] nilDefault:@"" error:error resolver:resolve rejecter:reject];
 }
 
 
@@ -378,7 +390,7 @@ RCT_EXPORT_METHOD(messages:(NSString*)offset limit:(NSInteger)limit threadId:(NS
 RCT_EXPORT_METHOD(notifications:(NSString*)offset limit:(NSInteger)limit resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSError *error;
   NSData *result = [self.node notifications:offset limit:limit error:&error];
-  [self fulfillWithResult:[result base64EncodedStringWithOptions:0] error:error resolver:resolve rejecter:reject];
+  [self fulfillWithResult:[result base64EncodedStringWithOptions:0] nilDefault:@"" error:error resolver:resolve rejecter:reject];
 }
 
 RCT_EXPORT_METHOD(countUnreadNotifications:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
@@ -416,7 +428,7 @@ RCT_EXPORT_METHOD(ignoreInviteViaNotification:(NSString*)id_ resolver:(RCTPromis
 RCT_EXPORT_METHOD(profile:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSError *error;
   NSData *result = [self.node profile:&error];
-  [self fulfillWithResult:[result base64EncodedStringWithOptions:0] error:error resolver:resolve rejecter:reject];
+  [self fulfillWithResult:[result base64EncodedStringWithOptions:0] nilDefault:@"" error:error resolver:resolve rejecter:reject];
 }
 
 RCT_EXPORT_METHOD(username:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
@@ -447,7 +459,7 @@ RCT_EXPORT_METHOD(setAvatar:(NSString*)id_ resolver:(RCTPromiseResolveBlock)reso
 RCT_EXPORT_METHOD(addSchema:(NSString*)nodeStr resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSError *error;
   NSData *result = [self.node addSchema:[[NSData alloc] initWithBase64EncodedString:nodeStr options:0] error:&error];
-  [self fulfillWithResult:[result base64EncodedStringWithOptions:0] error:error resolver:resolve rejecter:reject];
+  [self fulfillWithResult:[result base64EncodedStringWithOptions:0] nilDefault:@"" error:error resolver:resolve rejecter:reject];
 }
 
 
@@ -457,7 +469,7 @@ RCT_EXPORT_METHOD(addThread:(NSString*)configStr resolver:(RCTPromiseResolveBloc
   NSError *error;
   NSData *config = [[NSData alloc] initWithBase64EncodedString:configStr options:0];
   NSData *result = [self.node addThread:config error:&error];
-  [self fulfillWithResult:[result base64EncodedStringWithOptions:0] error:error resolver:resolve rejecter:reject];
+  [self fulfillWithResult:[result base64EncodedStringWithOptions:0] nilDefault:@"" error:error resolver:resolve rejecter:reject];
 }
 
 RCT_EXPORT_METHOD(addOrUpdateThread:(NSString*)threadStr resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
@@ -476,19 +488,19 @@ RCT_EXPORT_METHOD(rename:(NSString*)threadId name:(NSString*)name resolver:(RCTP
 RCT_EXPORT_METHOD(thread:(NSString*)threadId resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSError *error;
   NSData *result = [self.node thread:threadId error:&error];
-  [self fulfillWithResult:[result base64EncodedStringWithOptions:0] error:error resolver:resolve rejecter:reject];
+  [self fulfillWithResult:[result base64EncodedStringWithOptions:0] nilDefault:@"" error:error resolver:resolve rejecter:reject];
 }
 
 RCT_EXPORT_METHOD(threads:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSError *error;
   NSData *result = [self.node threads:&error];
-  [self fulfillWithResult:[result base64EncodedStringWithOptions:0] error:error resolver:resolve rejecter:reject];
+  [self fulfillWithResult:[result base64EncodedStringWithOptions:0] nilDefault:@"" error:error resolver:resolve rejecter:reject];
 }
 
 RCT_EXPORT_METHOD(peers:(NSString*)threadId resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSError *error;
   NSData *result = [self.node threadPeers:threadId error:&error];
-  [self fulfillWithResult:[result base64EncodedStringWithOptions:0] error:error resolver:resolve rejecter:reject];
+  [self fulfillWithResult:[result base64EncodedStringWithOptions:0] nilDefault:@"" error:error resolver:resolve rejecter:reject];
 }
 
 RCT_EXPORT_METHOD(removeThread:(NSString*)id_ resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
@@ -509,7 +521,7 @@ RCT_EXPORT_METHOD(walletAccountAt:(NSString*)phrase index:(NSInteger)index passw
   NSString *p = password ? password : @"";
   NSError *error;
   NSData *result = MobileWalletAccountAt(phrase, index, p, &error); // return seed and address
-  [self fulfillWithResult:[result base64EncodedStringWithOptions:0] error:error resolver:resolve rejecter:reject];
+  [self fulfillWithResult:[result base64EncodedStringWithOptions:0] nilDefault:@"" error:error resolver:resolve rejecter:reject];
 }
 
 RCT_EXPORT_METHOD(initRepo:(NSString*)seed repoPath:(NSString*)repoPath logToDisk:(BOOL)logToDisk debug:(BOOL)debug resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
