@@ -1,6 +1,6 @@
 {
   "name": "@textile/react-native-sdk",
-  "version": "1.1.0-rc45",
+  "version": "1.1.0-rc46",
   "description": "## Getting started",
   "nativePackage": true,
   "main": "dist/index.js",
@@ -8,7 +8,8 @@
   "files": [
     "dist/*",
     "ios/*",
-    "android/*"
+    "android/*",
+    "textile-react-native-sdk.podspec"
   ],
   "scripts": {
     "build": "rm -rf dist/ && tsc",
