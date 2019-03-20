@@ -18,6 +18,7 @@ Pod::Spec.new do |s|
   #s.dependency 'React'
   #s.dependency 'Fabric'
   #s.dependency 'Crashlytics'
+  s.dependency 'go-textile', '0.1.10-rc3'
   #s.ios.xcconfig = {
   #  'FRAMEWORK_SEARCH_PATHS' => '"${PODS_ROOT}/Crashlytics/iOS" "${PODS_ROOT}/Fabric/iOS"',
   #  'OTHER_LDFLAGS' => '-framework Crashlytics -framework Fabric'
