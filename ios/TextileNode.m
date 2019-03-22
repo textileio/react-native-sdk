@@ -1,6 +1,8 @@
 #import "TextileNode.h"
 #import "Events.h"
 #import <Mobile/Mobile.h>
+#import <Textile/Callback.h>
+#import <Textile/Messenger.h>
 
 #if __has_include(<React/RCTBridge.h>)
 #import <React/RCTBridge.h>
@@ -11,48 +13,6 @@
 #endif
 
 #define SYSTEM_VERSION_LESS_THAN(v) ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedAscending)
-
-
-@interface Callback : NSObject<MobileCallback>
-@end
-
-@interface Callback()
-@property (nonatomic, copy, nonnull) void (^completion)(NSData*, NSError*);
-@end
-
-@implementation Callback
-
-- (instancetype)initWithCompletion:(void (^)(NSData*, NSError*))completion {
-  self = [super init];
-  if (self) {
-    self.completion = completion;
-  }
-  return self;
-}
-
-- (void)call:(NSData *)payload err:(NSError *)err {
-  self.completion(payload, err);
-}
-
-@end
-
-
-@interface Messenger : NSObject<MobileMessenger>
-@end
-
-@interface Messenger()
-
-@end
-
-@implementation Messenger
-
-- (void) notify: (MobileEvent *)event {
-  NSString *payload = [event.data base64EncodedStringWithOptions:0];
-  [Events emitEventWithName:event.name andPayload:payload];
-}
-
-@end
-
 
 @interface TextileNode()
 
