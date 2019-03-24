@@ -24,7 +24,10 @@
   "license": "MIT",
   "peerDependencies": {
     "react": "*",
-    "react-native": "*"
+    "react-native": "*",
+    "react-native-background-fetch": "^2.5.1",
+    "react-native-background-timer": "^2.1.1",
+    "react-native-fs": "^2.13.3"
   },
   "devDependencies": {
     "@types/enzyme": "^3.1.14",
@@ -61,10 +64,7 @@
   },
   "dependencies": {
     "@textile/go-mobile": "0.1.10-rc3",
-    "buffer": "^5.2.1",
-    "react-native-background-fetch": "^2.5.1",
-    "react-native-background-timer": "^2.1.1",
-    "react-native-fs": "^2.13.3"
+    "buffer": "^5.2.1"
   },
   "directories": {
     "lib": "lib"
