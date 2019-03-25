@@ -1,8 +1,6 @@
 #import "TextileNode.h"
 #import "Events.h"
 #import <Mobile/Mobile.h>
-#import <Textile/Callback.h>
-#import <Textile/Messenger.h>
 
 #if __has_include(<React/RCTBridge.h>)
 #import <React/RCTBridge.h>
@@ -13,6 +11,46 @@
 #endif
 
 #define SYSTEM_VERSION_LESS_THAN(v) ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedAscending)
+
+@interface TEXCallback : NSObject<MobileCallback>
+@end
+
+@interface TEXCallback()
+@property (nonatomic, copy, nonnull) void (^completion)(NSData*, NSError*);
+@end
+
+@implementation TEXCallback
+
+- (instancetype)initWithCompletion:(void (^)(NSData*, NSError*))completion {
+  self = [super init];
+  if (self) {
+    self.completion = completion;
+  }
+  return self;
+}
+
+- (void)call:(NSData *)payload err:(NSError *)err {
+  self.completion(payload, err);
+}
+
+@end
+
+
+@interface TEXMessenger : NSObject<MobileMessenger>
+@end
+
+@interface TEXMessenger()
+
+@end
+
+@implementation TEXMessenger
+
+- (void) notify: (MobileEvent *)event {
+  NSString *payload = [event.data base64EncodedStringWithOptions:0];
+  [Events emitEventWithName:event.name andPayload:payload];
+}
+
+@end
 
 @interface TextileNode()
 
@@ -201,7 +239,7 @@ RCT_EXPORT_METHOD(prepareFiles:(NSString*)strBase64 threadId:(NSString*)threadId
 
   // NSData *fileData = [[NSData alloc] initWithBase64EncodedString:dataStr options:0];
 
-  [self.node prepareFiles:strBase64 threadId:threadId cb:[[Callback alloc] initWithCompletion:^ (NSData *data, NSError *error) {
+  [self.node prepareFiles:strBase64 threadId:threadId cb:[[TEXCallback alloc] initWithCompletion:^ (NSData *data, NSError *error) {
     if (error) {
       reject(@(error.code).stringValue, error.localizedDescription, error);
     } else {
@@ -218,7 +256,7 @@ RCT_EXPORT_METHOD(prepareFilesSync:(NSString*)strBase64 threadId:(NSString*)thre
 }
 
 RCT_EXPORT_METHOD(prepareFilesByPath:(NSString*)path threadId:(NSString*)threadId resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
-  [self.node prepareFilesByPath:path threadId:threadId cb:[[Callback alloc] initWithCompletion:^ (NSData *data, NSError *error) {
+  [self.node prepareFilesByPath:path threadId:threadId cb:[[TEXCallback alloc] initWithCompletion:^ (NSData *data, NSError *error) {
     if (error) {
       reject(@(error.code).stringValue, error.localizedDescription, error);
     } else {
@@ -509,7 +547,7 @@ RCT_EXPORT_METHOD(newTextile:(NSString*)repoPath debug:(BOOL)debug resolver:(RCT
     MobileRunConfig *config = [[MobileRunConfig alloc] init];
     config.repoPath = repoPath;
     config.debug = debug;
-    self.node = MobileNewTextile(config, [[Messenger alloc] init], &error); // Returns the 'needs migration error'
+    self.node = MobileNewTextile(config, [[TEXMessenger alloc] init], &error); // Returns the 'needs migration error'
   }
   [self fulfillWithResult:nil error:error resolver:resolve rejecter:reject];
 }
