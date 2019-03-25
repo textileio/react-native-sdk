@@ -1,6 +1,6 @@
 {
   "name": "@textile/react-native-sdk",
-  "version": "1.1.0-rc45",
+  "version": "1.1.0-rc46",
   "description": "## Getting started",
   "nativePackage": true,
   "main": "dist/index.js",
@@ -8,7 +8,8 @@
   "files": [
     "dist/*",
     "ios/*",
-    "android/*"
+    "android/*",
+    "textile-react-native-sdk.podspec"
   ],
   "scripts": {
     "build": "rm -rf dist/ && tsc",
@@ -24,9 +25,9 @@
   "peerDependencies": {
     "react": "*",
     "react-native": "*",
-    "react-native-background-fetch": "^2.4.3",
-    "react-native-background-timer": "2.1.0-alpha.6",
-    "react-native-fs": "^2.11.17"
+    "react-native-background-fetch": "^2.5.1",
+    "react-native-background-timer": "^2.1.1",
+    "react-native-fs": "^2.13.3"
   },
   "devDependencies": {
     "@types/enzyme": "^3.1.14",
@@ -53,9 +54,9 @@
     "react": "^16.5.0",
     "react-dom": "^16.5.2",
     "react-native": "^0.57.2",
-    "react-native-background-fetch": "^2.4.3",
-    "react-native-background-timer": "2.1.0-alpha.6",
-    "react-native-fs": "^2.11.17",
+    "react-native-background-fetch": "^2.5.1",
+    "react-native-background-timer": "^2.1.1",
+    "react-native-fs": "^2.13.3",
     "react-test-renderer": "16.5.0",
     "ts-jest": "^23.10.5",
     "tslint": "^5.11.0",
