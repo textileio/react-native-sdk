@@ -1183,7 +1183,7 @@ public class TextileNode extends ReactContextBaseJavaModule {
             @Override
             public void run() {
                 try {
-                    promise.resolve(node.summary());
+                    promise.resolve(encode(node.summary()));
                 }
                 catch (Exception e) {
                     promise.reject("summary", e);
