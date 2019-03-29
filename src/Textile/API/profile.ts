@@ -16,24 +16,24 @@ export async function get(): Promise<pb.IContact> {
 }
 
 /**
- * Get the username.
+ * Get the name.
  * ```typescript
- * API.profile.username();
+ * API.profile.name();
  * ```
  */
-export async function username(): Promise<string | undefined> {
-  const result: string = await TextileNode.username()
+export async function name(): Promise<string | undefined> {
+  const result: string = await TextileNode.name()
   return result.length > 0 ? result : undefined
 }
 
 /**
- * Update the username.
+ * Update the name.
  * ```typescript
- * API.profile.setUsername(username);
+ * API.profile.setName(name);
  * ```
  */
-export async function setUsername(username: string): Promise<void> {
-  await TextileNode.setUsername(username)
+export async function setName(name: string): Promise<void> {
+  await TextileNode.setName(name)
 }
 
 /**

@@ -3,6 +3,7 @@ import { Buffer } from 'buffer'
 import { pb } from '../Models'
 
 const { TextileNode } = NativeModules
+
 /**
  * Use a Thread's Mill to prepare a file data (as bse64 string)  for adding to a Thread.
  * ```typescript
@@ -13,6 +14,7 @@ export async function prepareFiles(data: string, threadId: string): Promise<pb.I
   const result = await TextileNode.prepareFiles(data, threadId)
   return pb.MobilePreparedFiles.decode(Buffer.from(result, 'base64'))
 }
+
 /**
  * Use a Thread's Mill to synchronously prepare a file data (as bse64 string) for adding to a Thread.
  * ```typescript
@@ -23,6 +25,7 @@ export async function prepareFilesSync(data: string, threadId: string): Promise<
   const result = await TextileNode.prepareFilesSync(data, threadId)
   return pb.MobilePreparedFiles.decode(Buffer.from(result, 'base64'))
 }
+
 /**
  * Use a Thread's Mill to prepare a file for adding to a Thread.
  * ```typescript
@@ -33,6 +36,7 @@ export async function prepareFilesByPath(path: string, threadId: string): Promis
   const result = await TextileNode.prepareFilesByPath(path, threadId)
   return pb.MobilePreparedFiles.decode(Buffer.from(result, 'base64'))
 }
+
 /**
  * Use a Thread's Mill to synchronously prepare a file for adding to a Thread.
  * ```typescript
@@ -43,6 +47,7 @@ export async function prepareFilesByPathSync(path: string, threadId: string): Pr
   const result = await TextileNode.prepareFilesByPathSync(path, threadId)
   return pb.MobilePreparedFiles.decode(Buffer.from(result, 'base64'))
 }
+
 /**
  * Add a file object to a Thread. Must match Thread schema definition.
  * ```typescript
@@ -54,6 +59,7 @@ export async function add(dir: pb.IDirectory, threadId: string, caption?: string
   const result = await TextileNode.addFiles(Buffer.from(payload).toString('base64'), threadId, caption)
   return pb.Block.decode(Buffer.from(result, 'base64'))
 }
+
 /**
  * Add a file by target.
  * ```typescript
@@ -64,6 +70,7 @@ export async function addByTarget(target: string, threadId: string, caption?: st
   const result = await TextileNode.addFilesByTarget(target, threadId, caption)
   return pb.Block.decode(Buffer.from(result, 'base64'))
 }
+
 /**
  * List all files or files in a known Thread.
  * ```typescript
@@ -74,6 +81,7 @@ export async function list(offset: string, limit: number, threadId?: string): Pr
   const result = await TextileNode.files(offset, limit, threadId)
   return pb.FilesList.decode(Buffer.from(result, 'base64'))
 }
+
 /**
  * Get the raw data for a file at an IPFS hash.
  * ```typescript

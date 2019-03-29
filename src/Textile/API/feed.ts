@@ -3,6 +3,7 @@ import { Buffer } from 'buffer'
 import { pb } from '../Models'
 
 const { TextileNode } = NativeModules
+
 /**
  * List all feed updates.
  * ```typescript

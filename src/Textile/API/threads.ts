@@ -30,12 +30,13 @@ export async function addOrUpdate(thread: pb.IThread): Promise<void> {
 /**
  * Rename a Thread by ThreadId.
  * ```typescript
- * API.threads.renameThread(threadId, name);
+ * API.threads.rename(threadId, name);
  * ```
  */
-export async function renameThread(threadId: string, name: string): Promise<void> {
+export async function rename(threadId: string, name: string): Promise<void> {
   return TextileNode.renameThread(threadId, name)
 }
+
 /**
  * Get Thread details by ThreadId.
  * ```typescript
@@ -65,9 +66,10 @@ export async function list(): Promise<pb.IThreadList> {
  * ```
  */
 export async function peers(threadId: string): Promise<pb.IContactList> {
-  const result = await TextileNode.peers(threadId)
+  const result = await TextileNode.threadPeers(threadId)
   return pb.ContactList.decode(Buffer.from(result, 'base64'))
 }
+
 /**
  * Remove a Thread by ThreadId.
  * ```typescript
@@ -77,4 +79,28 @@ export async function peers(threadId: string): Promise<pb.IContactList> {
 export async function remove(id_: string): Promise<string> {
   const result = await TextileNode.removeThread(id_)
   return result as string
+}
+
+/**
+ * Snapshot all threads for active cafe sessions.
+ * ```typescript
+ * API.threads.snapshot();
+ * ```
+ */
+export async function snapshot(): Promise<void> {
+  return TextileNode.snapshotThreads()
+}
+
+/**
+ * Locate all Thread snapshots.
+ * ```typescript
+ * const snapshots = API.threads.searchSnapshots(query, options);
+ * ```
+ * @hidden
+ */
+export async function searchSnapshots(query: pb.IThreadSnapshotQuery, options: pb.IQueryOptions): Promise<string> {
+  return TextileNode.searchThreadSnapshots(
+    Buffer.from(pb.ThreadSnapshotQuery.encode(query).finish()).toString('base64'),
+    Buffer.from(pb.QueryOptions.encode(options).finish()).toString('base64'),
+  )
 }

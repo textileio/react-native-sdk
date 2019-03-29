@@ -110,22 +110,21 @@ RCT_EXPORT_METHOD(decrypt:(NSString*)inputStr resolver:(RCTPromiseResolveBlock)r
   [self fulfillWithResult:[result base64EncodedStringWithOptions:0] nilDefault:@"" error:error resolver:resolve rejecter:reject];
 }
 
-RCT_EXPORT_METHOD(accountPeers:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_EXPORT_METHOD(accountContact:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSError *error;
-  NSData *result = [self.node accountPeers:&error];
+  NSData *result = [self.node accountContact:&error];
   [self fulfillWithResult:[result base64EncodedStringWithOptions:0] nilDefault:@"" error:error resolver:resolve rejecter:reject];
 }
 
-RCT_EXPORT_METHOD(findThreadBackups:(NSString*)queryStr options:(NSString*)optionsStr resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_EXPORT_METHOD(syncAccount:(NSString*)optionsStr resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   if (self.searchHandle) {
     [self.searchHandle cancel];
     self.searchHandle = nil;
   }
 
-  NSData *query = [[NSData alloc] initWithBase64EncodedString:queryStr options:0];
   NSData *options = [[NSData alloc] initWithBase64EncodedString:optionsStr options:0];
   NSError *error;
-  self.searchHandle = [self.node findThreadBackups:query options:options error:&error];
+  self.searchHandle = [self.node syncAccount:options error:&error];
   [self fulfillWithResult:nil error:error resolver:resolve rejecter:reject];
 }
 
@@ -237,8 +236,6 @@ RCT_EXPORT_METHOD(feed:(NSString*)reqStr resolver:(RCTPromiseResolveBlock)resolv
 
 RCT_EXPORT_METHOD(prepareFiles:(NSString*)strBase64 threadId:(NSString*)threadId resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
 
-  // NSData *fileData = [[NSData alloc] initWithBase64EncodedString:dataStr options:0];
-
   [self.node prepareFiles:strBase64 threadId:threadId cb:[[TEXCallback alloc] initWithCompletion:^ (NSData *data, NSError *error) {
     if (error) {
       reject(@(error.code).stringValue, error.localizedDescription, error);
@@ -319,10 +316,10 @@ RCT_EXPORT_METHOD(addIgnore:(NSString*)blockId resolver:(RCTPromiseResolveBlock)
 
 #pragma mark - Invites ---------------->
 
-RCT_EXPORT_METHOD(addInvite:(NSString*)threadId inviteeId:(NSString*)inviteeId resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_EXPORT_METHOD(addInvite:(NSString*)threadId inviteeId:(NSString*)address resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSError *error;
-  NSString *result = [self.node addInvite:threadId inviteeId:inviteeId error:&error];
-  [self fulfillWithResult:result error:error resolver:resolve rejecter:reject];
+  [self.node addInvite:threadId address:address error:&error];
+  [self fulfillWithResult:nil error:error resolver:resolve rejecter:reject];
 }
 
 RCT_EXPORT_METHOD(addExternalInvite:(NSString*)threadId resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
@@ -429,14 +426,14 @@ RCT_EXPORT_METHOD(profile:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRe
   [self fulfillWithResult:[result base64EncodedStringWithOptions:0] nilDefault:@"" error:error resolver:resolve rejecter:reject];
 }
 
-RCT_EXPORT_METHOD(username:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_EXPORT_METHOD(name:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSError *error;
-  [self fulfillWithResult:[self.node username:&error] error:error resolver:resolve rejecter:reject];
+  [self fulfillWithResult:[self.node name:&error] error:error resolver:resolve rejecter:reject];
 }
 
-RCT_EXPORT_METHOD(setUsername:(NSString*)username resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_EXPORT_METHOD(setName:(NSString*)name resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSError *error;
-  [self.node setUsername:username error:&error];
+  [self.node setName:name error:&error];
   [self fulfillWithResult:nil error:error resolver:resolve rejecter:reject];
 }
 
@@ -477,7 +474,7 @@ RCT_EXPORT_METHOD(addOrUpdateThread:(NSString*)threadStr resolver:(RCTPromiseRes
   [self fulfillWithResult:nil error:error resolver:resolve rejecter:reject];
 }
 
-RCT_EXPORT_METHOD(rename:(NSString*)threadId name:(NSString*)name resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_EXPORT_METHOD(renameThread:(NSString*)threadId name:(NSString*)name resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSError *error;
   [self.node renameThread:threadId name:name error:&error];
   [self fulfillWithResult:nil error:error resolver:resolve rejecter:reject];
@@ -495,7 +492,7 @@ RCT_EXPORT_METHOD(threads:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRe
   [self fulfillWithResult:[result base64EncodedStringWithOptions:0] nilDefault:@"" error:error resolver:resolve rejecter:reject];
 }
 
-RCT_EXPORT_METHOD(peers:(NSString*)threadId resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_EXPORT_METHOD(threadPeers:(NSString*)threadId resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSError *error;
   NSData *result = [self.node threadPeers:threadId error:&error];
   [self fulfillWithResult:[result base64EncodedStringWithOptions:0] nilDefault:@"" error:error resolver:resolve rejecter:reject];
@@ -504,6 +501,25 @@ RCT_EXPORT_METHOD(peers:(NSString*)threadId resolver:(RCTPromiseResolveBlock)res
 RCT_EXPORT_METHOD(removeThread:(NSString*)id_ resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSError *error;
   [self fulfillWithResult:[self.node removeThread:id_ error:&error] error:error resolver:resolve rejecter:reject];
+}
+
+RCT_EXPORT_METHOD(snapshotThreads:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+  NSError *error;
+  [self.node snapshotThreads:&error];
+  [self fulfillWithResult:nil error:error resolver:resolve rejecter:reject];
+}
+
+RCT_EXPORT_METHOD(searchThreadSnapshots:(NSString*)queryStr options:(NSString*)optionsStr resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+  if (self.searchHandle) {
+    [self.searchHandle cancel];
+    self.searchHandle = nil;
+  }
+
+  NSData *query = [[NSData alloc] initWithBase64EncodedString:queryStr options:0];
+  NSData *options = [[NSData alloc] initWithBase64EncodedString:optionsStr options:0];
+  NSError *error;
+  self.searchHandle = [self.node searchThreadSnapshots:query options:options error:&error];
+  [self fulfillWithResult:nil error:error resolver:resolve rejecter:reject];
 }
 
 

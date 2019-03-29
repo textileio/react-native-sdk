@@ -29,7 +29,7 @@ export async function seed(): Promise<string> {
 }
 
 /**
- * Encrypt any file with the account address.
+ * Encrypt data with the account address.
  *
  * ```typescript
  * const encrypted = API.account.encrypt(Buffer.from(JSON.stringify({foo:"bar"})));
@@ -41,7 +41,7 @@ export async function encrypt(input: Buffer): Promise<Buffer> {
 }
 
 /**
- * Decrypt a file previously encrypted with the account address.
+ * Decrypt data previously encrypted with the account address.
  *
  * ```typescript
  * const decrypted = API.account.decrypt(encrypted);
@@ -53,27 +53,29 @@ export async function decrypt(input: Buffer): Promise<Buffer> {
 }
 
 /**
- * List all Contacts.
+ * List all own contact.
  *
  * ```typescript
- * const contacts: pb.IContactList = API.account.peers();
+ * const contact: pb.IContact = API.account.contact();
  * ```
  */
-export async function peers(): Promise<pb.IContactList> {
-  const result = await TextileNode.accountPeers()
-  return pb.ContactList.decode(Buffer.from(result, 'base64'))
+export async function contact(): Promise<pb.IContact | undefined> {
+  const result = await TextileNode.accountContact()
+  if (!result) {
+    return undefined
+  }
+  return pb.Contact.decode(Buffer.from(result, 'base64'))
 }
 
 /**
- * Locate all Thread backups.
+ * Search and apply account thread snapshots.
  * ```typescript
- * const backups = API.account.findThreadBackups(query, options);
+ * API.account.sync(options);
  * ```
  * @hidden
  */
-export async function findThreadBackups(query: pb.IThreadBackupQuery, options: pb.IQueryOptions): Promise<string> {
-  return TextileNode.findThreadBackups(
-    Buffer.from(pb.ThreadBackupQuery.encode(query).finish()).toString('base64'),
+export async function sync(options: pb.IQueryOptions): Promise<string> {
+  return TextileNode.syncAccount(
     Buffer.from(pb.QueryOptions.encode(options).finish()).toString('base64'),
   )
 }

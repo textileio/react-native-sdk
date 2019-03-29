@@ -3,26 +3,27 @@ import { Buffer } from 'buffer'
 import { pb } from '../Models'
 
 const { TextileNode } = NativeModules
+
 /**
- * Add a new Thread invite for an invitee.
+ * Add a new Thread invite by invitee address.
  * ```typescript
- * API.invites.add(threadId, inviteeId);
+ * API.invites.add(threadId, address);
  * ```
  */
-export async function add(threadId: string, inviteeId: string): Promise<string> {
-  const result = await TextileNode.addInvite(threadId, inviteeId)
+export async function add(threadId: string, address: string): Promise<string> {
+  const result = await TextileNode.addInvite(threadId, address)
   return result as string
 }
 
 /**
- * Add an external Thread invite, returning an HTTPS link.
+ * Add an external Thread invite, returning a sharable object.
  * ```typescript
  * API.invites.addExternal(threadId);
  * ```
  */
-export async function addExternal(threadId: string): Promise<pb.INewInvite> {
+export async function addExternal(threadId: string): Promise<pb.IExternalInvite> {
   const result = await TextileNode.addExternalInvite(threadId)
-  return pb.NewInvite.decode(Buffer.from(result, 'base64'))
+  return pb.ExternalInvite.decode(Buffer.from(result, 'base64'))
 }
 
 /**

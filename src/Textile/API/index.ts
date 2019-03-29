@@ -32,6 +32,7 @@ const { TextileNode } = NativeModules
 export async function init(seed: string, repoPath: string, logToDisk: boolean, debug: boolean): Promise<void> {
   return TextileNode.initRepo(seed, repoPath, logToDisk, debug)
 }
+
 /**
  * Manually migrate the repo to a new path.
  * @hidden
@@ -39,6 +40,7 @@ export async function init(seed: string, repoPath: string, logToDisk: boolean, d
 export async function migrate(repoPath: string): Promise<void> {
   await TextileNode.migrateRepo(repoPath)
 }
+
 /**
  * Create the repo node. Handled by Textile.nodeCreate.
  * ```typescript
@@ -48,6 +50,7 @@ export async function migrate(repoPath: string): Promise<void> {
 export async function create(repoPath: string, debug: boolean): Promise<void> {
   await TextileNode.newTextile(repoPath, debug)
 }
+
 /**
  * Start the Textile Node. Handled by Textile.nodeStart.
  * ```typescript
@@ -57,6 +60,7 @@ export async function create(repoPath: string, debug: boolean): Promise<void> {
 export async function start(): Promise<void> {
   await TextileNode.start()
 }
+
 /**
  * Stop the Textile Node.
  * ```typescript
@@ -66,6 +70,7 @@ export async function start(): Promise<void> {
 export async function stop(): Promise<void> {
   await TextileNode.stop()
 }
+
 /**
  * Get the Textile node version
  * ```typescript
@@ -76,6 +81,7 @@ export async function version(): Promise<string> {
   const result = await TextileNode.version()
   return result as string
 }
+
 /**
  * Get the latest git summary
  * ```typescript
@@ -86,6 +92,7 @@ export async function gitSummary(): Promise<string> {
   const result = await TextileNode.gitSummary()
   return result as string
 }
+
 /**
  * Get the summary of node data
  * ```typescript
