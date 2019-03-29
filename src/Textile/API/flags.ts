@@ -1,6 +1,7 @@
 import { NativeModules } from 'react-native'
 
 const { TextileNode } = NativeModules
+
 /**
  * Flack a Block by BlockId
  * ```typescript

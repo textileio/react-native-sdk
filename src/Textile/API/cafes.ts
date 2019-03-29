@@ -27,6 +27,7 @@ export async function session(peerId: string): Promise<pb.ICafeSession | undefin
   }
   return pb.CafeSession.decode(Buffer.from(result, 'base64'))
 }
+
 /**
  * List all sessions.
  * ```typescript
@@ -40,6 +41,7 @@ export async function sessions(): Promise<pb.ICafeSessionList | undefined> {
   }
   return pb.CafeSessionList.decode(Buffer.from(result, 'base64'))
 }
+
 /**
  * Refresh an existing session by peerId.
  * ```typescript
@@ -53,6 +55,7 @@ export async function refreshSession(peerId: string): Promise<pb.ICafeSession | 
   }
   return pb.CafeSession.decode(Buffer.from(result, 'base64'))
 }
+
 /**
  * Deregister a remote Cafe.
  * ```typescript
@@ -62,6 +65,7 @@ export async function refreshSession(peerId: string): Promise<pb.ICafeSession | 
 export async function deregister(id: string): Promise<void> {
   return TextileNode.deregisterCafe(id)
 }
+
 /**
  * Check for offline messages on remote Cafe.
  * ```typescript

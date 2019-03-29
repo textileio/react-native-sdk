@@ -3,6 +3,7 @@ import { Buffer } from 'buffer'
 import { pb } from '../Models'
 
 const { TextileNode } = NativeModules
+
 /**
  * Add a new Thread invite by invitee address.
  * ```typescript

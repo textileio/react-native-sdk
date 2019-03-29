@@ -503,6 +503,12 @@ RCT_EXPORT_METHOD(removeThread:(NSString*)id_ resolver:(RCTPromiseResolveBlock)r
   [self fulfillWithResult:[self.node removeThread:id_ error:&error] error:error resolver:resolve rejecter:reject];
 }
 
+RCT_EXPORT_METHOD(snapshotThreads:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+  NSError *error;
+  [self.node snapshotThreads:&error];
+  [self fulfillWithResult:nil error:error resolver:resolve rejecter:reject];
+}
+
 RCT_EXPORT_METHOD(searchThreadSnapshots:(NSString*)queryStr options:(NSString*)optionsStr resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   if (self.searchHandle) {
     [self.searchHandle cancel];

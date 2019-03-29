@@ -1016,6 +1016,22 @@ public class TextileNode extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
+    public void snapshotThreads(final Promise promise) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    node.snapshotThreads();
+                    promise.resolve(null);
+                }
+                catch (Exception e) {
+                    promise.reject("snapshotThreads", e);
+                }
+            }
+        });
+    }
+
+    @ReactMethod
     public void searchThreadSnapshots(final String queryStr, final String optionsStr, final Promise promise) {
         executor.execute(new Runnable() {
             @Override

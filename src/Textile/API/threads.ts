@@ -36,6 +36,7 @@ export async function addOrUpdate(thread: pb.IThread): Promise<void> {
 export async function rename(threadId: string, name: string): Promise<void> {
   return TextileNode.renameThread(threadId, name)
 }
+
 /**
  * Get Thread details by ThreadId.
  * ```typescript
@@ -68,6 +69,7 @@ export async function peers(threadId: string): Promise<pb.IContactList> {
   const result = await TextileNode.threadPeers(threadId)
   return pb.ContactList.decode(Buffer.from(result, 'base64'))
 }
+
 /**
  * Remove a Thread by ThreadId.
  * ```typescript
@@ -77,6 +79,16 @@ export async function peers(threadId: string): Promise<pb.IContactList> {
 export async function remove(id_: string): Promise<string> {
   const result = await TextileNode.removeThread(id_)
   return result as string
+}
+
+/**
+ * Snapshot all threads for active cafe sessions.
+ * ```typescript
+ * API.threads.snapshot();
+ * ```
+ */
+export async function snapshot(): Promise<void> {
+  return TextileNode.snapshotThreads()
 }
 
 /**
