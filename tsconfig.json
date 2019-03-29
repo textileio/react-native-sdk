@@ -25,7 +25,6 @@
   ],
   "compileOnSave": true,
   "typedocOptions": {
-    "theme": "minimal",
     "mode": "file",
     "out": "docs",
     "include": "src/",

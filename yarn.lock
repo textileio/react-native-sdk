@@ -1943,6 +1943,11 @@ discontinuous-range@1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/discontinuous-range/-/discontinuous-range-1.0.0.tgz#e38331f0844bba49b9a9cb71c771585aab1bc65a"
 
+docdash@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/docdash/-/docdash-1.0.3.tgz#1ca4d37940275f05f926c1326cde36d88b9f3fbc"
+  integrity sha512-gPepWBPJSWK70PRqOtxLvZ2FLJlw49DZASs73yqmM7uM45WEygQJmHPBrrQ9eLeEkgPKUzDv+sr2SHgQS1OQ0g==
+
 dom-serializer@0, dom-serializer@~0.1.0:
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/dom-serializer/-/dom-serializer-0.1.0.tgz#073c697546ce0780ce23be4a28e293e40bc30c82"
