@@ -11,7 +11,7 @@ const { TextileNode } = NativeModules
  * ```
  */
 export async function register(url: string, token: string): Promise<void> {
-  return await TextileNode.registerCafe(url, token)
+  return TextileNode.registerCafe(url, token)
 }
 
 /**
@@ -60,7 +60,7 @@ export async function refreshSession(peerId: string): Promise<pb.ICafeSession | 
  * ```
  */
 export async function deregister(id: string): Promise<void> {
-  return await TextileNode.deregisterCafe(id)
+  return TextileNode.deregisterCafe(id)
 }
 /**
  * Check for offline messages on remote Cafe.
@@ -69,5 +69,5 @@ export async function deregister(id: string): Promise<void> {
  * ```
  */
 export async function checkMessages(): Promise<void> {
-  return await TextileNode.checkCafeMessages()
+  return TextileNode.checkCafeMessages()
 }

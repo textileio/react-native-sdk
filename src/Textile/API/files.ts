@@ -81,7 +81,7 @@ export async function list(offset: string, limit: number, threadId?: string): Pr
  * ```
  */
 export async function data(hash: string): Promise<string> {
-  return await TextileNode.fileData(hash)
+  return TextileNode.fileData(hash)
 }
 
 /**
@@ -93,5 +93,5 @@ export async function data(hash: string): Promise<string> {
  * ```
  */
 export async function imageDataForMinWidth(pth: string, minWidth: number): Promise<string> {
-  return await TextileNode.imageFileDataForMinWidth(pth, minWidth)
+  return TextileNode.imageFileDataForMinWidth(pth, minWidth)
 }

@@ -1,11 +1,12 @@
 import { AppState, AppStateStatus, DeviceEventEmitter } from 'react-native'
 import {
+  pb,
   CafeConfig,
   DiscoveredCafes,
   TextileAppStateStatus,
   TextileOptions,
   NodeState,
-  TextileConfig
+  TextileConfig,
 } from './Models'
 import * as API from './API'
 import TextileStore from './store'
@@ -16,7 +17,6 @@ import { createTimeout, delay } from './helpers'
 import BackgroundTimer from 'react-native-background-timer'
 import BackgroundFetch from 'react-native-background-fetch'
 import RNFS from 'react-native-fs'
-import { pb } from './Models'
 
 const packageFile = require('./../../package.json')
 const VERSION: string = packageFile.version
@@ -301,7 +301,8 @@ export default class Textile {
   }
 
   /**
-   * Selector to get the refreshed Cafe Sessions. This should only be called if a Cafe rejects a request due to expired an session.
+   * Selector to get the refreshed Cafe Sessions.
+   * This should only be called if a Cafe rejects a request due to expired an session.
    *
    * ```typescript
    * Textile.getRefreshedCafeSessions();
@@ -313,7 +314,7 @@ export default class Textile {
       return []
     }
     const refreshedValues = await Promise.all(
-      sessions.items.map(async (session) => await API.cafes.refreshSession(session.id))
+      sessions.items.map(async (session) => API.cafes.refreshSession(session.id)),
     )
     return refreshedValues.reduce<pb.ICafeSession[]>((acc, val) => {
       if (val) {
@@ -333,7 +334,9 @@ export default class Textile {
     if (!this._initialized) {
       TextileEvents.nonInitializedError()
       if (this._debug) {
-        console.error('@textile/react-native-sdk: Attempt to call a Textile instance method on an uninitialized instance')
+        console.error(
+          '@textile/react-native-sdk: Attempt to call a Textile instance method on an uninitialized instance',
+        )
       }
     }
   }
@@ -453,7 +456,8 @@ export default class Textile {
     this.nextAppState(nextState)
   }
   private shouldRunBackgroundTask = async (): Promise<boolean> => {
-    const MINIMUM_MINUTES_BETWEEN_TASKS = this._config.MINIMUM_SLEEP_MINUTES !== undefined ? this._config.MINIMUM_SLEEP_MINUTES : 10
+    const MINIMUM_MINUTES_BETWEEN_TASKS = this._config.MINIMUM_SLEEP_MINUTES !== undefined ?
+      this._config.MINIMUM_SLEEP_MINUTES : 10
     const now = Number((new Date()).getTime())
     const last = await this._store.getLastBackgroundEvent()
     // previous time set and set too recently

@@ -1,5 +1,6 @@
 import {
-  DeviceEventEmitter, EmitterSubscription
+  DeviceEventEmitter,
+  EmitterSubscription,
 } from 'react-native'
 import NativeEvents from '../NativeEvents'
 import { backgroundTask as internalBackgroundTask } from './internalEvents'
@@ -27,7 +28,13 @@ export type TextileEvents = 'newNodeState' |
                             'walletInitSuccess' |
                             'backgroundTask' |
                             'error' |
-                            'NODE_START' | 'NODE_ONLINE' | 'NODE_STOP' | 'WALLET_UPDATE' | 'THREAD_UPDATE' | 'NOTIFICATION' | 'QUERY_RESPONSE'
+                            'NODE_START' |
+                            'NODE_ONLINE' |
+                            'NODE_STOP' |
+                            'WALLET_UPDATE' |
+                            'THREAD_UPDATE' |
+                            'NOTIFICATION' |
+                            'QUERY_RESPONSE'
 
 export const publicEvents: {[key: string]: string} = {
   newNodeState: '@textile/shared/newNodeState',
@@ -53,10 +60,18 @@ export const publicEvents: {[key: string]: string} = {
   WALLET_UPDATE: 'WALLET_UPDATE',
   THREAD_UPDATE: 'THREAD_UPDATE',
   NOTIFICATION: 'NOTIFICATION',
-  QUERY_RESPONSE: 'QUERY_RESPONSE'
+  QUERY_RESPONSE: 'QUERY_RESPONSE',
 }
 
-const nativeEvents: TextileEvents[] = ['NODE_START', 'NODE_ONLINE', 'NODE_STOP', 'WALLET_UPDATE', 'THREAD_UPDATE', 'NOTIFICATION', 'QUERY_RESPONSE']
+const nativeEvents: TextileEvents[] = [
+  'NODE_START',
+  'NODE_ONLINE',
+  'NODE_STOP',
+  'WALLET_UPDATE',
+  'THREAD_UPDATE',
+  'NOTIFICATION',
+  'QUERY_RESPONSE',
+]
 
 /**
  * Notify Textile at the start of a new background sessions.

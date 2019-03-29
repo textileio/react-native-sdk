@@ -1,7 +1,5 @@
 
-import {
-  DeviceEventEmitter, EmitterSubscription
-} from 'react-native'
+import { DeviceEventEmitter } from 'react-native'
 import { NodeState, TextileAppStateStatus } from './Models'
 import { publicEvents } from './events'
 
@@ -9,7 +7,7 @@ import { publicEvents } from './events'
 export const privateEvents: {[key: string]: string} = {
   backgroundTask: '@textile/internal/backgroundTask',
   createAndStartNode: '@textile/internal/createAndStartNode',
-  appNextState: '@textile/internal/appNextState'
+  appNextState: '@textile/internal/appNextState',
 }
 
 /* tslint:disable-next-line:completed-docs */
@@ -56,7 +54,10 @@ export function stopNodeAfterDelayComplete () {
 }
 /* tslint:disable-next-line:completed-docs */
 export function appStateChange (previousState: TextileAppStateStatus, newState: TextileAppStateStatus) {
-  DeviceEventEmitter.emit(publicEvents.appStateChange, {previousState: previousState as string, newState: newState as string})
+  DeviceEventEmitter.emit(
+    publicEvents.appStateChange,
+    {previousState: previousState as string, newState: newState as string},
+  )
 }
 /* tslint:disable-next-line:completed-docs */
 export function updateProfile () {

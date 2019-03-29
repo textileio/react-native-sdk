@@ -30,7 +30,7 @@ const { TextileNode } = NativeModules
  * ```
  */
 export async function init(seed: string, repoPath: string, logToDisk: boolean, debug: boolean): Promise<void> {
-  return await TextileNode.initRepo(seed, repoPath, logToDisk, debug)
+  return TextileNode.initRepo(seed, repoPath, logToDisk, debug)
 }
 /**
  * Manually migrate the repo to a new path.
@@ -115,5 +115,5 @@ export {
   profile,
   schemas,
   threads,
-  wallet
+  wallet,
 }

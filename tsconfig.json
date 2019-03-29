@@ -13,23 +13,23 @@
     "outDir": "dist"
   },
   "include": [
-    "lib"
+    "src"
   ],
   "exclude": [
-    "node_modules",
-    "example",
-    "tests",
-    "coverage",
     "**/__tests__/**/*",
-    "dist/**/*"
+    "coverage",
+    "dist/**/*",
+    "example",
+    "node_modules",
+    "tests"
   ],
   "compileOnSave": true,
   "typedocOptions": {
+    "theme": "minimal",
     "mode": "file",
     "out": "docs",
-    "include": "lib/",
-    "theme": "markdown",
-    "exclude": "**/__tests__/**/*,lib/Textile/store.ts,lib/index.ts,lib/Textile/helpers.ts,lib/Textile/migration.ts,lib/Textile/internalEvents.ts,lib/NativeEvents/**/*,lib/Textile/Models/**/*",
+    "include": "src/",
+    "exclude": "**/__tests__/**/*,src/Textile/store.ts,src/index.ts,src/Textile/helpers.ts,src/Textile/migration.ts,src/Textile/internalEvents.ts,src/NativeEvents/**/*,src/Textile/Models/**/*",
     "excludePrivate": true,
     "excludeNotExported": true,
     "excludeProtected": true,

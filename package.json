@@ -15,7 +15,7 @@
     "build": "rm -rf dist/ && tsc",
     "lint": "rm -rf dist/ && tsc; tslint -c tslint.json --project .",
     "test": "jest --no-watchman",
-    "docs": "./node_modules/typedoc/bin/typedoc"
+    "docs": "node ./scripts/contributors.js; ./node_modules/typedoc/bin/typedoc"
   },
   "keywords": [
     "react-native"
@@ -30,6 +30,7 @@
     "react-native-fs": "^2.13.3"
   },
   "devDependencies": {
+    "@textile/tslint-rules": "1.0.3",
     "@types/enzyme": "^3.1.14",
     "@types/enzyme-adapter-react-16": "^1.0.3",
     "@types/jest": "^23.3.3",
@@ -50,6 +51,8 @@
     "enzyme-adapter-react-16": "^1.6.0",
     "jest": "^23.6.0",
     "jest-fetch-mock": "^1.6.6",
+    "markdown-magic": "^0.1.25",
+    "markdown-magic-github-contributors": "^0.0.3",
     "metro-react-native-babel-preset": "0.48.0",
     "react": "^16.5.0",
     "react-dom": "^16.5.2",
@@ -62,7 +65,6 @@
     "tslint": "^5.11.0",
     "tslint-react": "^3.6.0",
     "typedoc": "^0.14.2",
-    "typedoc-plugin-markdown": "^1.1.27",
     "typescript": "^3.1.1"
   },
   "dependencies": {
@@ -70,7 +72,7 @@
     "buffer": "^5.2.1"
   },
   "directories": {
-    "lib": "lib"
+    "src": "src"
   },
   "repository": {
     "type": "git",

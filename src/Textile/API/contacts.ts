@@ -31,7 +31,7 @@ export async function list(): Promise<pb.IContactList> {
  * Remove a Contact by their ID.
  */
 export async function remove(id_: string): Promise<void> {
-  return await TextileNode.removeContact(id_)
+  return TextileNode.removeContact(id_)
 }
 /**
  * List all Threads in common with a Contact.
@@ -52,7 +52,7 @@ export async function threads(id_: string): Promise<pb.IThreadList> {
 export async function search(query: pb.IContactQuery, options: pb.IQueryOptions): Promise<string> {
   return TextileNode.searchContacts(
     Buffer.from(pb.ContactQuery.encode(query).finish()).toString('base64'),
-    Buffer.from(pb.QueryOptions.encode(options).finish()).toString('base64')
+    Buffer.from(pb.QueryOptions.encode(options).finish()).toString('base64'),
   )
 }
 /**
@@ -62,5 +62,5 @@ export async function search(query: pb.IContactQuery, options: pb.IQueryOptions)
  * ```
  */
 export async function cancelSearch(): Promise<void> {
-  return await TextileNode.cancelSearch()
+  return TextileNode.cancelSearch()
 }
