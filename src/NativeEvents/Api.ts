@@ -2,12 +2,12 @@ import {
   DeviceEventEmitter,
   NativeEventEmitter,
   NativeModules,
-  Platform
+  Platform,
 } from 'react-native'
 
 const { Events } = NativeModules
 
 export const eventEmitter = Platform.select({
   android: DeviceEventEmitter,
-  ios: new NativeEventEmitter(Events)
+  ios: new NativeEventEmitter(Events),
 })

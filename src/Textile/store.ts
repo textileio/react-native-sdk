@@ -9,7 +9,7 @@ export default class TextileStore {
     sdkVersion: '@textile/sdkVersion',
     nodeOnline: '@textile/nodeOnline',
     nodeState: '@textile/nodeState',
-    lastBackgroundEvent: '@textile/lastBackgroundEvent'
+    lastBackgroundEvent: '@textile/lastBackgroundEvent',
   }
   clear = async () => {
     // clears only sdk related keys so that any client keys are untouched

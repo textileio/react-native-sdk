@@ -19,4 +19,22 @@ The SDK is meant to be a powerful set of tools for building consumer mobile appl
 
 ## DOCUMENTATION
 
-[Read installation & Documentation](./docs/README.md)
+The tsdoc-based auto-generated documentation can be found at https://textileio.github.io/react-native-sdk/.
+
+## CONTRIBUTORS
+<!-- Update with yarn credit -->
+<!-- ⛔️ AUTO-GENERATED-CONTENT:START (CONTRIBUTORS) -->
+| **Commits** | **Contributor** |  
+| --- | --- |  
+| 66 | [andrewxhill](https://github.com/andrewxhill) |  
+| 18 | [sanderpick](https://github.com/sanderpick) |  
+| 17 | [asutula](https://github.com/asutula) |  
+| 1  | [carsonfarmer](https://github.com/carsonfarmer) |  
+| 1  | [pcowgill](https://github.com/pcowgill) |  
+| 1  | [songjiayang](https://github.com/songjiayang) |  
+
+<!-- ⛔️ AUTO-GENERATED-CONTENT:END -->
+
+## License
+
+[MIT](./LICENSE)

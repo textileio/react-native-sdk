@@ -24,7 +24,7 @@ export async function add(config: pb.IAddThreadConfig): Promise<pb.IThread> {
  */
 export async function addOrUpdate(thread: pb.IThread): Promise<void> {
   const payload = pb.Thread.encode(thread).finish()
-  return await TextileNode.addOrUpdateThread(Buffer.from(payload).toString('base64'))
+  return TextileNode.addOrUpdateThread(Buffer.from(payload).toString('base64'))
 }
 
 /**
@@ -34,7 +34,7 @@ export async function addOrUpdate(thread: pb.IThread): Promise<void> {
  * ```
  */
 export async function renameThread(threadId: string, name: string): Promise<void> {
-  return await TextileNode.renameThread(threadId, name)
+  return TextileNode.renameThread(threadId, name)
 }
 /**
  * Get Thread details by ThreadId.

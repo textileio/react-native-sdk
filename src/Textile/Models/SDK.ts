@@ -32,7 +32,7 @@ export enum NodeState {
   'derivingAccount' = 'derivingAccount',
   'initializingRepo' = 'initializingRepo',
   'walletInitSuccess' = 'walletInitSuccess',
-  'postMigration' = 'postMigration'
+  'postMigration' = 'postMigration',
 }
 
 export interface StoredNodeState {

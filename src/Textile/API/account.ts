@@ -74,7 +74,7 @@ export async function peers(): Promise<pb.IContactList> {
 export async function findThreadBackups(query: pb.IThreadBackupQuery, options: pb.IQueryOptions): Promise<string> {
   return TextileNode.findThreadBackups(
     Buffer.from(pb.ThreadBackupQuery.encode(query).finish()).toString('base64'),
-    Buffer.from(pb.QueryOptions.encode(options).finish()).toString('base64')
+    Buffer.from(pb.QueryOptions.encode(options).finish()).toString('base64'),
   )
 }
 
@@ -82,5 +82,5 @@ export async function findThreadBackups(query: pb.IThreadBackupQuery, options: p
  * Cancel an ongoing Thread backup search.
  */
 export async function cancelFindThreadBackups(): Promise<void> {
-  return await TextileNode.cancelFindThreadBackups()
+  return TextileNode.cancelFindThreadBackups()
 }
