@@ -105,22 +105,22 @@ public class TextileNode extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void accountPeers(final Promise promise) {
+    public void accountContact(final Promise promise) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
                 try {
-                    promise.resolve(encode(node.accountPeers()));
+                    promise.resolve(encode(node.accountContact()));
                 }
                 catch (Exception e) {
-                    promise.reject("accountPeers", e);
+                    promise.reject("accountContact", e);
                 }
             }
         });
     }
 
     @ReactMethod
-    public void findThreadBackups(final String queryStr, final String optionsStr, final Promise promise) {
+    public void syncAccount(final String optionsStr, final Promise promise) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
@@ -128,10 +128,10 @@ public class TextileNode extends ReactContextBaseJavaModule {
                     if (TextileNode.searchHandle != null) {
                         TextileNode.searchHandle.cancel();
                     }
-                    TextileNode.searchHandle = node.findThreadBackups(decode(queryStr), decode(optionsStr));
+                    TextileNode.searchHandle = node.syncAccount(decode(optionsStr));
                 }
                 catch (Exception e) {
-                    promise.reject("findThreadBackups", e);
+                    promise.reject("syncAccount", e);
                 }
             }
         });
@@ -563,12 +563,13 @@ public class TextileNode extends ReactContextBaseJavaModule {
     // Invites ---------------->
 
     @ReactMethod
-    public void addInvite(final String threadId, final String inviteeId, final Promise promise) {
+    public void addInvite(final String threadId, final String address, final Promise promise) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
                 try {
-                    promise.resolve(node.addInvite(threadId, inviteeId));
+                    node.addInvite(threadId, address);
+                    promise.resolve(null);
                 }
                 catch (Exception e) {
                     promise.reject("addInvite", e);
@@ -825,31 +826,31 @@ public class TextileNode extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void username(final Promise promise) {
+    public void name(final Promise promise) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
                 try {
-                    promise.resolve(node.username());
+                    promise.resolve(node.name());
                 }
                 catch (Exception e) {
-                    promise.reject("username", e);
+                    promise.reject("name", e);
                 }
             }
         });
     }
 
     @ReactMethod
-    public void setUsername(final String username, final Promise promise) {
+    public void setName(final String name, final Promise promise) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
                 try {
-                    node.setUsername(username);
+                    node.setName(name);
                     promise.resolve(null);
                 }
                 catch (Exception e) {
-                    promise.reject("setUsername", e);
+                    promise.reject("setName", e);
                 }
             }
         });
@@ -939,7 +940,7 @@ public class TextileNode extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void rename(final String threadId, final String name, final Promise promise) {
+    public void renameThread(final String threadId, final String name, final Promise promise) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
@@ -985,7 +986,7 @@ public class TextileNode extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void peers(final String threadId, final Promise promise) {
+    public void threadPeers(final String threadId, final Promise promise) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
@@ -1009,6 +1010,24 @@ public class TextileNode extends ReactContextBaseJavaModule {
                 }
                 catch (Exception e) {
                     promise.reject("removeThread", e);
+                }
+            }
+        });
+    }
+
+    @ReactMethod
+    public void searchThreadSnapshots(final String queryStr, final String optionsStr, final Promise promise) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    if (TextileNode.searchHandle != null) {
+                        TextileNode.searchHandle.cancel();
+                    }
+                    TextileNode.searchHandle = node.searchThreadSnapshots(decode(queryStr), decode(optionsStr));
+                }
+                catch (Exception e) {
+                    promise.reject("searchThreadSnapshots", e);
                 }
             }
         });
