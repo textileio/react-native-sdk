@@ -13,10 +13,10 @@ export async function add(contact: pb.IContact): Promise<void> {
 }
 
 /**
- * Get Contact information by ID.
+ * Get Contact information by address.
  */
-export async function get(id_: string): Promise<pb.IContact | undefined> {
-  const result = await TextileNode.contact(id_)
+export async function get(address: string): Promise<pb.IContact | undefined> {
+  const result = await TextileNode.contact(address)
   if (!result) {
     return undefined
   }
@@ -32,20 +32,20 @@ export async function list(): Promise<pb.IContactList> {
 }
 
 /**
- * Remove a Contact by their ID.
+ * Remove a Contact by their address.
  */
-export async function remove(id_: string): Promise<void> {
-  return TextileNode.removeContact(id_)
+export async function remove(address: string): Promise<void> {
+  return TextileNode.removeContact(address)
 }
 
 /**
  * List all Threads in common with a Contact.
  * ```typescript
- * API.contacts.threads(id);
+ * API.contacts.threads(address);
  * ```
  */
-export async function threads(id_: string): Promise<pb.IThreadList> {
-  const result = await TextileNode.contactThreads(id_)
+export async function threads(address: string): Promise<pb.IThreadList> {
+  const result = await TextileNode.contactThreads(address)
   return pb.ThreadList.decode(Buffer.from(result, 'base64'))
 }
 

@@ -10,9 +10,9 @@ const { TextileNode } = NativeModules
  * API.profile.get();
  * ```
  */
-export async function get(): Promise<pb.IContact> {
+export async function get(): Promise<pb.IPeer> {
   const result = await TextileNode.profile()
-  return pb.Contact.decode(Buffer.from(result, 'base64'))
+  return pb.Peer.decode(Buffer.from(result, 'base64'))
 }
 
 /**
