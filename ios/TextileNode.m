@@ -344,8 +344,7 @@ RCT_EXPORT_METHOD(peerId:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRej
 
 RCT_EXPORT_METHOD(dataAtPath:(NSString*)pth resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSError *error;
-  NSData *result = [self.node dataAtPath:pth error:&error];
-  [self fulfillWithResult:[result base64EncodedStringWithOptions:0] nilDefault:@"" error:error resolver:resolve rejecter:reject];
+  [self fulfillWithResult:[[self _dataAtPath:pth error:&error] base64EncodedStringWithOptions:0] nilDefault:@"" error:error resolver:resolve rejecter:reject];
 }
 
 
@@ -613,6 +612,10 @@ RCT_EXPORT_METHOD(cancelSearch:(RCTPromiseResolveBlock)resolve rejecter:(RCTProm
 
 
 // Couple methods that need to be available from RN and within Obj C
+
+- (NSData*)_dataAtPath:(NSString*)pth error:(NSError**)error {
+  return [self.node dataAtPath:pth error:error];
+}
 
 - (NSString*)_fileData:(NSString*)hash error:(NSError**)error {
   return [self.node fileData:hash error:error];
