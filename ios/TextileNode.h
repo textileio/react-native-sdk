@@ -9,6 +9,7 @@
 #import <React/RCTBridge.h>
 
 @interface TextileNode : NSObject <RCTBridgeModule>
+- (NSData *)_dataAtPath:(NSString*)pth error:(NSError**)error;
 - (NSString *)_fileData:(NSString*)hash error:(NSError**)error;
 - (NSString *)_imageFileDataForMinWidth:(NSString*)pth minWidth:(long)minWidth error:(NSError**)error;
 @end

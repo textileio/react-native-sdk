@@ -614,6 +614,10 @@ RCT_EXPORT_METHOD(cancelSearch:(RCTPromiseResolveBlock)resolve rejecter:(RCTProm
 
 // Couple methods that need to be available from RN and within Obj C
 
+- (NSData*)_dataAtPath:(NSString*)pth error:(NSError**)error {
+  return [self.node dataAtPath:pth error:error];
+}
+
 - (NSString*)_fileData:(NSString*)hash error:(NSError**)error {
   return [self.node fileData:hash error:error];
 }
