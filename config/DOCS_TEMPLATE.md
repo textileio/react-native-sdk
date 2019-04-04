@@ -11,36 +11,14 @@ Installation
 
 `react-native link @textile/react-native-sdk`
 
-**Update Search Paths in iOS**
-
-The library requires you to update two Search Paths in your iOS code to locate Textile's mobile framework (installed as a dependency of the React Native library).
-
-Open your project's XCode file. Then, in XCode, navigate to the `Root file -> Build Settings` in the search bar enter, `Search Paths`. You'll see a group of three entries, we are going to edit two.
-
-1.  In `Framework search paths` add `$(SRCROOT)/../node_modules/@textile/go-mobile/dist/ios`
-2.  In `Library search paths` add `$(SRCROOT)/../node_modules/@textile/go-mobile/dist/ios`
+Note: The iOS component of `@textile/react-native-sdk` should be installed using Cocoapods. `react-native-link` should do this correctly. More documentation coming here.
 
 **Update Android Gradle**
 
-Open your project and navigate to `android/settings.gradle`. At the end, you will add,
+You'll need to add Textile's maven repository to your project `build.gradle`'s `allProjects.repositories` section:
 
 ```
-include ':mobile'
-```
-
-Navigate to `app/build.gradle`. Add to the end of the `dependencies {` section,
-
-```
-api project(':mobile')
-```
-
-Finally, inside the `android` folder, you need to create a new folder called, `mobile`.
-
-Inside the newly created `mobile` folder, create a file called, `build.gradle` and for the contents of `build.gradle` enter,
-
-```
-configurations.maybeCreate("default")
-artifacts.add("default", file('../../node_modules/@textile/go-mobile/dist/android/mobile.aar'))
+maven { url "https://dl.bintray.com/textile/maven" }
 ```
 
 **Other dependencies**
@@ -53,7 +31,7 @@ The Textile library also requires that your project has two other libraries inst
 
 ### Typescript Types
 
-@textile/react-native-sdk is written in TypeScript and compiled to JavaScript. You can use either in your app. 
+@textile/react-native-sdk is written in TypeScript and compiled to JavaScript. You can use either in your app.
 
 #### Import Model Types
 
