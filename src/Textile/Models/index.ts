@@ -1,4 +1,4 @@
-import pb from '@textile/go-mobile'
+import pb from '@textile/js-types'
 
 export * from './SDK'
 export { pb }
