@@ -8,6 +8,9 @@
 #import “React/RCTBridge.h”
 #endif
 
+#import <Textile/TextileApi.h>
+#import "utils.h"
+
 #define SYSTEM_VERSION_LESS_THAN(v) ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedAscending)
 
 @implementation TextileBridge
