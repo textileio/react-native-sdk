@@ -9,7 +9,7 @@
 #endif
 
 #import <Textile/TextileApi.h>
-#import "TextileHandler.h"
+#import "TextileEvents.h"
 #import "utils.h"
 
 #define SYSTEM_VERSION_LESS_THAN(v) ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedAscending)
@@ -28,7 +28,8 @@ RCT_EXPORT_METHOD(initialize:(BOOL)debug logToDisk:(BOOL)logToDisk resolver:(RCT
   if (error) {
     fulfillWithResult(nil, error, resolve, reject);
   } else {
-    Textile.instance.delegate = [[TextileHandler alloc] init];
+    TextileEvents *eventHandler = self.bridge.textileEvents;
+    Textile.instance.delegate = eventHandler;
     fulfillWithResultAndNilDefault(phrase, @"", error, resolve, reject);
   }
 }
