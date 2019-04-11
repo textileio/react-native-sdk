@@ -1,6 +1,5 @@
 import DeviceEvent from '../../../tests/__mocks__/DeviceEvent'
 import NativeEvent from '../../../tests/__mocks__/NativeEvent'
-import TextileNode from '../../../tests/__mocks__/TextileNode'
 
 const DeviceEventEmitter = new DeviceEvent()
 
@@ -8,7 +7,6 @@ jest.mock('react-native', () => {
   return {
     DeviceEventEmitter: new DeviceEvent(),
     NativeModules: {
-      TextileNode
     },
     Platform: {
       OS: 'android',
