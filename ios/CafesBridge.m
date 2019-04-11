@@ -17,6 +17,10 @@
 
 RCT_EXPORT_MODULE();
 
+- (dispatch_queue_t)methodQueue {
+  return dispatch_queue_create("io.textile.TextileNodeQueue", DISPATCH_QUEUE_SERIAL);
+}
+
 RCT_EXPORT_METHOD(register:(NSString*)host token:(NSString*)token resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSError *error;
   [Textile.instance.cafes register:host token:token error:&error];

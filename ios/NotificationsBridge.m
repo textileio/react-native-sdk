@@ -17,6 +17,10 @@
 
 RCT_EXPORT_MODULE();
 
+- (dispatch_queue_t)methodQueue {
+  return dispatch_queue_create("io.textile.TextileNodeQueue", DISPATCH_QUEUE_SERIAL);
+}
+
 RCT_EXPORT_METHOD(list:(NSString*)offset limit:(NSInteger)limit resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSError *error;
   NotificationList *list = [Textile.instance.notifications list:offset limit:limit error:&error];

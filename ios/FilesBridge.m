@@ -17,6 +17,10 @@
 
 RCT_EXPORT_MODULE();
 
+- (dispatch_queue_t)methodQueue {
+  return dispatch_queue_create("io.textile.TextileNodeQueue", DISPATCH_QUEUE_SERIAL);
+}
+
 RCT_EXPORT_METHOD(prepare:(NSString*)strBase64 threadId:(NSString*)threadId resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   [Textile.instance.files prepare:strBase64 threadId:threadId completion:^(MobilePreparedFiles * _Nullable preparedFiles, NSError * _Nonnull error) {
     fulfillWithResultAndNilDefault([preparedFiles.data base64EncodedStringWithOptions:0], @"", error, resolve, reject);
