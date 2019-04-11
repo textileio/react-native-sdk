@@ -4,6 +4,7 @@ import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.modules.core.DeviceEventManagerModule;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -33,7 +34,8 @@ public class TextileBridge extends ReactContextBaseJavaModule {
             public void run() {
                 try {
                     String phrase = Textile.initialize(context, debug, logToDisk);
-                    Textile.instance().addEventListener(new TextileEvents());
+                    DeviceEventManagerModule.RCTDeviceEventEmitter emitter = context.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class);
+                    Textile.instance().addEventListener(new TextileEvents(emitter));
                     promise.resolve(phrase);
                 } catch (Exception e) {
                     promise.reject("initialize", e);
