@@ -19,7 +19,24 @@ public class RNTextilePackage implements ReactPackage {
         // https://facebook.github.io/react-native/docs/native-modules-android.html#register-the-module
         List<NativeModule> modules = new ArrayList<>();
 
-        modules.add(new TextileNode(reactContext));
+        modules.add(new AccountBridge(reactContext));
+        modules.add(new CafesBridge(reactContext));
+        modules.add(new CommentsBridge(reactContext));
+        modules.add(new ContactsBridge(reactContext));
+        modules.add(new FeedBridge(reactContext));
+        modules.add(new FilesBridge(reactContext));
+        modules.add(new FlagsBridge(reactContext));
+        modules.add(new IgnoresBridge(reactContext));
+        modules.add(new InvitesBridge(reactContext));
+        modules.add(new IpfsBridge(reactContext));
+        modules.add(new LikesBridge(reactContext));
+        modules.add(new LogsBridge(reactContext));
+        modules.add(new MessagesBridge(reactContext));
+        modules.add(new NotificationsBridge(reactContext));
+        modules.add(new ProfileBridge(reactContext));
+        modules.add(new SchemasBridge(reactContext));
+        modules.add(new TextileBridge(reactContext));
+        modules.add(new ThreadsBridge(reactContext));
 
         return modules;
     }
