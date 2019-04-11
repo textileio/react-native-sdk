@@ -1,6 +1,5 @@
 import Enzyme from 'enzyme'
 import Adapter from 'enzyme-adapter-react-16'
-import TextileNode from './__mocks__/TextileNode'
 import AsyncStorage from './__mocks__/AsyncStorage'
 import AppState from './__mocks__/AppState'
 
@@ -13,7 +12,6 @@ jest.mock('react-native', () => {
     AsyncStorage: new AsyncStorage(),
     DeviceEventEmitter: new DeviceEvent(),
     NativeModules: {
-      TextileNode
     },
     Platform: {
       OS: 'android',
