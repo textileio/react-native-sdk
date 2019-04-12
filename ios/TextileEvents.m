@@ -8,7 +8,6 @@
 #import “React/RCTBridge.h”
 #endif
 
-#import <Textile/TextileApi.h>
 #import "TextileEvents.h"
 
 @implementation TextileEvents
