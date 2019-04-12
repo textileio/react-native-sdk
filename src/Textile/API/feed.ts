@@ -1,17 +1,22 @@
 import { NativeModules } from 'react-native'
 import { Buffer } from 'buffer'
-import { pb } from '../Models'
+import {
+  IFeedRequest,
+  FeedRequest,
+  IFeedItemList,
+  FeedItemList,
+} from './model'
 
-const { TextileNode } = NativeModules
+const { FeedBridge } = NativeModules
 
 /**
  * List all feed updates.
  * ```typescript
- * API.feed.list();
+ * Textile.feed.list();
  * ```
  */
-export async function list(request: pb.IFeedRequest): Promise<pb.IFeedItemList> {
-  const payload = pb.FeedRequest.encode(request).finish()
-  const result = await TextileNode.feed(Buffer.from(payload).toString('base64'))
-  return pb.FeedItemList.decode(Buffer.from(result, 'base64'))
+export async function list(request: IFeedRequest): Promise<IFeedItemList> {
+  const payload = FeedRequest.encode(request).finish()
+  const result = await FeedBridge.list(Buffer.from(payload).toString('base64'))
+  return FeedItemList.decode(Buffer.from(result, 'base64'))
 }

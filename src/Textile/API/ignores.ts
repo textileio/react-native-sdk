@@ -1,14 +1,14 @@
 import { NativeModules } from 'react-native'
 
-const { TextileNode } = NativeModules
+const { IgnoresBridge } = NativeModules
 
 /**
  * Ignore a Thread share.
  * ```typescript
- * API.ignores.add(blockId);
+ * Textile.ignores.add(blockId);
  * ```
  */
 export async function add(blockId: string): Promise<string> {
-  const result = await TextileNode.addIgnore(blockId)
+  const result = await IgnoresBridge.add(blockId)
   return result as string
 }

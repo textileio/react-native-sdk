@@ -1,14 +1,14 @@
 import { NativeModules } from 'react-native'
 
-const { TextileNode } = NativeModules
+const { LikesBridge } = NativeModules
 
 /**
  * Add a like to a shared block.
  * ```typescript
- * API.likes.add(blockId);
+ * Textile.likes.add(blockId);
  * ```
  */
 export async function add(blockId: string): Promise<string> {
-  const result = await TextileNode.addLike(blockId)
+  const result = await LikesBridge.add(blockId)
   return result as string
 }

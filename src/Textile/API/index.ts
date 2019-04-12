@@ -19,7 +19,6 @@ import * as notifications from './notifications'
 import * as profile from './profile'
 import * as schemas from './schemas'
 import * as threads from './threads'
-import * as wallet from './wallet'
 
 const { TextileNode } = NativeModules
 
@@ -71,39 +70,6 @@ export async function stop(): Promise<void> {
   await TextileNode.stop()
 }
 
-/**
- * Get the Textile node version
- * ```typescript
- * API.version();
- * ```
- */
-export async function version(): Promise<string> {
-  const result = await TextileNode.version()
-  return result as string
-}
-
-/**
- * Get the latest git summary
- * ```typescript
- * API.gitSummary();
- * ```
- */
-export async function gitSummary(): Promise<string> {
-  const result = await TextileNode.gitSummary()
-  return result as string
-}
-
-/**
- * Get the summary of node data
- * ```typescript
- * API.summary();
- * ```
- */
-export async function summary(): Promise<pb.ISummary> {
-  const result = await TextileNode.summary()
-  return pb.Summary.decode(Buffer.from(result, 'base64'))
-}
-
 export {
   account,
   cafes,
@@ -122,5 +88,4 @@ export {
   profile,
   schemas,
   threads,
-  wallet,
 }
