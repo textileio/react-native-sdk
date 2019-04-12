@@ -1,17 +1,22 @@
 import { NativeModules } from 'react-native'
 import { Buffer } from 'buffer'
-import { pb } from '../Models'
+import {
+  IFileIndex,
+  FileIndex,
+  INode,
+  Node,
+} from './model'
 
-const { TextileNode } = NativeModules
+const { SchemasBridge } = NativeModules
 
 /**
  * Add a new Schema for use when creating new Threads.
  * ```typescript
- * API.schemas.add(node);
+ * Textile.schemas.add(node);
  * ```
  */
-export async function add(node: pb.INode): Promise<pb.FileIndex> {
-  const payload = pb.Node.encode(node).finish()
-  const result = await TextileNode.addSchema(Buffer.from(payload).toString('base64'))
-  return pb.FileIndex.decode(Buffer.from(result, 'base64'))
+export async function add(node: INode): Promise<IFileIndex> {
+  const payload = Node.encode(node).finish()
+  const result = await SchemasBridge.add(Buffer.from(payload).toString('base64'))
+  return FileIndex.decode(Buffer.from(result, 'base64'))
 }
