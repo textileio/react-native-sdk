@@ -1,7 +1,7 @@
 import { NativeModules } from 'react-native'
 import { Buffer } from 'buffer'
-import { pb } from '../Models'
 
+import { ISummary, Summary } from './model'
 import * as account from './account'
 import * as cafes from './cafes'
 import * as comments from './comments'
@@ -21,57 +21,51 @@ import * as schemas from './schemas'
 import * as threads from './threads'
 import * as wallet from './wallet'
 
-const { TextileNode } = NativeModules
+const  { TextileBridge } = NativeModules
 
 /**
- * Initialize a new Textile Wallet
+ * Initialize the Textile node, returnin the recovery phrase only the first time called
  * ```typescript
- * API.init(seed, repo, logToDisk, debug);
+ * const recoveryPhrase = Textile.initialize(false, true);
  * ```
  */
-export async function init(seed: string, repoPath: string, logToDisk: boolean, debug: boolean): Promise<void> {
-  return TextileNode.initRepo(seed, repoPath, logToDisk, debug)
+export async function initialize(debug: boolean, logToDisk: boolean): Promise<string | undefined> {
+  const result: string = await TextileBridge.initialize(debug, logToDisk)
+  return result.length > 0 ? result : undefined
 }
 
 /**
- * Manually migrate the repo to a new path.
- * @hidden
- */
-export async function migrate(repoPath: string): Promise<void> {
-  await TextileNode.migrateRepo(repoPath)
-}
-
-/**
- * Create the repo node. Handled by Textile.nodeCreate.
+ * Get the Textile node version
  * ```typescript
- * API.create(repo, debug);
+ * Textile.version();
  * ```
  */
-export async function create(repoPath: string, debug: boolean): Promise<void> {
-  await TextileNode.newTextile(repoPath, debug)
+export async function version(): Promise<string> {
+  const result = await TextileBridge.version()
+  return result as string
 }
 
 /**
- * Start the Textile Node. Handled by Textile.nodeStart.
+ * Get the latest git summary
  * ```typescript
- * API.start();
+ * Textile.gitSummary();
  * ```
  */
-export async function start(): Promise<void> {
-  await TextileNode.start()
+export async function gitSummary(): Promise<string> {
+  const result = await TextileBridge.gitSummary()
+  return result as string
 }
 
 /**
- * Stop the Textile Node.
+ * Get the summary of node data
  * ```typescript
- * API.stop();
+ * Textile.summary();
  * ```
  */
-export async function stop(): Promise<void> {
-  await TextileNode.stop()
+export async function summary(): Promise<ISummary> {
+  const result = await TextileBridge.summary()
+  return Summary.decode(Buffer.from(result, 'base64'))
 }
-
-
 
 export {
   account,
