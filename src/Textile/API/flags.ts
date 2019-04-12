@@ -1,14 +1,14 @@
 import { NativeModules } from 'react-native'
 
-const { TextileNode } = NativeModules
+const { FlagsBridge } = NativeModules
 
 /**
- * Flack a Block by BlockId
+ * Flacg a Block by BlockId
  * ```typescript
- * API.flags.add(blockId);
+ * Textile.flags.add(blockId);
  * ```
  */
 export async function add(blockId: string): Promise<string> {
-  const result = await TextileNode.addFlag(blockId)
+  const result = await FlagsBridge.add(blockId)
   return result as string
 }
