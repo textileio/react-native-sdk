@@ -1,77 +1,82 @@
 import { NativeModules } from 'react-native'
 import { Buffer } from 'buffer'
-import { pb } from '../Models'
+import {
+  ICafeSession,
+  CafeSession,
+  ICafeSessionList,
+  CafeSessionList,
+} from './model'
 
-const { TextileNode } = NativeModules
+const { CafesBridge } = NativeModules
 
 /**
  * Register a new remote cafe.
  * ```typescript
- * API.cafes.register(url, token);
+ * Textile.cafes.register(url, token);
  * ```
  */
 export async function register(url: string, token: string): Promise<void> {
-  return TextileNode.registerCafe(url, token)
+  return CafesBridge.register(url, token)
 }
 
 /**
  * Initialize a new session.
  * ```typescript
- * API.cafe.session(peerId);
+ * Textile.cafes.session(peerId);
  * ```
  */
-export async function session(peerId: string): Promise<pb.ICafeSession | undefined> {
-  const result = await TextileNode.cafeSession(peerId)
+export async function session(peerId: string): Promise<ICafeSession | undefined> {
+  const result = await CafesBridge.session(peerId)
   if (!result) {
     return undefined
   }
-  return pb.CafeSession.decode(Buffer.from(result, 'base64'))
+  return CafeSession.decode(Buffer.from(result, 'base64'))
 }
 
 /**
  * List all sessions.
  * ```typescript
- * API.cafe.sessions();
+ * Textile.cafes.sessions();
  * ```
  */
-export async function sessions(): Promise<pb.ICafeSessionList | undefined> {
-  const result = await TextileNode.cafeSessions()
+export async function sessions(): Promise<ICafeSessionList | undefined> {
+  const result = await CafesBridge.sessions()
   if (!result) {
     return undefined
   }
-  return pb.CafeSessionList.decode(Buffer.from(result, 'base64'))
+  return CafeSessionList.decode(Buffer.from(result, 'base64'))
 }
 
 /**
  * Refresh an existing session by peerId.
  * ```typescript
- * API.cafe.refreshSession(peerId);
+ * Textile.cafes.refreshSession(peerId);
  * ```
  */
-export async function refreshSession(peerId: string): Promise<pb.ICafeSession | undefined> {
-  const result = await TextileNode.refreshCafeSession(peerId)
+export async function refreshSession(peerId: string): Promise<ICafeSession | undefined> {
+  const result = await CafesBridge.refreshession(peerId)
   if (!result) {
     return undefined
   }
-  return pb.CafeSession.decode(Buffer.from(result, 'base64'))
+  return CafeSession.decode(Buffer.from(result, 'base64'))
 }
 
 /**
  * Deregister a remote Cafe.
  * ```typescript
- * API.cafe.deregister();
+ * Textile.cafes.deregister();
  * ```
  */
 export async function deregister(id: string): Promise<void> {
-  return TextileNode.deregisterCafe(id)
+  return CafesBridge.deregister(id)
 }
 
 /**
  * Check for offline messages on remote Cafe.
  * ```typescript
- * API.cafe.checkMessages();
+ * Textile.cafes.checkMessages();
  * ```
  */
 export async function checkMessages(): Promise<void> {
-  return TextileNode.checkCafeMessages()
+  return CafesBridge.checkMessages()
 }
