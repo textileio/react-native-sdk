@@ -1,7 +1,10 @@
 import { NativeModules } from 'react-native'
 import { Buffer } from 'buffer'
 
-import { ISummary, Summary } from './model'
+import {
+  ISummary,
+  Summary,
+} from './model'
 import * as account from './account'
 import * as cafes from './cafes'
 import * as comments from './comments'
@@ -84,5 +87,4 @@ export {
   profile,
   schemas,
   threads,
-  wallet,
 }
