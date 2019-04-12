@@ -19,7 +19,6 @@ import * as notifications from './notifications'
 import * as profile from './profile'
 import * as schemas from './schemas'
 import * as threads from './threads'
-import * as wallet from './wallet'
 
 const  { TextileBridge } = NativeModules
 

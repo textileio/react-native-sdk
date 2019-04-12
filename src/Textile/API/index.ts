@@ -19,7 +19,6 @@ import * as notifications from './notifications'
 import * as profile from './profile'
 import * as schemas from './schemas'
 import * as threads from './threads'
-import * as wallet from './wallet'
 
 const { TextileNode } = NativeModules
 
@@ -71,8 +70,6 @@ export async function stop(): Promise<void> {
   await TextileNode.stop()
 }
 
-
-
 export {
   account,
   cafes,
@@ -91,5 +88,4 @@ export {
   profile,
   schemas,
   threads,
-  wallet,
 }
