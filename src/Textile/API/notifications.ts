@@ -1,69 +1,72 @@
 import { NativeModules } from 'react-native'
 import { Buffer } from 'buffer'
-import { pb } from '../Models'
+import {
+  INotificationList,
+  NotificationList,
+} from './model'
 
-const { TextileNode } = NativeModules
+const { NotificationsBridge } = NativeModules
 
 /**
  * List all Notifications.
  * ```typescript
- * API.notifications.list(offset, limit);
+ * Textile.notifications.list(offset, limit);
  * ```
  */
-export async function list(offset: string, limit: number): Promise<pb.INotificationList> {
-  const result = await TextileNode.notifications(offset, limit)
-  return pb.NotificationList.decode(Buffer.from(result, 'base64'))
+export async function list(offset: string, limit: number): Promise<INotificationList> {
+  const result = await NotificationsBridge.list(offset, limit)
+  return NotificationList.decode(Buffer.from(result, 'base64'))
 }
 
 /**
  * Get count of unread Notifications.
  * ```typescript
- * API.notifications.countUnread();
+ * Textile.notifications.countUnread();
  * ```
  */
 export async function countUnread(): Promise<number> {
-  const result = await TextileNode.countUnreadNotifications()
+  const result = await NotificationsBridge.countUnread()
   return result as number
 }
 
 /**
  * Mark a Notification as read by ID.
  * ```typescript
- * API.notifications.read(id);
+ * Textile.notifications.read(id);
  * ```
  */
 export async function read(id_: string): Promise<void> {
-  await TextileNode.readNotification(id_)
+  await NotificationsBridge.read(id_)
 }
 
 /**
  * Mark all Notifications as read.
  * ```typescript
- * API.notifications.readAll();
+ * Textile.notifications.readAll();
  * ```
  */
 export async function readAll(): Promise<void> {
-  await TextileNode.readAllNotifications()
+  await NotificationsBridge.readAll()
 }
 
 /**
  * Accept an Invite included in a Notification.
  * ```typescript
- * API.notifications.acceptInvite(id);
+ * Textile.notifications.acceptInvite(id);
  * ```
  */
 export async function acceptInvite(id_: string): Promise<string> {
-  const result = await TextileNode.acceptInviteViaNotification(id_)
+  const result = await NotificationsBridge.acceptInvite(id_)
   return result as string
 }
 
 /**
  * Ignore an Invite included in a Notification.
  * ```typescript
- * API.notifications.ignoreInvite(id);
+ * Textile.notifications.ignoreInvite(id);
  * ```
  */
 export async function ignoreInvite(id_: string): Promise<string> {
-  const result = await TextileNode.ignoreInviteViaNotification(id_)
+  const result = await NotificationsBridge.ignoreInvite(id_)
   return result as string
 }
