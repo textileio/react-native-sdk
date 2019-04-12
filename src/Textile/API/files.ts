@@ -1,95 +1,105 @@
 import { NativeModules } from 'react-native'
 import { Buffer } from 'buffer'
-import { pb } from '../Models'
 
-const { TextileNode } = NativeModules
+import {
+  IMobilePreparedFiles,
+  MobilePreparedFiles,
+  IDirectory,
+  Directory,
+  IBlock,
+  Block,
+  IFilesList,
+  FilesList,
+} from './model'
+
+const { FilesBridge } = NativeModules
 
 /**
  * Use a Thread's Mill to prepare a file data (as bse64 string)  for adding to a Thread.
  * ```typescript
- * API.files.prepareFiles(data, threadId);
+ * Textile.files.prepare(data, threadId);
  * ```
  */
-export async function prepareFiles(data: string, threadId: string): Promise<pb.IMobilePreparedFiles> {
-  const result = await TextileNode.prepareFiles(data, threadId)
-  return pb.MobilePreparedFiles.decode(Buffer.from(result, 'base64'))
+export async function prepare(data: string, threadId: string): Promise<IMobilePreparedFiles> {
+  const result = await FilesBridge.prepare(data, threadId)
+  return MobilePreparedFiles.decode(Buffer.from(result, 'base64'))
 }
 
 /**
  * Use a Thread's Mill to synchronously prepare a file data (as bse64 string) for adding to a Thread.
  * ```typescript
- * API.files.prepareFiles(data, threadId);
+ * Textile.files.prepareSync(data, threadId);
  * ```
  */
-export async function prepareFilesSync(data: string, threadId: string): Promise<pb.IMobilePreparedFiles> {
-  const result = await TextileNode.prepareFilesSync(data, threadId)
-  return pb.MobilePreparedFiles.decode(Buffer.from(result, 'base64'))
+export async function prepareSync(data: string, threadId: string): Promise<IMobilePreparedFiles> {
+  const result = await FilesBridge.prepareSync(data, threadId)
+  return MobilePreparedFiles.decode(Buffer.from(result, 'base64'))
 }
 
 /**
  * Use a Thread's Mill to prepare a file for adding to a Thread.
  * ```typescript
- * API.files.prepareFilesByPath(path, threadId);
+ * Textile.files.prepareByPath(path, threadId);
  * ```
  */
-export async function prepareFilesByPath(path: string, threadId: string): Promise<pb.IMobilePreparedFiles> {
-  const result = await TextileNode.prepareFilesByPath(path, threadId)
-  return pb.MobilePreparedFiles.decode(Buffer.from(result, 'base64'))
+export async function prepareByPath(path: string, threadId: string): Promise<IMobilePreparedFiles> {
+  const result = await FilesBridge.prepareByPath(path, threadId)
+  return MobilePreparedFiles.decode(Buffer.from(result, 'base64'))
 }
 
 /**
  * Use a Thread's Mill to synchronously prepare a file for adding to a Thread.
  * ```typescript
- * API.files.prepareFilesByPathSync(path, threadId);
+ * Textile.files.prepareByPathSync(path, threadId);
  * ```
  */
-export async function prepareFilesByPathSync(path: string, threadId: string): Promise<pb.IMobilePreparedFiles> {
-  const result = await TextileNode.prepareFilesByPathSync(path, threadId)
-  return pb.MobilePreparedFiles.decode(Buffer.from(result, 'base64'))
+export async function prepareByPathSync(path: string, threadId: string): Promise<IMobilePreparedFiles> {
+  const result = await FilesBridge.prepareByPathSync(path, threadId)
+  return MobilePreparedFiles.decode(Buffer.from(result, 'base64'))
 }
 
 /**
  * Add a file object to a Thread. Must match Thread schema definition.
  * ```typescript
- * API.files.add(dir, threadId);
+ * Textile.files.add(dir, threadId);
  * ```
  */
-export async function add(dir: pb.IDirectory, threadId: string, caption?: string): Promise<pb.IBlock> {
-  const payload = pb.Directory.encode(dir).finish()
-  const result = await TextileNode.addFiles(Buffer.from(payload).toString('base64'), threadId, caption)
-  return pb.Block.decode(Buffer.from(result, 'base64'))
+export async function add(dir: IDirectory, threadId: string, caption?: string): Promise<IBlock> {
+  const payload = Directory.encode(dir).finish()
+  const result = await FilesBridge.add(Buffer.from(payload).toString('base64'), threadId, caption)
+  return Block.decode(Buffer.from(result, 'base64'))
 }
 
 /**
  * Add a file by target.
  * ```typescript
- * API.files.addByTarget(target, threadId);
+ * Textile.files.addByTarget(target, threadId);
  * ```
  */
-export async function addByTarget(target: string, threadId: string, caption?: string): Promise<pb.IBlock> {
-  const result = await TextileNode.addFilesByTarget(target, threadId, caption)
-  return pb.Block.decode(Buffer.from(result, 'base64'))
+export async function addByTarget(target: string, threadId: string, caption?: string): Promise<IBlock> {
+  const result = await FilesBridge.addByTarget(target, threadId, caption)
+  return Block.decode(Buffer.from(result, 'base64'))
 }
 
 /**
  * List all files or files in a known Thread.
  * ```typescript
- * API.files.list(offset, limit);
+ * Textile.files.list(offset, limit);
  * ```
  */
-export async function list(offset: string, limit: number, threadId?: string): Promise<pb.IFilesList> {
-  const result = await TextileNode.files(offset, limit, threadId)
-  return pb.FilesList.decode(Buffer.from(result, 'base64'))
+export async function list(offset: string, limit: number, threadId?: string): Promise<IFilesList> {
+  const result = await FilesBridge.list(offset, limit, threadId)
+  return FilesList.decode(Buffer.from(result, 'base64'))
 }
 
 /**
  * Get the raw data for a file at an IPFS hash.
  * ```typescript
- * API.files.fileData(hash);
+ * Textile.files.data(hash);
  * ```
  */
 export async function data(hash: string): Promise<string> {
-  return TextileNode.fileData(hash)
+  return FilesBridge.data(hash)
 }
 
 /**
@@ -97,9 +107,9 @@ export async function data(hash: string): Promise<string> {
  *
  * Note: pth is <target>/<index>, e.g., "Qm.../0"
  * ```typescript
- * API.files.imageDataForMinWidth(path, minWidth);
+ * Textile.files.imageDataForMinWidth(path, minWidth);
  * ```
  */
 export async function imageDataForMinWidth(pth: string, minWidth: number): Promise<string> {
-  return TextileNode.imageFileDataForMinWidth(pth, minWidth)
+  return FilesBridge.imageDataForMinWidth(pth, minWidth)
 }
