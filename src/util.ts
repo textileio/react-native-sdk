@@ -1,4 +1,4 @@
-import { google } from './API/model-public'
+import { google } from './model-public'
 
 /**
  * Converts a protobuf timestamp into a Javascript Date

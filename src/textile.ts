@@ -24,6 +24,7 @@ import * as notifications from './notifications'
 import * as profile from './profile'
 import * as schemas from './schemas'
 import * as threads from './threads'
+import * as util from './util'
 
 export * from './events'
 export * from './model-public'
@@ -92,4 +93,5 @@ export {
   profile,
   schemas,
   threads,
+  util,
 }
