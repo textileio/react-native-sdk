@@ -57,3 +57,10 @@ export {
   IThreadSnapshotQuery,
   google,
 }
+
+export class EventSubscription {
+  cancel: () => void
+  constructor(cancel: () => void) {
+    this.cancel = cancel
+  }
+}
