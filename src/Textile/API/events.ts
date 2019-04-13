@@ -75,7 +75,7 @@ export function addNodeFailedToStopListener(listener: (error: string) => void) {
   )
 }
 
-export function addNodeOnlineListeners(listener: () => void) {
+export function addNodeOnlineListener(listener: () => void) {
   nodeOnlineListeners.push(listener)
   return new EventSubscription(
     () => nodeOnlineListeners = nodeOnlineListeners.filter((item) => item !== listener),
@@ -148,21 +148,21 @@ export function addQueryDoneListener(listener: (queryId: string) => void) {
   )
 }
 
-export function addQueryErrorListeners(listener: (queryId: string, error: string) => void) {
+export function addQueryErrorListener(listener: (queryId: string, error: string) => void) {
   queryErrorListeners.push(listener)
   return new EventSubscription(
     () => queryErrorListeners = queryErrorListeners.filter((item) => item !== listener),
   )
 }
 
-export function addClientThreadQueryResultListeners(listener: (queryId: string, thread: IThread) => void) {
+export function addClientThreadQueryResultListener(listener: (queryId: string, thread: IThread) => void) {
   clientThreadQueryResultListeners.push(listener)
   return new EventSubscription(
     () => clientThreadQueryResultListeners = clientThreadQueryResultListeners.filter((item) => item !== listener),
   )
 }
 
-export function addContactQueryResultListeners(listener: (queryId: string, contact: IContact) => void) {
+export function addContactQueryResultListener(listener: (queryId: string, contact: IContact) => void) {
   contactQueryResultListeners.push(listener)
   return new EventSubscription(
     () => contactQueryResultListeners = contactQueryResultListeners.filter((item) => item !== listener),
