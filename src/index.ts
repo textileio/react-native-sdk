@@ -1,7 +1,4 @@
-import Events, { TextileEvents, BackgroundTask } from './Textile/events'
-import * as API from './Textile/API'
-import * as util from './Textile/util'
+import * as Textile from './textile'
 
-export { API, Events, BackgroundTask, TextileEvents, util }
-
-export * from './Textile/Models'
+export * from './model-public'
+export default Textile

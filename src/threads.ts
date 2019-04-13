@@ -2,19 +2,21 @@ import { NativeModules } from 'react-native'
 import { Buffer } from 'buffer'
 
 import {
-  IAddThreadConfig,
   AddThreadConfig,
-  IThread,
   Thread,
-  IThreadList,
   ThreadList,
-  IContactList,
   ContactList,
-  IThreadSnapshotQuery,
   ThreadSnapshotQuery,
-  IQueryOptions,
   QueryOptions,
-} from './model'
+} from './model-internal'
+import {
+  IAddThreadConfig,
+  IThread,
+  IThreadList,
+  IContactList,
+  IThreadSnapshotQuery,
+  IQueryOptions,
+} from './model-public'
 
 const { ThreadsBridge } = NativeModules
 

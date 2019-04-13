@@ -2,11 +2,13 @@ import { NativeModules } from 'react-native'
 import { Buffer } from 'buffer'
 
 import {
-  IContact,
   Contact,
-  IQueryOptions,
   QueryOptions,
-} from './model'
+} from './model-internal'
+import {
+  IContact,
+  IQueryOptions,
+} from './model-public'
 
 const { AccountBridge } = NativeModules
 

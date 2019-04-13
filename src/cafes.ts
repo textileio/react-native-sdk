@@ -1,11 +1,14 @@
 import { NativeModules } from 'react-native'
 import { Buffer } from 'buffer'
+
+import {
+  CafeSession,
+  CafeSessionList,
+} from './model-internal'
 import {
   ICafeSession,
-  CafeSession,
   ICafeSessionList,
-  CafeSessionList,
-} from './model'
+} from './model-public'
 
 const { CafesBridge } = NativeModules
 

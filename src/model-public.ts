@@ -1,0 +1,66 @@
+import {
+  IAddThreadConfig,
+  IBlock,
+  ICafeSession,
+  ICafeSessionList,
+  IContact,
+  IContactList,
+  IContactQuery,
+  IDirectory,
+  IExternalInvite,
+  IFeedItem,
+  IFeedItemList,
+  IFeedRequest,
+  IFileIndex,
+  IFilesList,
+  ILogLevel,
+  IMobilePreparedFiles,
+  INode,
+  INotification,
+  INotificationList,
+  IPeer,
+  IQueryOptions,
+  ISummary,
+  ITextList,
+  IThread,
+  IThreadList,
+  IThreadSnapshotQuery,
+  google,
+} from '@textile/js-types'
+
+export {
+  IAddThreadConfig,
+  IBlock,
+  ICafeSession,
+  ICafeSessionList,
+  IContact,
+  IContactList,
+  IContactQuery,
+  IDirectory,
+  IExternalInvite,
+  IFeedItem,
+  IFeedItemList,
+  IFeedRequest,
+  IFileIndex,
+  IFilesList,
+  ILogLevel,
+  IMobilePreparedFiles,
+  INode,
+  INotification,
+  INotificationList,
+  IPeer,
+  IQueryOptions,
+  ISummary,
+  ITextList,
+  IThread,
+  IThreadList,
+  IThreadSnapshotQuery,
+  google,
+}
+
+export class EventSubscription {
+  cancel: () => void
+  constructor(cancel: () => void) {
+    this.cancel = cancel
+  }
+}

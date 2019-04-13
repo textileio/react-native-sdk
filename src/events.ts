@@ -6,15 +6,18 @@ import {
 } from 'react-native'
 
 import {
-  INotification,
   Notification,
-  IFeedItem,
   FeedItem,
-  IThread,
   Thread,
-  IContact,
   Contact,
-} from './model'
+} from './model-internal'
+import {
+  INotification,
+  IFeedItem,
+  IThread,
+  IContact,
+  EventSubscription,
+} from './model-public'
 
 const { TextileEvents } = NativeModules
 const eventEmitter = Platform.select({
@@ -39,13 +42,6 @@ let queryDoneListeners: Array<(queryId: string) => void> = []
 let queryErrorListeners: Array<(queryId: string, error: string) => void> = []
 let clientThreadQueryResultListeners: Array<(queryId: string, thread: IThread) => void> = []
 let contactQueryResultListeners: Array<(queryId: string, contact: IContact) => void> = []
-
-export class EventSubscription {
-  cancel: () => void
-  constructor(cancel: () => void) {
-    this.cancel = cancel
-  }
-}
 
 export function addNodeStartedListener(listener: () => void) {
   nodeStartedListeners.push(listener)

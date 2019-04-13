@@ -2,9 +2,11 @@ import { NativeModules } from 'react-native'
 import { Buffer } from 'buffer'
 
 import {
-  ISummary,
   Summary,
-} from './model'
+} from './model-internal'
+import {
+  ISummary,
+} from './model-public'
 import * as account from './account'
 import * as cafes from './cafes'
 import * as comments from './comments'
@@ -22,8 +24,8 @@ import * as notifications from './notifications'
 import * as profile from './profile'
 import * as schemas from './schemas'
 import * as threads from './threads'
-
-export * from './events'
+import * as events from './events'
+import * as util from './util'
 
 const  { TextileBridge } = NativeModules
 
@@ -89,4 +91,6 @@ export {
   profile,
   schemas,
   threads,
+  events,
+  util,
 }

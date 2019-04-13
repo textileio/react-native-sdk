@@ -2,9 +2,11 @@ import { NativeModules } from 'react-native'
 import { Buffer } from 'buffer'
 
 import {
-  IPeer,
   Peer,
-} from './model'
+} from './model-internal'
+import {
+  IPeer,
+} from './model-public'
 
 const { ProfileBridge } = NativeModules
 
