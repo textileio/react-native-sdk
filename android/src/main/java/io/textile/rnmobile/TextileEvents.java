@@ -88,7 +88,10 @@ class TextileEvents implements TextileEventListener {
 
     @Override
     public void queryError(String queryId, Exception e) {
-        emitter.emit("QUERY_ERROR", e.getMessage());
+        WritableMap map = new WritableNativeMap();
+        map.putString("queryId", queryId);
+        map.putString("error", e.getMessage());
+        emitter.emit("QUERY_ERROR", map);
     }
 
     @Override
