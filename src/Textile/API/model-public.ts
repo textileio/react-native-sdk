@@ -25,6 +25,7 @@ import {
   IThread,
   IThreadList,
   IThreadSnapshotQuery,
+  google,
 } from '@textile/js-types'
 
 export {
@@ -54,4 +55,5 @@ export {
   IThread,
   IThreadList,
   IThreadSnapshotQuery,
+  google,
 }
