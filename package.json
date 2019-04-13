@@ -93,7 +93,6 @@
       "<rootDir>/node_modules"
     ],
     "setupFiles": [
-      "./tests/setup.js"
     ],
     "transformIgnorePatterns": [
       "node_modules/(?!@textile/react-native-protobufs)/"
