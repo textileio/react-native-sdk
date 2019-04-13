@@ -93,7 +93,11 @@ RCT_EXPORT_MODULE();
 }
 
 - (void)queryError:(NSString *)queryId error:(NSError *)error {
-  [self sendEventWithName:@"QUERY_ERROR" body:error.description];
+  NSDictionary *body = @{
+                         @"queryId": queryId,
+                         @"error": error.description
+                       };
+  [self sendEventWithName:@"QUERY_ERROR" body:body];
 }
 
 - (void)clientThreadQueryResult:(NSString *)queryId thread:(Thread *)thread {

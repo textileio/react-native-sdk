@@ -23,6 +23,8 @@ import * as profile from './profile'
 import * as schemas from './schemas'
 import * as threads from './threads'
 
+export * from './events'
+
 const  { TextileBridge } = NativeModules
 
 /**
