@@ -1,11 +1,14 @@
 import { NativeModules } from 'react-native'
 import { Buffer } from 'buffer'
+
+import {
+  FileIndex,
+  Node,
+} from './model-internal'
 import {
   IFileIndex,
-  FileIndex,
   INode,
-  Node,
-} from './model'
+} from './model-public'
 
 const { SchemasBridge } = NativeModules
 

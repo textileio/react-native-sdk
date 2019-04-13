@@ -2,9 +2,11 @@ import { NativeModules } from 'react-native'
 import { Buffer } from 'buffer'
 
 import {
-  IExternalInvite,
   ExternalInvite,
-} from './model'
+} from './model-internal'
+import {
+  IExternalInvite,
+} from './model-public'
 
 const { InvitesBridge } = NativeModules
 

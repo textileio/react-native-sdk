@@ -2,15 +2,17 @@ import { NativeModules } from 'react-native'
 import { Buffer } from 'buffer'
 
 import {
-  IMobilePreparedFiles,
   MobilePreparedFiles,
-  IDirectory,
   Directory,
-  IBlock,
   Block,
-  IFilesList,
   FilesList,
-} from './model'
+} from './model-internal'
+import {
+  IMobilePreparedFiles,
+  IDirectory,
+  IBlock,
+  IFilesList,
+} from './model-public'
 
 const { FilesBridge } = NativeModules
 

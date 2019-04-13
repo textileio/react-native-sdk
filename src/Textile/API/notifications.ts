@@ -1,9 +1,12 @@
 import { NativeModules } from 'react-native'
 import { Buffer } from 'buffer'
+
+import {
+  NotificationList,
+} from './model-internal'
 import {
   INotificationList,
-  NotificationList,
-} from './model'
+} from './model-public'
 
 const { NotificationsBridge } = NativeModules
 

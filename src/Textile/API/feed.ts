@@ -1,11 +1,13 @@
 import { NativeModules } from 'react-native'
 import { Buffer } from 'buffer'
 import {
-  IFeedRequest,
   FeedRequest,
-  IFeedItemList,
   FeedItemList,
-} from './model'
+} from './model-internal'
+import {
+  IFeedRequest,
+  IFeedItemList,
+} from './model-public'
 
 const { FeedBridge } = NativeModules
 

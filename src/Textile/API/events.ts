@@ -6,15 +6,17 @@ import {
 } from 'react-native'
 
 import {
-  INotification,
   Notification,
-  IFeedItem,
   FeedItem,
-  IThread,
   Thread,
-  IContact,
   Contact,
-} from './model'
+} from './model-internal'
+import {
+  INotification,
+  IFeedItem,
+  IThread,
+  IContact,
+} from './model-public'
 
 const { TextileEvents } = NativeModules
 const eventEmitter = Platform.select({

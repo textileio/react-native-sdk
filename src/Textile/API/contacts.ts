@@ -2,17 +2,19 @@ import { NativeModules } from 'react-native'
 import { Buffer } from 'buffer'
 
 import {
-  IContact,
   Contact,
-  IContactList,
   ContactList,
-  IThreadList,
   ThreadList,
-  IContactQuery,
   ContactQuery,
-  IQueryOptions,
   QueryOptions,
-} from './model'
+} from './model-internal'
+import {
+  IContact,
+  IContactList,
+  IThreadList,
+  IContactQuery,
+  IQueryOptions,
+} from './model-public'
 
 const { ContactsBridge } = NativeModules
 

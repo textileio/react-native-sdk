@@ -2,9 +2,11 @@ import { NativeModules } from 'react-native'
 import { Buffer } from 'buffer'
 
 import {
-  ITextList,
   TextList,
-} from './model'
+} from './model-internal'
+import {
+  ITextList,
+} from './model-public'
 
 const { MessagesBridge } = NativeModules
 
