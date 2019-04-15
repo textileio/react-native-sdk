@@ -3,11 +3,9 @@ import { Buffer } from 'buffer'
 import {
   FeedRequest,
   FeedItemList,
-} from './model-internal'
-import {
   IFeedRequest,
   IFeedItemList,
-} from './model-public'
+} from './model'
 
 const { FeedBridge } = NativeModules
 

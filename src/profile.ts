@@ -3,10 +3,8 @@ import { Buffer } from 'buffer'
 
 import {
   Peer,
-} from './model-internal'
-import {
   IPeer,
-} from './model-public'
+} from './model'
 
 const { ProfileBridge } = NativeModules
 

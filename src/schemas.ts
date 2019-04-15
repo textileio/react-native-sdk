@@ -4,11 +4,9 @@ import { Buffer } from 'buffer'
 import {
   FileIndex,
   Node,
-} from './model-internal'
-import {
   IFileIndex,
   INode,
-} from './model-public'
+} from './model'
 
 const { SchemasBridge } = NativeModules
 

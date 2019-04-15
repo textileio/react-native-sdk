@@ -3,10 +3,8 @@ import { Buffer } from 'buffer'
 
 import {
   TextList,
-} from './model-internal'
-import {
   ITextList,
-} from './model-public'
+} from './model'
 
 const { MessagesBridge } = NativeModules
 

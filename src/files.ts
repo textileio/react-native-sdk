@@ -6,13 +6,11 @@ import {
   Directory,
   Block,
   FilesList,
-} from './model-internal'
-import {
   IMobilePreparedFiles,
   IDirectory,
   IBlock,
   IFilesList,
-} from './model-public'
+} from './model'
 
 const { FilesBridge } = NativeModules
 

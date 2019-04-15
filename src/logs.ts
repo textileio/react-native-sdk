@@ -3,10 +3,8 @@ import { Buffer } from 'buffer'
 
 import {
   LogLevel,
-} from './model-internal'
-import {
   ILogLevel,
-} from './model-public'
+} from './model'
 
 const { LogsBridge } = NativeModules
 

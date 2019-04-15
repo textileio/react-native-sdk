@@ -3,10 +3,8 @@ import { Buffer } from 'buffer'
 
 import {
   Summary,
-} from './model-internal'
-import {
   ISummary,
-} from './model-public'
+} from './model'
 import * as account from './account'
 import * as cafes from './cafes'
 import * as comments from './comments'

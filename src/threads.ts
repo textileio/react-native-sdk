@@ -8,15 +8,13 @@ import {
   ContactList,
   ThreadSnapshotQuery,
   QueryOptions,
-} from './model-internal'
-import {
   IAddThreadConfig,
   IThread,
   IThreadList,
   IContactList,
   IThreadSnapshotQuery,
   IQueryOptions,
-} from './model-public'
+} from './model'
 
 const { ThreadsBridge } = NativeModules
 

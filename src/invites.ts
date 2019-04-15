@@ -3,10 +3,8 @@ import { Buffer } from 'buffer'
 
 import {
   ExternalInvite,
-} from './model-internal'
-import {
   IExternalInvite,
-} from './model-public'
+} from './model'
 
 const { InvitesBridge } = NativeModules
 

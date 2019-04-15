@@ -3,10 +3,8 @@ import { Buffer } from 'buffer'
 
 import {
   NotificationList,
-} from './model-internal'
-import {
   INotificationList,
-} from './model-public'
+} from './model'
 
 const { NotificationsBridge } = NativeModules
 

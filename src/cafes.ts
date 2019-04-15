@@ -3,12 +3,10 @@ import { Buffer } from 'buffer'
 
 import {
   CafeSession,
-  CafeSessionList,
-} from './model-internal'
-import {
   ICafeSession,
+  CafeSessionList,
   ICafeSessionList,
-} from './model-public'
+} from './model'
 
 const { CafesBridge } = NativeModules
 

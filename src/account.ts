@@ -3,12 +3,10 @@ import { Buffer } from 'buffer'
 
 import {
   Contact,
-  QueryOptions,
-} from './model-internal'
-import {
   IContact,
+  QueryOptions,
   IQueryOptions,
-} from './model-public'
+} from './model'
 
 const { AccountBridge } = NativeModules
 

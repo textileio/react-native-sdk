@@ -10,14 +10,12 @@ import {
   FeedItem,
   Thread,
   Contact,
-} from './model-internal'
-import {
   INotification,
   IFeedItem,
   IThread,
   IContact,
   EventSubscription,
-} from './model-public'
+} from './model'
 
 const { TextileEvents } = NativeModules
 const eventEmitter = Platform.select({

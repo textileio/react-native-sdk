@@ -7,14 +7,12 @@ import {
   ThreadList,
   ContactQuery,
   QueryOptions,
-} from './model-internal'
-import {
   IContact,
   IContactList,
   IThreadList,
   IContactQuery,
   IQueryOptions,
-} from './model-public'
+} from './model'
 
 const { ContactsBridge } = NativeModules
 
