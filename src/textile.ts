@@ -39,6 +39,17 @@ export async function initialize(debug: boolean, logToDisk: boolean): Promise<st
 }
 
 /**
+ * Get the Textile node repo path
+ * ```typescript
+ * Textile.repoPath();
+ * ```
+ */
+export async function repoPath(): Promise<string> {
+  const result = await TextileBridge.repoPath()
+  return result as string
+}
+
+/**
  * Get the Textile node version
  * ```typescript
  * Textile.version();

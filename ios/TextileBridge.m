@@ -34,6 +34,10 @@ RCT_EXPORT_METHOD(initialize:(BOOL)debug logToDisk:(BOOL)logToDisk resolver:(RCT
   }
 }
 
+RCT_EXPORT_METHOD(repoPath:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+  resolve(Textile.instance.repoPath);
+}
+
 RCT_EXPORT_METHOD(version:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSString *result = Textile.instance.version;
   fulfillWithResult(result, nil, resolve, reject);

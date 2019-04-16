@@ -45,6 +45,16 @@ public class TextileBridge extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
+    public String repoPath(final Promise promise) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                promise.resolve(Textile.instance().repoPath);
+            }
+        });
+    }
+
+    @ReactMethod
     public void version(final Promise promise) {
         executor.execute(new Runnable() {
             @Override
