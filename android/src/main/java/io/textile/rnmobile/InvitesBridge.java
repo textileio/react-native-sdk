@@ -57,6 +57,35 @@ public class InvitesBridge extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
+    public void list(final Promise promise) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    View.InviteViewList list = Textile.instance().invites.list();
+                    promise.resolve(Util.encode(list.toByteArray()));
+                } catch (Exception e) {
+                    promise.reject("list", e);
+                }
+            }
+        });
+    }
+
+    @ReactMethod
+    public void accept(final String inviteId, final Promise promise) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    promise.resolve(Textile.instance().invites.accept(inviteId));
+                } catch (Exception e) {
+                    promise.reject("accept", e);
+                }
+            }
+        });
+    }
+
+    @ReactMethod
     public void acceptExternal(final String inviteId, final String key, final Promise promise) {
         executor.execute(new Runnable() {
             @Override
@@ -66,6 +95,21 @@ public class InvitesBridge extends ReactContextBaseJavaModule {
                 }
                 catch (Exception e) {
                     promise.reject("acceptExternal", e);
+                }
+            }
+        });
+    }
+
+    @ReactMethod
+    public void ignore(final String inviteId, final Promise promise) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Textile.instance().invites.ignore(inviteId);
+                    promise.resolve(null);
+                } catch (Exception e) {
+                    promise.reject("ignore", e);
                 }
             }
         });

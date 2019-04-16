@@ -4,6 +4,8 @@ import { Buffer } from 'buffer'
 import {
   ExternalInvite,
   IExternalInvite,
+  InviteViewList,
+  IInviteViewList,
 } from './model'
 
 const { InvitesBridge } = NativeModules
@@ -29,6 +31,16 @@ export async function addExternal(threadId: string): Promise<IExternalInvite> {
   return ExternalInvite.decode(Buffer.from(result, 'base64'))
 }
 
+export async function list(): Promise<IInviteViewList> {
+  const result = await InvitesBridge.list()
+  return InviteViewList.decode(Buffer.from(result, 'base64'))
+}
+
+export async function accept(inviteId: string): Promise<string> {
+  const result = await InvitesBridge.accept(inviteId)
+  return result as string
+}
+
 /**
  * Accept an external invite.
  * ```typescript
@@ -38,4 +50,8 @@ export async function addExternal(threadId: string): Promise<IExternalInvite> {
 export async function acceptExternal(id_: string, key: string): Promise<string> {
   const result = await InvitesBridge.acceptExternal(id_, key)
   return result as string
+}
+
+export async function ignore(inviteId: string): Promise<void> {
+  return InvitesBridge.ignore(inviteId)
 }
