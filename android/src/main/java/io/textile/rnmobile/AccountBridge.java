@@ -115,7 +115,7 @@ public class AccountBridge extends ReactContextBaseJavaModule {
                     }
                     QueryOuterClass.QueryOptions options = QueryOuterClass.QueryOptions.parseFrom(Util.decode(optionsStr));
                     AccountBridge.searchHandle = Textile.instance().account.sync(options);
-                    promise.resolve(null);
+                    promise.resolve(AccountBridge.searchHandle.getId());
                 }
                 catch (Exception e) {
                     promise.reject("syncAccount", e);

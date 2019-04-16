@@ -70,7 +70,7 @@ RCT_EXPORT_METHOD(search:(NSString*)queryStr options:(NSString*)optionsStr resol
   NSData *optionsData = [[NSData alloc] initWithBase64EncodedString:optionsStr options:0];
   QueryOptions *options = [[QueryOptions alloc] initWithData:optionsData error:&error];
   self.searchHandle = [Textile.instance.contacts search:query options:options error:&error];
-  fulfillWithResult(nil, error, resolve, reject);
+  fulfillWithResult(self.searchHandle.id_, error, resolve, reject);
 }
 
 RCT_EXPORT_METHOD(cancelSearch:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
@@ -78,7 +78,7 @@ RCT_EXPORT_METHOD(cancelSearch:(RCTPromiseResolveBlock)resolve rejecter:(RCTProm
     [self.searchHandle cancel];
     self.searchHandle = nil;
   }
-  resolve(@"success");
+  resolve(nil);
 }
 
 @end

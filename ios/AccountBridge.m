@@ -62,7 +62,7 @@ RCT_EXPORT_METHOD(sync:(NSString*)optionsStr resolver:(RCTPromiseResolveBlock)re
   NSData *optionsData = [[NSData alloc] initWithBase64EncodedString:optionsStr options:0];
   QueryOptions *options = [[QueryOptions alloc] initWithData:optionsData error:&error];
   self.searchHandle = [Textile.instance.account sync:options error:&error];
-  fulfillWithResult(nil, error, resolve, reject);
+  fulfillWithResult(self.searchHandle.id_, error, resolve, reject);
 }
 
 RCT_EXPORT_METHOD(cancelSync:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
@@ -70,7 +70,7 @@ RCT_EXPORT_METHOD(cancelSync:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromis
     [self.searchHandle cancel];
     self.searchHandle = nil;
   }
-  resolve(@"success");
+  resolve(nil);
 }
 
 @end

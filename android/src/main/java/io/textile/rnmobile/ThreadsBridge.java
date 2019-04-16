@@ -170,9 +170,29 @@ public class ThreadsBridge extends ReactContextBaseJavaModule {
                     QueryOuterClass.ThreadSnapshotQuery query = QueryOuterClass.ThreadSnapshotQuery.parseFrom(Util.decode(queryStr));
                     QueryOuterClass.QueryOptions options = QueryOuterClass.QueryOptions.parseFrom(Util.decode(optionsStr));
                     ThreadsBridge.searchHandle = Textile.instance().threads.searchSnapshots(query, options);
+                    promise.resolve(ThreadsBridge.searchHandle.getId());
                 }
                 catch (Exception e) {
                     promise.reject("searchSnapshots", e);
+                }
+            }
+        });
+    }
+
+    @ReactMethod
+    public void cancelSearchSnapshots(final Promise promise) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    if (ThreadsBridge.searchHandle != null) {
+                        ThreadsBridge.searchHandle.cancel();
+                        ThreadsBridge.searchHandle = null;
+                    }
+                    promise.resolve(null);
+                }
+                catch (Exception e) {
+                    promise.reject("cancelSync", e);
                 }
             }
         });

@@ -121,7 +121,7 @@ public class ContactsBridge extends ReactContextBaseJavaModule {
                     QueryOuterClass.ContactQuery query = QueryOuterClass.ContactQuery.parseFrom(Util.decode(queryStr));
                     QueryOuterClass.QueryOptions options = QueryOuterClass.QueryOptions.parseFrom(Util.decode(optionsStr));
                     ContactsBridge.searchHandle = Textile.instance().contacts.search(query, options);
-                    promise.resolve(null);
+                    promise.resolve(ContactsBridge.searchHandle.getId());
                 }
                 catch (Exception e) {
                     promise.reject("search", e);
