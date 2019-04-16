@@ -31,11 +31,23 @@ export async function addExternal(threadId: string): Promise<IExternalInvite> {
   return ExternalInvite.decode(Buffer.from(result, 'base64'))
 }
 
+/**
+ * List all pending thread invites.
+ * ```typescript
+ * Textile.invites.list();
+ * ```
+ */
 export async function list(): Promise<IInviteViewList> {
   const result = await InvitesBridge.list()
   return InviteViewList.decode(Buffer.from(result, 'base64'))
 }
 
+/**
+ * Accept invite by thread id.
+ * ```typescript
+ * Textile.invites.accept(threadId);
+ * ```
+ */
 export async function accept(inviteId: string): Promise<string> {
   const result = await InvitesBridge.accept(inviteId)
   return result as string
@@ -52,6 +64,12 @@ export async function acceptExternal(id_: string, key: string): Promise<string> 
   return result as string
 }
 
+/**
+ * Ignore invite by thread id.
+ * ```typescript
+ * Textile.invites.ignore(threadId);
+ * ```
+ */
 export async function ignore(inviteId: string): Promise<void> {
   return InvitesBridge.ignore(inviteId)
 }
