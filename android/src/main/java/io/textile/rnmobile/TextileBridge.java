@@ -99,4 +99,18 @@ public class TextileBridge extends ReactContextBaseJavaModule {
             }
         });
     }
+
+    @Override
+    public void onCatalystInstanceDestroy() {
+        super.onCatalystInstanceDestroy();
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Textile.instance().destroy();
+                } catch (Exception e) {
+                }
+            }
+        });
+    }
 }

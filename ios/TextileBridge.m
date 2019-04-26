@@ -20,6 +20,13 @@
 
 RCT_EXPORT_MODULE();
 
+- (void)invalidate {
+  dispatch_sync([self methodQueue], ^{
+    NSError *error;
+    [Textile.instance destroy:&error];
+  });
+}
+
 - (dispatch_queue_t)methodQueue {
   return dispatch_queue_create("io.textile.TextileNodeQueue", DISPATCH_QUEUE_SERIAL);
 }
