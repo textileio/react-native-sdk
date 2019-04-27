@@ -34,8 +34,8 @@ const  { TextileBridge } = NativeModules
  * ```
  */
 export async function initialize(debug: boolean, logToDisk: boolean): Promise<string | undefined> {
-  const result: string = await TextileBridge.initialize(debug, logToDisk)
-  return result.length > 0 ? result : undefined
+  const result: string | undefined = await TextileBridge.initialize(debug, logToDisk)
+  return result
 }
 
 /**

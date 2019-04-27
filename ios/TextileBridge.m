@@ -39,7 +39,7 @@ RCT_EXPORT_METHOD(initialize:(BOOL)debug logToDisk:(BOOL)logToDisk resolver:(RCT
   } else {
     TextileEvents *eventHandler = self.bridge.textileEvents;
     Textile.instance.delegate = eventHandler;
-    fulfillWithResultAndNilDefault(phrase, @"", error, resolve, reject);
+    fulfillWithResult(phrase, error, resolve, reject);
   }
 }
 
