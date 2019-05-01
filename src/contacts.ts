@@ -28,8 +28,8 @@ export async function add(contact: IContact): Promise<void> {
  * Get Contact information by address.
  */
 export async function get(address: string): Promise<IContact | undefined> {
-  const result: string = await ContactsBridge.get(address)
-  if (result.length === 0) {
+  const result = await ContactsBridge.get(address)
+  if (!result) {
     return undefined
   }
   return Contact.decode(Buffer.from(result, 'base64'))

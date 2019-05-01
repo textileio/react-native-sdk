@@ -30,7 +30,7 @@ RCT_EXPORT_METHOD(dataAtPath:(NSString*)pth resolver:(RCTPromiseResolveBlock)res
   NSError *error;
   NSData *data = [Textile.instance.ipfs dataAtPath:pth error:&error];
   NSString *dataString = [data base64EncodedStringWithOptions:0];
-  fulfillWithResultAndNilDefault(dataString, @"", error, resolve, reject);
+  fulfillWithResult(dataString, error, resolve, reject);
 }
 
 @end

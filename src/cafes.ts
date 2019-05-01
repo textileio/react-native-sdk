@@ -40,11 +40,8 @@ export async function session(peerId: string): Promise<ICafeSession | undefined>
  * Textile.cafes.sessions();
  * ```
  */
-export async function sessions(): Promise<ICafeSessionList | undefined> {
+export async function sessions(): Promise<ICafeSessionList> {
   const result = await CafesBridge.sessions()
-  if (!result) {
-    return undefined
-  }
   return CafeSessionList.decode(Buffer.from(result, 'base64'))
 }
 

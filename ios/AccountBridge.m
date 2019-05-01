@@ -38,19 +38,19 @@ RCT_EXPORT_METHOD(seed:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejec
 RCT_EXPORT_METHOD(encrypt:(NSString*)inputStr resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSError *error;
   NSData *data = [Textile.instance.account encrypt:[[NSData alloc] initWithBase64EncodedString:inputStr options:0] error:&error];
-  fulfillWithResultAndNilDefault([data base64EncodedStringWithOptions:0], @"", error, resolve, reject);
+  fulfillWithResult([data base64EncodedStringWithOptions:0], error, resolve, reject);
 }
 
 RCT_EXPORT_METHOD(decrypt:(NSString*)inputStr resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSError *error;
   NSData *data = [Textile.instance.account decrypt:[[NSData alloc]initWithBase64EncodedString:inputStr options:0] error:&error];
-  fulfillWithResultAndNilDefault([data base64EncodedStringWithOptions:0], @"", error, resolve, reject);
+  fulfillWithResult([data base64EncodedStringWithOptions:0], error, resolve, reject);
 }
 
 RCT_EXPORT_METHOD(contact:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSError *error;
   Contact *contact = [Textile.instance.account contact:&error];
-  fulfillWithResultAndNilDefault([contact.data base64EncodedStringWithOptions:0], @"", error, resolve, reject);
+  fulfillWithResult([contact.data base64EncodedStringWithOptions:0], error, resolve, reject);
 }
 
 RCT_EXPORT_METHOD(sync:(NSString*)optionsStr resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {

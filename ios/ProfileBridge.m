@@ -24,7 +24,7 @@ RCT_EXPORT_MODULE();
 RCT_EXPORT_METHOD(get:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSError *error;
   Peer *peer = [Textile.instance.profile get:&error];
-  fulfillWithResultAndNilDefault([peer.data base64EncodedStringWithOptions:0], @"", error, resolve, reject);
+  fulfillWithResult([peer.data base64EncodedStringWithOptions:0], error, resolve, reject);
 }
 
 RCT_EXPORT_METHOD(name:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
@@ -42,7 +42,7 @@ RCT_EXPORT_METHOD(setName:(NSString*)name resolver:(RCTPromiseResolveBlock)resol
 RCT_EXPORT_METHOD(avatar:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSError *error;
   NSString *avatar = [Textile.instance.profile avatar:&error];
-  fulfillWithResultAndNilDefault(avatar, @"", error, resolve, reject);
+  fulfillWithResult(avatar, error, resolve, reject);
 }
 
 RCT_EXPORT_METHOD(setAvatar:(NSString*)id_ resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {

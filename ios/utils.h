@@ -6,5 +6,4 @@
 #import “React/RCTBridge.h”
 #endif
 
-void fulfillWithResultAndNilDefault(id result, id nilDefault, NSError *error, RCTPromiseResolveBlock resolve, RCTPromiseRejectBlock reject);
 void fulfillWithResult(id result, NSError *error, RCTPromiseResolveBlock resolve, RCTPromiseRejectBlock reject);

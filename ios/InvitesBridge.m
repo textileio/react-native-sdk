@@ -30,7 +30,7 @@ RCT_EXPORT_METHOD(add:(NSString*)threadId inviteeId:(NSString*)address resolver:
 RCT_EXPORT_METHOD(addExternal:(NSString*)threadId resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSError *error;
   ExternalInvite *invite = [Textile.instance.invites addExternal:threadId error:&error];
-  fulfillWithResultAndNilDefault([invite.data base64EncodedStringWithOptions:0], @"", error, resolve, reject);
+  fulfillWithResult([invite.data base64EncodedStringWithOptions:0], error, resolve, reject);
 }
 
 RCT_EXPORT_METHOD(list:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {

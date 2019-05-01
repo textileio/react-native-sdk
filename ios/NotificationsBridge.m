@@ -24,7 +24,7 @@ RCT_EXPORT_MODULE();
 RCT_EXPORT_METHOD(list:(NSString*)offset limit:(NSInteger)limit resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSError *error;
   NotificationList *list = [Textile.instance.notifications list:offset limit:limit error:&error];
-  fulfillWithResultAndNilDefault([list.data base64EncodedStringWithOptions:0], @"", error, resolve, reject);
+  fulfillWithResult([list.data base64EncodedStringWithOptions:0], error, resolve, reject);
 }
 
 RCT_EXPORT_METHOD(countUnread:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {

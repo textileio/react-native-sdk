@@ -26,7 +26,7 @@ RCT_EXPORT_METHOD(add:(NSString*)nodeStr resolver:(RCTPromiseResolveBlock)resolv
   NSData *nodeData = [[NSData alloc] initWithBase64EncodedString:nodeStr options:0];
   Node *node = [[Node alloc] initWithData:nodeData error:&error];
   FileIndex *index = [Textile.instance.schemas add:node error:&error];
-  fulfillWithResultAndNilDefault([index.data base64EncodedStringWithOptions:0], @"", error, resolve, reject);
+  fulfillWithResult([index.data base64EncodedStringWithOptions:0], error, resolve, reject);
 }
 
 @end

@@ -38,13 +38,13 @@ RCT_EXPORT_METHOD(add:(NSString*)contactStr resolver:(RCTPromiseResolveBlock)res
 RCT_EXPORT_METHOD(get:(NSString*)id_ resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSError *error;
   Contact *contact = [Textile.instance.contacts get:id_ error:&error];
-  fulfillWithResultAndNilDefault([contact.data base64EncodedStringWithOptions:0], @"", error, resolve, reject);
+  fulfillWithResult([contact.data base64EncodedStringWithOptions:0], error, resolve, reject);
 }
 
 RCT_EXPORT_METHOD(list:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSError *error;
   ContactList *list = [Textile.instance.contacts list:&error];
-  fulfillWithResultAndNilDefault([list.data base64EncodedStringWithOptions:0], @"", error, resolve, reject);
+  fulfillWithResult([list.data base64EncodedStringWithOptions:0], error, resolve, reject);
 }
 
 RCT_EXPORT_METHOD(remove:(NSString*)id_ resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
@@ -56,7 +56,7 @@ RCT_EXPORT_METHOD(remove:(NSString*)id_ resolver:(RCTPromiseResolveBlock)resolve
 RCT_EXPORT_METHOD(threads:(NSString*)id_ resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSError *error;
   ThreadList *list = [Textile.instance.contacts threads:id_ error:&error];
-  fulfillWithResultAndNilDefault([list.data base64EncodedStringWithOptions:0], @"", error, resolve, reject);
+  fulfillWithResult([list.data base64EncodedStringWithOptions:0], error, resolve, reject);
 }
 
 RCT_EXPORT_METHOD(search:(NSString*)queryStr options:(NSString*)optionsStr resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
