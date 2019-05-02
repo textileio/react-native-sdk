@@ -65,11 +65,8 @@ export async function decrypt(input: Buffer): Promise<Buffer> {
  * const contact: IContact = Textile.account.contact();
  * ```
  */
-export async function contact(): Promise<IContact | undefined> {
+export async function contact(): Promise<IContact> {
   const result = await AccountBridge.contact()
-  if (!result) {
-    return undefined
-  }
   return Contact.decode(Buffer.from(result, 'base64'))
 }
 

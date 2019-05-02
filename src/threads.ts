@@ -58,6 +58,7 @@ export async function rename(threadId: string, name: string): Promise<void> {
  * ```
  */
 export async function get(threadId: string): Promise<IThread> {
+  // This throws an error if no thread is found
   const result = await ThreadsBridge.get(threadId)
   return Thread.decode(Buffer.from(result, 'base64'))
 }

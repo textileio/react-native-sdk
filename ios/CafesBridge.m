@@ -30,19 +30,19 @@ RCT_EXPORT_METHOD(register:(NSString*)host token:(NSString*)token resolver:(RCTP
 RCT_EXPORT_METHOD(session:(NSString*)peerId resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSError *error;
   CafeSession *session = [Textile.instance.cafes session:peerId error:&error];
-  fulfillWithResultAndNilDefault([session.data base64EncodedStringWithOptions:0], @"", error, resolve, reject);
+  fulfillWithResult([session.data base64EncodedStringWithOptions:0], error, resolve, reject);
 }
 
 RCT_EXPORT_METHOD(sessions:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSError *error;
   CafeSessionList *list = [Textile.instance.cafes sessions:&error];
-  fulfillWithResultAndNilDefault([list.data base64EncodedStringWithOptions:0], @"", error, resolve, reject);
+  fulfillWithResult([list.data base64EncodedStringWithOptions:0], error, resolve, reject);
 }
 
 RCT_EXPORT_METHOD(refreshSession:(NSString*)peerId resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSError *error;
   CafeSession *session = [Textile.instance.cafes refreshSession:peerId error:&error];
-  fulfillWithResultAndNilDefault([session.data base64EncodedStringWithOptions:0], @"", error, resolve, reject);
+  fulfillWithResult([session.data base64EncodedStringWithOptions:0], error, resolve, reject);
 }
 
 RCT_EXPORT_METHOD(deregister:(NSString*)peerId resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {

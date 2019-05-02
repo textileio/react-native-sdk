@@ -26,7 +26,7 @@ RCT_EXPORT_METHOD(list:(NSString*)reqStr resolver:(RCTPromiseResolveBlock)resolv
   NSData *requestData = [[NSData alloc] initWithBase64EncodedString:reqStr options:0];
   FeedRequest *request = [[FeedRequest alloc] initWithData:requestData error:&error];
   FeedItemList *list = [Textile.instance.feed list:request error:&error];
-  fulfillWithResultAndNilDefault([list.data base64EncodedStringWithOptions:0], @"", error, resolve, reject);
+  fulfillWithResult([list.data base64EncodedStringWithOptions:0], error, resolve, reject);
 }
 
 @end

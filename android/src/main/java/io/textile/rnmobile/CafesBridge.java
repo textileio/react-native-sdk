@@ -47,7 +47,7 @@ public class CafesBridge extends ReactContextBaseJavaModule {
             public void run() {
                 try {
                     Model.CafeSession session = Textile.instance().cafes.session(peerId);
-                    promise.resolve(Util.encode(session.toByteArray()));
+                    promise.resolve(session != null ? Util.encode(session.toByteArray()) : null);
                 }
                 catch (Exception e) {
                     promise.reject("session", e);
@@ -79,7 +79,7 @@ public class CafesBridge extends ReactContextBaseJavaModule {
             public void run() {
                 try {
                     Model.CafeSession session = Textile.instance().cafes.refreshSession(peerId);
-                    promise.resolve(Util.encode(session.toByteArray()));
+                    promise.resolve(session != null ? Util.encode(session.toByteArray()) : null);
                 }
                 catch (Exception e) {
                     promise.reject("refreshSession", e);

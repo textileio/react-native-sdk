@@ -32,7 +32,7 @@ RCT_EXPORT_METHOD(add:(NSString*)configStr resolver:(RCTPromiseResolveBlock)reso
   NSData *configData = [[NSData alloc] initWithBase64EncodedString:configStr options:0];
   AddThreadConfig *config = [[AddThreadConfig alloc] initWithData:configData error:&error];
   Thread *thread = [Textile.instance.threads add:config error:&error];
-  fulfillWithResultAndNilDefault([thread.data base64EncodedStringWithOptions:0], @"", error, resolve, reject);
+  fulfillWithResult([thread.data base64EncodedStringWithOptions:0], error, resolve, reject);
 }
 
 RCT_EXPORT_METHOD(addOrUpdate:(NSString*)threadStr resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
@@ -52,19 +52,19 @@ RCT_EXPORT_METHOD(rename:(NSString*)threadId name:(NSString*)name resolver:(RCTP
 RCT_EXPORT_METHOD(get:(NSString*)threadId resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSError *error;
   Thread *thread = [Textile.instance.threads get:threadId error:&error];
-  fulfillWithResultAndNilDefault([thread.data base64EncodedStringWithOptions:0], @"", error, resolve, reject);
+  fulfillWithResult([thread.data base64EncodedStringWithOptions:0], error, resolve, reject);
 }
 
 RCT_EXPORT_METHOD(list:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSError *error;
   ThreadList *list = [Textile.instance.threads list:&error];
-  fulfillWithResultAndNilDefault([list.data base64EncodedStringWithOptions:0], @"", error, resolve, reject);
+  fulfillWithResult([list.data base64EncodedStringWithOptions:0], error, resolve, reject);
 }
 
 RCT_EXPORT_METHOD(peers:(NSString*)threadId resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSError *error;
   ContactList *list = [Textile.instance.threads peers:threadId error:&error];
-  fulfillWithResultAndNilDefault([list.data base64EncodedStringWithOptions:0], @"", error, resolve, reject);
+  fulfillWithResult([list.data base64EncodedStringWithOptions:0], error, resolve, reject);
 }
 
 RCT_EXPORT_METHOD(remove:(NSString*)id_ resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {

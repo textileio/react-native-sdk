@@ -86,7 +86,7 @@ public class ThreadsBridge extends ReactContextBaseJavaModule {
             public void run() {
                 try {
                     Model.Thread thread = Textile.instance().threads.get(threadId);
-                    promise.resolve(Util.encode(thread.toByteArray()));
+                    promise.resolve(thread != null ? Util.encode(thread.toByteArray()) : null);
                 }
                 catch (Exception e) {
                     promise.reject("get", e);

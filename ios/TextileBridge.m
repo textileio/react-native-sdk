@@ -48,13 +48,11 @@ RCT_EXPORT_METHOD(repoPath:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseR
 }
 
 RCT_EXPORT_METHOD(version:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
-  NSString *result = Textile.instance.version;
-  fulfillWithResult(result, nil, resolve, reject);
+  resolve(Textile.instance.version);
 }
 
 RCT_EXPORT_METHOD(gitSummary:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
-  NSString *result = Textile.instance.gitSummary;
-  fulfillWithResult(result, nil, resolve, reject);
+  resolve(Textile.instance.gitSummary);
 }
 
 RCT_EXPORT_METHOD(summary:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {

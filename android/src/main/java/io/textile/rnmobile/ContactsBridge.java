@@ -52,7 +52,7 @@ public class ContactsBridge extends ReactContextBaseJavaModule {
             public void run() {
                 try {
                     Model.Contact contact = Textile.instance().contacts.get(address);
-                    promise.resolve(Util.encode(contact.toByteArray()));
+                    promise.resolve(contact != null ? Util.encode(contact.toByteArray()) : null);
                 }
                 catch (Exception e) {
                     promise.reject("get", e);

@@ -30,7 +30,7 @@ RCT_EXPORT_METHOD(add:(NSString*)threadId body:(NSString*)body resolver:(RCTProm
 RCT_EXPORT_METHOD(list:(NSString*)offset limit:(NSInteger)limit threadId:(NSString*)threadId resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSError *error;
   TextList *list = [Textile.instance.messages list:offset limit:limit threadId:threadId error:&error];
-  fulfillWithResultAndNilDefault([list.data base64EncodedStringWithOptions:0], @"", error, resolve, reject);
+  fulfillWithResult([list.data base64EncodedStringWithOptions:0], error, resolve, reject);
 }
 
 @end

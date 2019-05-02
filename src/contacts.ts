@@ -27,11 +27,9 @@ export async function add(contact: IContact): Promise<void> {
 /**
  * Get Contact information by address.
  */
-export async function get(address: string): Promise<IContact | undefined> {
-  const result: string = await ContactsBridge.get(address)
-  if (result.length === 0) {
-    return undefined
-  }
+export async function get(address: string): Promise<IContact> {
+  // This throws an error if no contact is found
+  const result = await ContactsBridge.get(address)
   return Contact.decode(Buffer.from(result, 'base64'))
 }
 
