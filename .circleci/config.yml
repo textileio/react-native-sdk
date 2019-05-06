@@ -76,8 +76,7 @@ jobs:
                 command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/react-native-sdk/.npmrc
             - run:
                 name: Publish package
-                command: npm publish --access=public --tag=next
-
+                command: npm publish --access=public
 workflows:
     version: 2
     react-native-sdk:
