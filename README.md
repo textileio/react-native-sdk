@@ -26,9 +26,9 @@ The tsdoc-based auto-generated documentation can be found at https://textileio.g
 <!-- ⛔️ AUTO-GENERATED-CONTENT:START (CONTRIBUTORS) -->
 | **Commits** | **Contributor** |  
 | --- | --- |  
-| 66 | [andrewxhill](https://github.com/andrewxhill) |  
-| 18 | [sanderpick](https://github.com/sanderpick) |  
-| 17 | [asutula](https://github.com/asutula) |  
+| 69 | [andrewxhill](https://github.com/andrewxhill) |  
+| 24 | [asutula](https://github.com/asutula) |  
+| 19 | [sanderpick](https://github.com/sanderpick) |  
 | 1  | [carsonfarmer](https://github.com/carsonfarmer) |  
 | 1  | [pcowgill](https://github.com/pcowgill) |  
 | 1  | [songjiayang](https://github.com/songjiayang) |  
