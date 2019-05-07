@@ -67,27 +67,17 @@
 				<p><code>npm install @textile/react-native-sdk --save</code></p>
 				<p><strong>Link the Framework</strong></p>
 				<p><code>react-native link @textile/react-native-sdk</code></p>
-				<p><strong>Update Search Paths in iOS</strong></p>
-				<p>The library requires you to update two Search Paths in your iOS code to locate Textile&#39;s mobile framework (installed as a dependency of the React Native library).</p>
-				<p>Open your project&#39;s XCode file. Then, in XCode, navigate to the <code>Root file -&gt; Build Settings</code> in the search bar enter, <code>Search Paths</code>. You&#39;ll see a group of three entries, we are going to edit two.</p>
-				<ol>
-					<li>In <code>Framework search paths</code> add <code>$(SRCROOT)/../node_modules/@textile/go-mobile/dist/ios</code></li>
-					<li>In <code>Library search paths</code> add <code>$(SRCROOT)/../node_modules/@textile/go-mobile/dist/ios</code></li>
-				</ol>
+				<p>Note: The iOS component of <code>@textile/react-native-sdk</code> should be installed using Cocoapods. <code>react-native-link</code> should do this correctly. More documentation coming here.</p>
 				<p><strong>Update Android Gradle</strong></p>
-				<p>Open your project and navigate to <code>android/settings.gradle</code>. At the end, you will add,</p>
-				<pre><code><span class="hljs-keyword">include</span> <span class="hljs-string">':mobile'</span></code></pre><p>Navigate to <code>app/build.gradle</code>. Add to the end of the <code>dependencies {</code> section,</p>
-				<pre><code><span class="hljs-variable">api</span> <span class="hljs-function"><span class="hljs-title">project</span>(<span class="hljs-string">':mobile'</span>)</span></code></pre><p>Finally, inside the <code>android</code> folder, you need to create a new folder called, <code>mobile</code>.</p>
-				<p>Inside the newly created <code>mobile</code> folder, create a file called, <code>build.gradle</code> and for the contents of <code>build.gradle</code> enter,</p>
-				<pre><code><span class="hljs-keyword">configurations</span>.maybeCreate(<span class="hljs-string">"default"</span>)
-<span class="hljs-keyword">artifacts</span>.add(<span class="hljs-string">"default"</span>, <span class="hljs-keyword">file</span>(<span class="hljs-string">'../../node_modules/@textile/go-mobile/dist/android/mobile.aar'</span>))</code></pre><p><strong>Other dependencies</strong></p>
+				<p>You&#39;ll need to add Textile&#39;s maven repository to your project <code>build.gradle</code>&#39;s <code>allProjects.repositories</code> section:</p>
+				<pre><code><span class="hljs-section">maven</span> { <span class="hljs-attribute">url</span> <span class="hljs-string">"https://dl.bintray.com/textile/maven"</span> }</code></pre><p><strong>Other dependencies</strong></p>
 				<p>The Textile library also requires that your project has two other libraries installed. Following the installation instructions for the following two,</p>
 				<ol>
 					<li><a href="https://github.com/transistorsoft/react-native-background-fetch">react-native-background-fetch</a></li>
 					<li><a href="https://github.com/ocetnik/react-native-background-timer">react-native-background-timer</a></li>
 				</ol>
 				<h3 id="typescript-types">Typescript Types</h3>
-				<p>@textile/react-native-sdk is written in TypeScript and compiled to JavaScript. You can use either in your app. </p>
+				<p>@textile/react-native-sdk is written in TypeScript and compiled to JavaScript. You can use either in your app.</p>
 				<h4 id="import-model-types">Import Model Types</h4>
 				<p>Most model types are in the <code>pb</code> (protobuf) models module. You can use it the types as follows.</p>
 				<pre><code class="language-javascript"><span class="hljs-keyword">import</span> { API, pb } <span class="hljs-keyword">from</span> <span class="hljs-string">'@textile/react-native-sdk'</span>;
@@ -174,13 +164,10 @@
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
 					<li class=" tsd-kind-class">
-						<a href="classes/textile.html" class="tsd-kind-icon">Textile</a>
-					</li>
-					<li class=" tsd-kind-type-alias">
-						<a href="globals.html#textileevents" class="tsd-kind-icon">Textile<wbr>Events</a>
+						<a href="classes/eventsubscription.html" class="tsd-kind-icon">Event<wbr>Subscription</a>
 					</li>
 					<li class=" tsd-kind-function">
-						<a href="globals.html#backgroundtask" class="tsd-kind-icon">Background<wbr>Task</a>
+						<a href="globals.html#accept" class="tsd-kind-icon">accept</a>
 					</li>
 					<li class=" tsd-kind-function">
 						<a href="globals.html#acceptexternal" class="tsd-kind-icon">accept<wbr>External</a>
@@ -189,19 +176,67 @@
 						<a href="globals.html#acceptinvite" class="tsd-kind-icon">accept<wbr>Invite</a>
 					</li>
 					<li class=" tsd-kind-function">
-						<a href="globals.html#accountat" class="tsd-kind-icon">account<wbr>At</a>
+						<a href="globals.html#add" class="tsd-kind-icon">add</a>
 					</li>
 					<li class=" tsd-kind-function">
-						<a href="globals.html#add" class="tsd-kind-icon">add</a>
+						<a href="globals.html#addaccountpeeraddedlistener" class="tsd-kind-icon">add<wbr>Account<wbr>Peer<wbr>Added<wbr>Listener</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#addaccountpeerremovedlistener" class="tsd-kind-icon">add<wbr>Account<wbr>Peer<wbr>Removed<wbr>Listener</a>
 					</li>
 					<li class=" tsd-kind-function">
 						<a href="globals.html#addbytarget" class="tsd-kind-icon">add<wbr>ByTarget</a>
 					</li>
 					<li class=" tsd-kind-function">
+						<a href="globals.html#addcanceledpendingnodestoplistener" class="tsd-kind-icon">add<wbr>Canceled<wbr>Pending<wbr>Node<wbr>Stop<wbr>Listener</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#addclientthreadqueryresultlistener" class="tsd-kind-icon">add<wbr>Client<wbr>Thread<wbr>Query<wbr>Result<wbr>Listener</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#addcontactqueryresultlistener" class="tsd-kind-icon">add<wbr>Contact<wbr>Query<wbr>Result<wbr>Listener</a>
+					</li>
+					<li class=" tsd-kind-function">
 						<a href="globals.html#addexternal" class="tsd-kind-icon">add<wbr>External</a>
 					</li>
 					<li class=" tsd-kind-function">
+						<a href="globals.html#addnodefailedtostartlistener" class="tsd-kind-icon">add<wbr>Node<wbr>Failed<wbr>ToStart<wbr>Listener</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#addnodefailedtostoplistener" class="tsd-kind-icon">add<wbr>Node<wbr>Failed<wbr>ToStop<wbr>Listener</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#addnodeonlinelistener" class="tsd-kind-icon">add<wbr>Node<wbr>Online<wbr>Listener</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#addnodestartedlistener" class="tsd-kind-icon">add<wbr>Node<wbr>Started<wbr>Listener</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#addnodestoppedlistener" class="tsd-kind-icon">add<wbr>Node<wbr>Stopped<wbr>Listener</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#addnotificationreceivedlistener" class="tsd-kind-icon">add<wbr>Notification<wbr>Received<wbr>Listener</a>
+					</li>
+					<li class=" tsd-kind-function">
 						<a href="globals.html#addorupdate" class="tsd-kind-icon">add<wbr>OrUpdate</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#addquerydonelistener" class="tsd-kind-icon">add<wbr>Query<wbr>Done<wbr>Listener</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#addqueryerrorlistener" class="tsd-kind-icon">add<wbr>Query<wbr>Error<wbr>Listener</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#addthreadaddedlistener" class="tsd-kind-icon">add<wbr>Thread<wbr>Added<wbr>Listener</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#addthreadremovedlistener" class="tsd-kind-icon">add<wbr>Thread<wbr>Removed<wbr>Listener</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#addthreadupdatereceivedlistener" class="tsd-kind-icon">add<wbr>Thread<wbr>Update<wbr>Received<wbr>Listener</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#addwillstopnodeinbackgroundafterdelaylistener" class="tsd-kind-icon">add<wbr>Will<wbr>Stop<wbr>Node<wbr>InBackground<wbr>After<wbr>Delay<wbr>Listener</a>
 					</li>
 					<li class=" tsd-kind-function">
 						<a href="globals.html#address" class="tsd-kind-icon">address</a>
@@ -210,19 +245,22 @@
 						<a href="globals.html#avatar" class="tsd-kind-icon">avatar</a>
 					</li>
 					<li class=" tsd-kind-function">
-						<a href="globals.html#cancelfindthreadbackups" class="tsd-kind-icon">cancel<wbr>Find<wbr>Thread<wbr>Backups</a>
+						<a href="globals.html#cancelsearch" class="tsd-kind-icon">cancel<wbr>Search</a>
 					</li>
 					<li class=" tsd-kind-function">
-						<a href="globals.html#cancelsearch" class="tsd-kind-icon">cancel<wbr>Search</a>
+						<a href="globals.html#cancelsearchsnapshots" class="tsd-kind-icon">cancel<wbr>Search<wbr>Snapshots</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#cancelsync" class="tsd-kind-icon">cancel<wbr>Sync</a>
 					</li>
 					<li class=" tsd-kind-function">
 						<a href="globals.html#checkmessages" class="tsd-kind-icon">check<wbr>Messages</a>
 					</li>
 					<li class=" tsd-kind-function">
-						<a href="globals.html#countunread" class="tsd-kind-icon">count<wbr>Unread</a>
+						<a href="globals.html#contact" class="tsd-kind-icon">contact</a>
 					</li>
 					<li class=" tsd-kind-function">
-						<a href="globals.html#create" class="tsd-kind-icon">create</a>
+						<a href="globals.html#countunread" class="tsd-kind-icon">count<wbr>Unread</a>
 					</li>
 					<li class=" tsd-kind-function">
 						<a href="globals.html#data" class="tsd-kind-icon">data</a>
@@ -246,16 +284,22 @@
 						<a href="globals.html#gitsummary" class="tsd-kind-icon">git<wbr>Summary</a>
 					</li>
 					<li class=" tsd-kind-function">
+						<a href="globals.html#ignore" class="tsd-kind-icon">ignore</a>
+					</li>
+					<li class=" tsd-kind-function">
 						<a href="globals.html#ignoreinvite" class="tsd-kind-icon">ignore<wbr>Invite</a>
 					</li>
 					<li class=" tsd-kind-function">
 						<a href="globals.html#imagedataforminwidth" class="tsd-kind-icon">image<wbr>Data<wbr>For<wbr>Min<wbr>Width</a>
 					</li>
 					<li class=" tsd-kind-function">
-						<a href="globals.html#init" class="tsd-kind-icon">init</a>
+						<a href="globals.html#initialize" class="tsd-kind-icon">initialize</a>
 					</li>
 					<li class=" tsd-kind-function">
 						<a href="globals.html#list" class="tsd-kind-icon">list</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#name" class="tsd-kind-icon">name</a>
 					</li>
 					<li class=" tsd-kind-function">
 						<a href="globals.html#peerid" class="tsd-kind-icon">peer<wbr>Id</a>
@@ -264,16 +308,16 @@
 						<a href="globals.html#peers" class="tsd-kind-icon">peers</a>
 					</li>
 					<li class=" tsd-kind-function">
-						<a href="globals.html#preparefiles" class="tsd-kind-icon">prepare<wbr>Files</a>
+						<a href="globals.html#prepare" class="tsd-kind-icon">prepare</a>
 					</li>
 					<li class=" tsd-kind-function">
-						<a href="globals.html#preparefilesbypath" class="tsd-kind-icon">prepare<wbr>Files<wbr>ByPath</a>
+						<a href="globals.html#preparebypath" class="tsd-kind-icon">prepare<wbr>ByPath</a>
 					</li>
 					<li class=" tsd-kind-function">
-						<a href="globals.html#preparefilesbypathsync" class="tsd-kind-icon">prepare<wbr>Files<wbr>ByPath<wbr>Sync</a>
+						<a href="globals.html#preparebypathsync" class="tsd-kind-icon">prepare<wbr>ByPath<wbr>Sync</a>
 					</li>
 					<li class=" tsd-kind-function">
-						<a href="globals.html#preparefilessync" class="tsd-kind-icon">prepare<wbr>Files<wbr>Sync</a>
+						<a href="globals.html#preparesync" class="tsd-kind-icon">prepare<wbr>Sync</a>
 					</li>
 					<li class=" tsd-kind-function">
 						<a href="globals.html#read" class="tsd-kind-icon">read</a>
@@ -291,10 +335,16 @@
 						<a href="globals.html#remove" class="tsd-kind-icon">remove</a>
 					</li>
 					<li class=" tsd-kind-function">
-						<a href="globals.html#renamethread" class="tsd-kind-icon">rename<wbr>Thread</a>
+						<a href="globals.html#rename" class="tsd-kind-icon">rename</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#repopath" class="tsd-kind-icon">repo<wbr>Path</a>
 					</li>
 					<li class=" tsd-kind-function">
 						<a href="globals.html#search" class="tsd-kind-icon">search</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#searchsnapshots" class="tsd-kind-icon">search<wbr>Snapshots</a>
 					</li>
 					<li class=" tsd-kind-function">
 						<a href="globals.html#seed" class="tsd-kind-icon">seed</a>
@@ -309,19 +359,22 @@
 						<a href="globals.html#setavatar" class="tsd-kind-icon">set<wbr>Avatar</a>
 					</li>
 					<li class=" tsd-kind-function">
+						<a href="globals.html#setavatarbytarget" class="tsd-kind-icon">set<wbr>Avatar<wbr>ByTarget</a>
+					</li>
+					<li class=" tsd-kind-function">
 						<a href="globals.html#setlevel" class="tsd-kind-icon">set<wbr>Level</a>
 					</li>
 					<li class=" tsd-kind-function">
-						<a href="globals.html#setusername" class="tsd-kind-icon">set<wbr>Username</a>
+						<a href="globals.html#setname" class="tsd-kind-icon">set<wbr>Name</a>
 					</li>
 					<li class=" tsd-kind-function">
-						<a href="globals.html#start" class="tsd-kind-icon">start</a>
-					</li>
-					<li class=" tsd-kind-function">
-						<a href="globals.html#stop" class="tsd-kind-icon">stop</a>
+						<a href="globals.html#snapshot" class="tsd-kind-icon">snapshot</a>
 					</li>
 					<li class=" tsd-kind-function">
 						<a href="globals.html#summary" class="tsd-kind-icon">summary</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#sync" class="tsd-kind-icon">sync</a>
 					</li>
 					<li class=" tsd-kind-function">
 						<a href="globals.html#threads" class="tsd-kind-icon">threads</a>
@@ -330,13 +383,7 @@
 						<a href="globals.html#timestamptodate" class="tsd-kind-icon">timestamp<wbr>ToDate</a>
 					</li>
 					<li class=" tsd-kind-function">
-						<a href="globals.html#username" class="tsd-kind-icon">username</a>
-					</li>
-					<li class=" tsd-kind-function">
 						<a href="globals.html#version" class="tsd-kind-icon">version</a>
-					</li>
-					<li class=" tsd-kind-object-literal">
-						<a href="globals.html#publicevents" class="tsd-kind-icon">public<wbr>Events</a>
 					</li>
 				</ul>
 			</nav>

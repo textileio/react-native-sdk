@@ -9,6 +9,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 import io.textile.pb.Model;
+import io.textile.pb.View;
 import io.textile.textile.Textile;
 
 public class ProfileBridge extends ReactContextBaseJavaModule {
@@ -87,16 +88,33 @@ public class ProfileBridge extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void setAvatar(final String hash, final Promise promise) {
+    public void setAvatar(final String dirStr, final Promise promise) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
                 try {
-                    Textile.instance().profile.setAvatar(hash);
-                    promise.resolve(null);
+                    View.Directory dir = View.Directory.parseFrom(Util.decode(dirStr));
+                    Model.Block block = Textile.instance().profile.setAvatar(dir);
+                    promise.resolve(Util.encode(block.toByteArray()));
                 }
                 catch (Exception e) {
                     promise.reject("setAvatar", e);
+                }
+            }
+        });
+    }
+
+    @ReactMethod
+    public void setAvatarByTarget(final String target, final Promise promise) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Model.Block block = Textile.instance().profile.setAvatarByTarget(target);
+                    promise.resolve(Util.encode(block.toByteArray()));
+                }
+                catch (Exception e) {
+                    promise.reject("setAvatarByTarget", e);
                 }
             }
         });

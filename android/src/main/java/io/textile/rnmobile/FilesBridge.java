@@ -133,12 +133,12 @@ public class FilesBridge extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void list(final String offset, final Integer limit, final String threadId, final Promise promise) {
+    public void list(final String threadId, final String offset, final Integer limit, final Promise promise) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
                 try {
-                    View.FilesList list = Textile.instance().files.list(offset, limit, threadId);
+                    View.FilesList list = Textile.instance().files.list(threadId, offset, limit);
                     promise.resolve(Util.encode(list.toByteArray()));
                 }
                 catch (Exception e) {
