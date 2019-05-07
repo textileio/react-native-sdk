@@ -87,8 +87,8 @@ export async function addByTarget(target: string, threadId: string, caption?: st
  * Textile.files.list(offset, limit);
  * ```
  */
-export async function list(offset: string, limit: number, threadId?: string): Promise<IFilesList> {
-  const result = await FilesBridge.list(offset, limit, threadId)
+export async function list(threadId: string, offset: string, limit: number): Promise<IFilesList> {
+  const result = await FilesBridge.list(threadId, offset, limit)
   return FilesList.decode(Buffer.from(result, 'base64'))
 }
 
