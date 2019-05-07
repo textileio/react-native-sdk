@@ -713,6 +713,7 @@
 "@textile/js-types@0.1.11":
   version "0.1.11"
   resolved "https://registry.yarnpkg.com/@textile/js-types/-/js-types-0.1.11.tgz#650247c092cec006634fa5bcb3d199d15e18050d"
+  integrity sha512-mwROfSeR78R5t2M9HfcSFxVUEiYF/u/6ar2j7QNdDG3ALY7RhU8uXzVdFSNUG81I6hEpL2K5jAK05HSOJaiYwQ==
   dependencies:
     protobufjs "^6.8.8"
 

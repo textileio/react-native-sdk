@@ -7,7 +7,7 @@ import {
   IDirectory,
   Directory,
   Block,
-  IBlock
+  IBlock,
 } from './model'
 
 const { ProfileBridge } = NativeModules
