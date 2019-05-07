@@ -59,9 +59,9 @@ RCT_EXPORT_METHOD(addByTarget:(NSString*)target threadId:(NSString*)threadId cap
   fulfillWithResult([block.data base64EncodedStringWithOptions:0], error, resolve, reject);
 }
 
-RCT_EXPORT_METHOD(list:(NSString*)offset limit:(NSInteger)limit threadId:(NSString*)threadId resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_EXPORT_METHOD(list:(NSString*)threadId offset:(NSString*)offset limit:(NSInteger)limit resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSError *error;
-  FilesList *list = [Textile.instance.files list:offset limit:limit threadId:threadId error:&error];
+  FilesList *list = [Textile.instance.files list:threadId offset:offset limit:limit error:&error];
   fulfillWithResult([list.data base64EncodedStringWithOptions:0], error, resolve, reject);
 }
 

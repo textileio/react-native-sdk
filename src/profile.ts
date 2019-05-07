@@ -4,6 +4,10 @@ import { Buffer } from 'buffer'
 import {
   Peer,
   IPeer,
+  IDirectory,
+  Directory,
+  Block,
+  IBlock
 } from './model'
 
 const { ProfileBridge } = NativeModules
@@ -52,11 +56,24 @@ export async function avatar(): Promise<string | undefined> {
 }
 
 /**
- * Set a new Avatar by ID.
+ * Set a new Avatar by Directory.
  * ```typescript
- * Textile.profile.setAvatar(id);
+ * Textile.profile.setAvatar(directory);
  * ```
  */
-export async function setAvatar(id_: string): Promise<void> {
-  await ProfileBridge.setAvatar(id_)
+export async function setAvatar(directory: IDirectory): Promise<IBlock> {
+  const payload = Directory.encode(directory).finish()
+  const result = await ProfileBridge.setAvatar(Buffer.from(payload).toString('base64'))
+  return Block.decode(Buffer.from(result, 'base64'))
+}
+
+/**
+ * Set a new Avatar by target id.
+ * ```typescript
+ * Textile.profile.setAvatarByTarget(target);
+ * ```
+ */
+export async function setAvatarByTarget(target: string): Promise<IBlock> {
+  const result = await ProfileBridge.setAvatarByTarget(target)
+  return Block.decode(Buffer.from(result, 'base64'))
 }
