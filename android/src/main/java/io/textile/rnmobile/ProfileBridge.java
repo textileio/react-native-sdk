@@ -88,33 +88,15 @@ public class ProfileBridge extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void setAvatar(final String dirStr, final Promise promise) {
+    public void accountThread(final Promise promise) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
                 try {
-                    View.Directory dir = View.Directory.parseFrom(Util.decode(dirStr));
-                    Model.Block block = Textile.instance().profile.setAvatar(dir);
-                    promise.resolve(Util.encode(block.toByteArray()));
-                }
-                catch (Exception e) {
-                    promise.reject("setAvatar", e);
-                }
-            }
-        });
-    }
-
-    @ReactMethod
-    public void setAvatarByTarget(final String target, final Promise promise) {
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Model.Block block = Textile.instance().profile.setAvatarByTarget(target);
-                    promise.resolve(Util.encode(block.toByteArray()));
-                }
-                catch (Exception e) {
-                    promise.reject("setAvatarByTarget", e);
+                    Model.Thread thread = Textile.instance().profile.accountThread();
+                    promise.resolve(Util.encode(thread.toByteArray()));
+                } catch (Exception e) {
+                    promise.reject("accountThread", e);
                 }
             }
         });
