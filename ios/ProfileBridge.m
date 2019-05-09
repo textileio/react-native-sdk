@@ -45,18 +45,10 @@ RCT_EXPORT_METHOD(avatar:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRej
   fulfillWithResult(avatar, error, resolve, reject);
 }
 
-RCT_EXPORT_METHOD(setAvatar:(NSString*)dirStr resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_EXPORT_METHOD(accountThread:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSError *error;
-  NSData *dirData = [[NSData alloc] initWithBase64EncodedString:dirStr options:0];
-  Directory *dir = [[Directory alloc] initWithData:dirData error:&error];
-  Block *block = [Textile.instance.profile setAvatar:dir error:&error];
-  fulfillWithResult([block.data base64EncodedStringWithOptions:0], error, resolve, reject);
-}
-
-RCT_EXPORT_METHOD(setAvatarByTarget:(NSString*)target resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
-  NSError *error;
-  Block *block = [Textile.instance.profile setAvatarByTarget:target error:&error];
-  fulfillWithResult([block.data base64EncodedStringWithOptions:0], error, resolve, reject);
+  Thread *thread = [Textile.instance.profile accountThread:&error];
+  fulfillWithResult([thread.data base64EncodedStringWithOptions:0], error, resolve, reject);
 }
 
 @end

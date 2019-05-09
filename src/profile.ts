@@ -8,6 +8,8 @@ import {
   Directory,
   Block,
   IBlock,
+  Thread,
+  IThread,
 } from './model'
 
 const { ProfileBridge } = NativeModules
@@ -56,24 +58,9 @@ export async function avatar(): Promise<string | undefined> {
 }
 
 /**
- * Set a new Avatar by Directory.
- * ```typescript
- * Textile.profile.setAvatar(directory);
- * ```
+ * Get the account thread.
  */
-export async function setAvatar(directory: IDirectory): Promise<IBlock> {
-  const payload = Directory.encode(directory).finish()
-  const result = await ProfileBridge.setAvatar(Buffer.from(payload).toString('base64'))
-  return Block.decode(Buffer.from(result, 'base64'))
-}
-
-/**
- * Set a new Avatar by target id.
- * ```typescript
- * Textile.profile.setAvatarByTarget(target);
- * ```
- */
-export async function setAvatarByTarget(target: string): Promise<IBlock> {
-  const result = await ProfileBridge.setAvatarByTarget(target)
-  return Block.decode(Buffer.from(result, 'base64'))
+export async function accountThread(): Promise<IThread> {
+  const result = await ProfileBridge.accountThread()
+  return Thread.decode(Buffer.from(result, 'base64'))
 }
