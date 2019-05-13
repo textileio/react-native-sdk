@@ -1,6 +1,6 @@
 {
   "name": "@textile/react-native-sdk",
-  "version": "1.2.5",
+  "version": "1.2.6",
   "description": "## Getting started",
   "nativePackage": true,
   "main": "dist/index.js",
