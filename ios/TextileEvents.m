@@ -41,7 +41,7 @@ RCT_EXPORT_MODULE();
 }
 
 - (void)nodeFailedToStartWithError:(NSError *)error {
-  [self sendEventWithName:@"NODE_FAILED_TO_START" body:error.description];
+  [self sendEventWithName:@"NODE_FAILED_TO_START" body:error.localizedDescription];
 }
 
 - (void)nodeStopped {
@@ -49,7 +49,7 @@ RCT_EXPORT_MODULE();
 }
 
 - (void)nodeFailedToStopWithError:(NSError *)error {
-  [self sendEventWithName:@"NODE_FAILED_TO_STOP" body:error.description];
+  [self sendEventWithName:@"NODE_FAILED_TO_STOP" body:error.localizedDescription];
 }
 
 - (void)nodeOnline {
@@ -95,7 +95,7 @@ RCT_EXPORT_MODULE();
 - (void)queryError:(NSString *)queryId error:(NSError *)error {
   NSDictionary *body = @{
                          @"queryId": queryId,
-                         @"error": error.description
+                         @"error": error.localizedDescription
                        };
   [self sendEventWithName:@"QUERY_ERROR" body:body];
 }
