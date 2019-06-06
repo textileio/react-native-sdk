@@ -95,11 +95,11 @@ export async function list(threadId: string, offset: string, limit: number): Pro
 /**
  * Get the raw data for a file at an IPFS hash.
  * ```typescript
- * Textile.files.data(hash);
+ * Textile.files.content(hash);
  * ```
  */
-export async function data(hash: string): Promise<string> {
-  return FilesBridge.data(hash)
+export async function content(hash: string): Promise<string> {
+  return FilesBridge.content(hash)
 }
 
 /**
@@ -107,9 +107,9 @@ export async function data(hash: string): Promise<string> {
  *
  * Note: pth is <target>/<index>, e.g., "Qm.../0"
  * ```typescript
- * Textile.files.imageDataForMinWidth(path, minWidth);
+ * Textile.files.imageContentForMinWidth(path, minWidth);
  * ```
  */
-export async function imageDataForMinWidth(pth: string, minWidth: number): Promise<string> {
-  return FilesBridge.imageDataForMinWidth(pth, minWidth)
+export async function imageContentForMinWidth(pth: string, minWidth: number): Promise<string> {
+  return FilesBridge.imageContentForMinWidth(pth, minWidth)
 }

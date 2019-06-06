@@ -149,30 +149,30 @@ public class FilesBridge extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void data(final String hash, final Promise promise) {
+    public void content(final String hash, final Promise promise) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
                 try {
-                    promise.resolve(Textile.instance().files.data(hash));
+                    promise.resolve(Textile.instance().files.content(hash));
                 }
                 catch (Exception e) {
-                    promise.reject("data", e);
+                    promise.reject("content", e);
                 }
             }
         });
     }
 
     @ReactMethod
-    public void imageDataForMinWidth(final String pth, final Integer minWidth, final Promise promise) {
+    public void imageContentForMinWidth(final String pth, final Integer minWidth, final Promise promise) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
                 try {
-                    promise.resolve(Textile.instance().files.imageDataForMinWidth(pth, minWidth));
+                    promise.resolve(Textile.instance().files.imageContentForMinWidth(pth, minWidth));
                 }
                 catch (Exception e) {
-                    promise.reject("imageDataForMinWidth", e);
+                    promise.reject("imageContentForMinWidth", e);
                 }
             }
         });
