@@ -65,15 +65,15 @@ RCT_EXPORT_METHOD(list:(NSString*)threadId offset:(NSString*)offset limit:(NSInt
   fulfillWithResult([list.data base64EncodedStringWithOptions:0], error, resolve, reject);
 }
 
-RCT_EXPORT_METHOD(data:(NSString*)hash resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_EXPORT_METHOD(content:(NSString*)hash resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSError *error;
-  NSString *result = [Textile.instance.files data:hash error:&error];
+  NSString *result = [Textile.instance.files content:hash error:&error];
   fulfillWithResult(result, error, resolve, reject);
 }
 
-RCT_EXPORT_METHOD(imageDataForMinWidth:(NSString*)pth minWidth:(NSInteger)minWidth resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_EXPORT_METHOD(imageContentForMinWidth:(NSString*)pth minWidth:(NSInteger)minWidth resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSError *error;
-  NSString *result = [Textile.instance.files imageDataForMinWidth:pth minWidth:minWidth error:&error];
+  NSString *result = [Textile.instance.files imageContentForMinWidth:pth minWidth:minWidth error:&error];
   fulfillWithResult(result, error, resolve, reject);
 }
 
