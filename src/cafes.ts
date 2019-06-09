@@ -52,7 +52,7 @@ export async function sessions(): Promise<ICafeSessionList> {
  * ```
  */
 export async function refreshSession(peerId: string): Promise<ICafeSession | undefined> {
-  const result = await CafesBridge.refreshession(peerId)
+  const result = await CafesBridge.refreshSession(peerId)
   if (!result) {
     return undefined
   }
