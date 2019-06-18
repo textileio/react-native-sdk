@@ -1,11 +1,12 @@
 package io.textile.rnmobile;
 
+import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.bridge.WritableNativeMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 
 import io.textile.pb.Model;
-import io.textile.pb.View;
+import io.textile.textile.FeedItemData;
 import io.textile.textile.TextileEventListener;
 
 class TextileEvents implements TextileEventListener {
@@ -57,8 +58,13 @@ class TextileEvents implements TextileEventListener {
     }
 
     @Override
-    public void threadUpdateReceived(View.FeedItem feedItem) {
-        emitter.emit("THREAD_UPDATE_RECEIVED", Util.encode(feedItem.toByteArray()));
+    public void threadUpdateReceived(String threadId, FeedItemData feedItemData) {
+        WritableMap map = Arguments.createMap();
+        map.putString("threadId", threadId);
+        map.putString("block", feedItemData.block);
+        map.putInt("type", feedItemData.type.ordinal());
+        map.putString("data", Util.feedItemDataToBase64(feedItemData));
+        emitter.emit("THREAD_UPDATE_RECEIVED", map);
     }
 
     @Override
