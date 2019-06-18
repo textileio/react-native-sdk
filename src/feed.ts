@@ -2,10 +2,11 @@ import { NativeModules } from 'react-native'
 import { Buffer } from 'buffer'
 import {
   FeedRequest,
-  FeedItemList,
   IFeedRequest,
-  IFeedItemList,
+  FeedItemType,
+  FeedItemData,
 } from './model'
+import { toFeedItemData } from './util-internal'
 
 const { FeedBridge } = NativeModules
 
@@ -15,8 +16,9 @@ const { FeedBridge } = NativeModules
  * Textile.feed.list();
  * ```
  */
-export async function list(request: IFeedRequest): Promise<IFeedItemList> {
+export async function list(request: IFeedRequest): Promise<FeedItemData[]> {
   const payload = FeedRequest.encode(request).finish()
-  const result = await FeedBridge.list(Buffer.from(payload).toString('base64'))
-  return FeedItemList.decode(Buffer.from(result, 'base64'))
+  const result: ReadonlyArray<{ type: FeedItemType, block: string, data: string }> = await FeedBridge.list(Buffer.from(payload).toString('base64'))
+  const feedItemData = result.map(({ type, block, data }) => toFeedItemData(type, block, data))
+  return feedItemData
 }

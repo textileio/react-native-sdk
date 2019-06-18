@@ -25,8 +25,12 @@ RCT_EXPORT_METHOD(list:(NSString*)reqStr resolver:(RCTPromiseResolveBlock)resolv
   NSError *error;
   NSData *requestData = [[NSData alloc] initWithBase64EncodedString:reqStr options:0];
   FeedRequest *request = [[FeedRequest alloc] initWithData:requestData error:&error];
-  FeedItemList *list = [Textile.instance.feed list:request error:&error];
-  fulfillWithResult([list.data base64EncodedStringWithOptions:0], error, resolve, reject);
+  NSArray<FeedItemData *> *list = [Textile.instance.feed list:request error:&error];
+  NSMutableArray *converted = [NSMutableArray arrayWithCapacity:list.count];
+  for (FeedItemData *feedItemData in list) {
+    [converted addObject:@{ @"block" : feedItemData.block, @"type" : [NSNumber numberWithUnsignedInteger:feedItemData.type], @"data" : feedItemDataToBase64(feedItemData) }];
+  }
+  fulfillWithResult(converted, error, resolve, reject);
 }
 
 @end
