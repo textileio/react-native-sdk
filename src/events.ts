@@ -214,13 +214,16 @@ eventEmitter.addListener('NOTIFICATION_RECEIVED', (base64) => {
   }
 })
 
-eventEmitter.addListener('THREAD_UPDATE_RECEIVED', (dict: { threadId: string, block: string, type: FeedItemType, data: string }) => {
-  const { threadId, block, type, data } = dict
-  const feedItemData = toFeedItemData(type, block, data)
-  for (const listener of threadUpdateReceivedListeners) {
-    listener(threadId, feedItemData)
-  }
-})
+eventEmitter.addListener(
+  'THREAD_UPDATE_RECEIVED',
+  (dict: { threadId: string, block: string, type: FeedItemType, data: string }) => {
+    const { threadId, block, type, data } = dict
+    const feedItemData = toFeedItemData(type, block, data)
+    for (const listener of threadUpdateReceivedListeners) {
+      listener(threadId, feedItemData)
+    }
+  },
+)
 
 eventEmitter.addListener('THREAD_ADDED', (threadId) => {
   for (const listener of threadAddedListeners) {

@@ -5,7 +5,7 @@ import {
   IFiles,
   IIgnore,
   IJoin,
-  ILeave
+  ILeave,
 } from '@textile/js-types'
 
 export * from '@textile/js-types'
@@ -24,7 +24,7 @@ export enum FeedItemType {
   Files,
   Ignore,
   Join,
-  Leave
+  Leave,
 }
 
 export interface TextFeedItem {
@@ -69,4 +69,11 @@ export interface LeaveFeedItem {
   value: ILeave
 }
 
-export type FeedItemData = TextFeedItem | CommentFeedItem | LikeFeedItem | FilesFeedItem | IgnoreFeedItem | JoinFeedItem | LeaveFeedItem
+export type FeedItemData =
+  TextFeedItem |
+  CommentFeedItem |
+  LikeFeedItem |
+  FilesFeedItem |
+  IgnoreFeedItem |
+  JoinFeedItem |
+  LeaveFeedItem
