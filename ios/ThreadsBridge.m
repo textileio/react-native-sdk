@@ -63,7 +63,7 @@ RCT_EXPORT_METHOD(list:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejec
 
 RCT_EXPORT_METHOD(peers:(NSString*)threadId resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSError *error;
-  ContactList *list = [Textile.instance.threads peers:threadId error:&error];
+  PeerList *list = [Textile.instance.threads peers:threadId error:&error];
   fulfillWithResult([list.data base64EncodedStringWithOptions:0], error, resolve, reject);
 }
 
