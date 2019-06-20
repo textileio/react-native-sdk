@@ -8,15 +8,16 @@ import { Buffer } from 'buffer'
 
 import {
   Notification,
-  FeedItem,
   Thread,
   Contact,
   INotification,
-  IFeedItem,
   IThread,
   IContact,
   EventSubscription,
+  FeedItemType,
+  FeedItemData,
 } from './model'
+import { toFeedItemData } from './util-internal'
 
 const { TextileEvents } = NativeModules
 const eventEmitter = Platform.select({
@@ -32,7 +33,7 @@ let nodeOnlineListeners: Array<() => void> = []
 let willStopNodeInBackgroundAfterDelayListeners: Array<(seconds: number) => void> = []
 let canceledPendingNodeStopListeners: Array<() => void> = []
 let notificationReceivedListeners: Array<(notification: INotification) => void> = []
-let threadUpdateReceivedListeners: Array<(feedItem: IFeedItem) => void> = []
+let threadUpdateReceivedListeners: Array<(threadId: string, feedItem: FeedItemData) => void> = []
 let threadAddedListeners: Array<(threadId: string) => void> = []
 let threadRemovedListeners: Array<(threadId: string) => void> = []
 let accountPeerAddedListeners: Array<(peerId: string) => void> = []
@@ -101,7 +102,7 @@ export function addNotificationReceivedListener(listener: (notification: INotifi
   )
 }
 
-export function addThreadUpdateReceivedListener(listener: (feedItem: IFeedItem) => void) {
+export function addThreadUpdateReceivedListener(listener: (threadId: string, feedItem: FeedItemData) => void) {
   threadUpdateReceivedListeners.push(listener)
   return new EventSubscription(
     () => threadUpdateReceivedListeners = threadUpdateReceivedListeners.filter((item) => item !== listener),
@@ -213,12 +214,16 @@ eventEmitter.addListener('NOTIFICATION_RECEIVED', (base64) => {
   }
 })
 
-eventEmitter.addListener('THREAD_UPDATE_RECEIVED', (base64) => {
-  const feedItem = FeedItem.decode(Buffer.from(base64, 'base64'))
-  for (const listener of threadUpdateReceivedListeners) {
-    listener(feedItem)
-  }
-})
+eventEmitter.addListener(
+  'THREAD_UPDATE_RECEIVED',
+  (dict: { threadId: string, block: string, type: FeedItemType, data: string }) => {
+    const { threadId, block, type, data } = dict
+    const feedItemData = toFeedItemData(type, block, data)
+    for (const listener of threadUpdateReceivedListeners) {
+      listener(threadId, feedItemData)
+    }
+  },
+)
 
 eventEmitter.addListener('THREAD_ADDED', (threadId) => {
   for (const listener of threadAddedListeners) {

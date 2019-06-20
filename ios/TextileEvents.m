@@ -9,6 +9,7 @@
 #endif
 
 #import "TextileEvents.h"
+#import "utils.h"
 
 @implementation TextileEvents
 
@@ -70,6 +71,15 @@ RCT_EXPORT_MODULE();
 
 - (void)threadUpdateReceived:(FeedItem *)feedItem {
   [self sendEventWithName:@"THREAD_UPDATE_RECEIVED" body:[feedItem.data base64EncodedStringWithOptions:0]];
+}
+
+- (void)threadUpdateReceived:(NSString *)threadId data:(FeedItemData *)feedItemData {
+  [self sendEventWithName:@"THREAD_UPDATE_RECEIVED" body:@{
+                                                           @"threadId" : threadId,
+                                                           @"block" : feedItemData.block,
+                                                           @"type" : [NSNumber numberWithUnsignedInteger:feedItemData.type],
+                                                           @"data" : feedItemDataToBase64(feedItemData)
+                                                           }];
 }
 
 - (void)threadAdded:(NSString *)threadId {

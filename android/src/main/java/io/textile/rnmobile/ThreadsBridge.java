@@ -117,7 +117,7 @@ public class ThreadsBridge extends ReactContextBaseJavaModule {
             @Override
             public void run() {
                 try {
-                    Model.ContactList list = Textile.instance().threads.peers(threadId);
+                    Model.PeerList list = Textile.instance().threads.peers(threadId);
                     promise.resolve(Util.encode(list.toByteArray()));
                 }
                 catch (Exception e) {

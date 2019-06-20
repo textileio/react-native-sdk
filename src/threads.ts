@@ -5,13 +5,13 @@ import {
   AddThreadConfig,
   Thread,
   ThreadList,
-  ContactList,
+  PeerList,
   ThreadSnapshotQuery,
   QueryOptions,
   IAddThreadConfig,
   IThread,
   IThreadList,
-  IContactList,
+  IPeerList,
   IThreadSnapshotQuery,
   IQueryOptions,
 } from './model'
@@ -80,9 +80,9 @@ export async function list(): Promise<IThreadList> {
  * Textile.threads.peers(threadId);
  * ```
  */
-export async function peers(threadId: string): Promise<IContactList> {
+export async function peers(threadId: string): Promise<IPeerList> {
   const result = await ThreadsBridge.peers(threadId)
-  return ContactList.decode(Buffer.from(result, 'base64'))
+  return PeerList.decode(Buffer.from(result, 'base64'))
 }
 
 /**
