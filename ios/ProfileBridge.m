@@ -45,6 +45,12 @@ RCT_EXPORT_METHOD(avatar:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRej
   fulfillWithResult(avatar, error, resolve, reject);
 }
 
+RCT_EXPORT_METHOD(setAvatar:(NSString *)item resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+  [Textile.instance.profile setAvatar:item completion:^(Block * _Nullable block, NSError * _Nonnull error) {
+    fulfillWithResult([block.data base64EncodedStringWithOptions:0], error, resolve, reject);
+  }];
+}
+
 RCT_EXPORT_METHOD(accountThread:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSError *error;
   Thread *thread = [Textile.instance.profile accountThread:&error];

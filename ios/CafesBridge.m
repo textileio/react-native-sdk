@@ -21,9 +21,9 @@ RCT_EXPORT_MODULE();
   return dispatch_queue_create("io.textile.TextileNodeQueue", DISPATCH_QUEUE_SERIAL);
 }
 
-RCT_EXPORT_METHOD(register:(NSString*)host token:(NSString*)token resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_EXPORT_METHOD(register:(NSString*)peerId token:(NSString*)token resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSError *error;
-  [Textile.instance.cafes register:host token:token error:&error];
+  [Textile.instance.cafes register:peerId token:token error:&error];
   fulfillWithResult(nil, error, resolve, reject);
 }
 

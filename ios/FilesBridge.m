@@ -21,42 +21,30 @@ RCT_EXPORT_MODULE();
   return dispatch_queue_create("io.textile.TextileNodeQueue", DISPATCH_QUEUE_SERIAL);
 }
 
-RCT_EXPORT_METHOD(prepare:(NSString*)strBase64 threadId:(NSString*)threadId resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
-  [Textile.instance.files prepare:strBase64 threadId:threadId completion:^(MobilePreparedFiles * _Nullable preparedFiles, NSError * _Nonnull error) {
-    fulfillWithResult([preparedFiles.data base64EncodedStringWithOptions:0], error, resolve, reject);
+RCT_EXPORT_METHOD(addData:(NSString *)dataBase64 threadId:(NSString *)threadId caption:(NSString *)caption resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+  NSData *data = [[NSData alloc] initWithBase64EncodedString:dataBase64 options:0];
+  [Textile.instance.files addData:data threadId:threadId caption:caption completion:^(Block * _Nullable block, NSError * _Nonnull error) {
+    fulfillWithResult([block.data base64EncodedStringWithOptions:0], error, resolve, reject);
   }];
 }
 
-RCT_EXPORT_METHOD(prepareSync:(NSString*)strBase64 threadId:(NSString*)threadId resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_EXPORT_METHOD(addFiles:(NSString *)stringsBase64 threadId:(NSString *)threadId caption:(NSString *)caption resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+  NSData *stringsData = [[NSData alloc] initWithBase64EncodedString:stringsBase64 options:0];
   NSError *error;
-  MobilePreparedFiles *preparedFiles = [Textile.instance.files prepareSync:strBase64 threadId:threadId error:&error];
-  fulfillWithResult([preparedFiles.data base64EncodedStringWithOptions:0], error, resolve, reject);
-}
-
-RCT_EXPORT_METHOD(prepareByPath:(NSString*)path threadId:(NSString*)threadId resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
-  [Textile.instance.files prepareByPath:path threadId:threadId completion:^(MobilePreparedFiles * _Nullable preparedFiles, NSError * _Nonnull error) {
-    fulfillWithResult([preparedFiles.data base64EncodedStringWithOptions:0], error, resolve, reject);
+  Strings *strings = [[Strings alloc] initWithData:stringsData error:&error];
+  if (error) {
+    fulfillWithResult(nil, error, resolve, reject);
+    return;
+  }
+  [Textile.instance.files addFiles:strings threadId:threadId caption:caption completion:^(Block * _Nullable block, NSError * _Nonnull error) {
+    fulfillWithResult([block.data base64EncodedStringWithOptions:0], error, resolve, reject);
   }];
 }
 
-RCT_EXPORT_METHOD(prepareByPathSync:(NSString*)path threadId:(NSString*)threadId resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
-  NSError *error;
-  MobilePreparedFiles *preparedFiles = [Textile.instance.files prepareByPathSync:path threadId:threadId error:&error];
-  fulfillWithResult([preparedFiles.data base64EncodedStringWithOptions:0], error, resolve, reject);
-}
-
-RCT_EXPORT_METHOD(add:(NSString*)dirStr threadId:(NSString*)threadId caption:(NSString*)caption resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
-  NSError *error;
-  NSData *dirData = [[NSData alloc] initWithBase64EncodedString:dirStr options:0];
-  Directory *dir = [[Directory alloc] initWithData:dirData error:&error];
-  Block *block = [Textile.instance.files add:dir threadId:threadId caption:caption error:&error];
-  fulfillWithResult([block.data base64EncodedStringWithOptions:0], error, resolve, reject);
-}
-
-RCT_EXPORT_METHOD(addByTarget:(NSString*)target threadId:(NSString*)threadId caption:(NSString*)caption resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
-  NSError *error;
-  Block *block = [Textile.instance.files addByTarget:target threadId:threadId caption:caption error:&error];
-  fulfillWithResult([block.data base64EncodedStringWithOptions:0], error, resolve, reject);
+RCT_EXPORT_METHOD(shareFiles:(NSString *)target threadId:(NSString *)threadId caption:(NSString *)caption resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+  [Textile.instance.files shareFiles:target threadId:threadId caption:caption completion:^(Block * _Nullable block, NSError * _Nonnull error) {
+    fulfillWithResult([block.data base64EncodedStringWithOptions:0], error, resolve, reject);
+  }];
 }
 
 RCT_EXPORT_METHOD(list:(NSString*)threadId offset:(NSString*)offset limit:(NSInteger)limit resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
