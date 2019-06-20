@@ -16,6 +16,8 @@ import {
   EventSubscription,
   FeedItemType,
   FeedItemData,
+  ICafeSyncGroupStatus,
+  CafeSyncGroupStatus,
 } from './model'
 import { toFeedItemData } from './util-internal'
 
@@ -42,6 +44,9 @@ let queryDoneListeners: Array<(queryId: string) => void> = []
 let queryErrorListeners: Array<(queryId: string, error: string) => void> = []
 let clientThreadQueryResultListeners: Array<(queryId: string, thread: IThread) => void> = []
 let contactQueryResultListeners: Array<(queryId: string, contact: IContact) => void> = []
+let syncUpdateListeners: Array<(syncUpdate: ICafeSyncGroupStatus) => void> = []
+let syncCompleteListeners: Array<(syncUpdate: ICafeSyncGroupStatus) => void> = []
+let syncFailedListeners: Array<(syncUpdate: ICafeSyncGroupStatus) => void> = []
 
 export function addNodeStartedListener(listener: () => void) {
   nodeStartedListeners.push(listener)
@@ -165,6 +170,27 @@ export function addContactQueryResultListener(listener: (queryId: string, contac
   )
 }
 
+export function addSyncUpdateListener(listener: (syncUpdate: ICafeSyncGroupStatus) => void) {
+  syncUpdateListeners.push(listener)
+  return new EventSubscription(
+    () => syncUpdateListeners = syncUpdateListeners.filter((item) => item !== listener),
+  )
+}
+
+export function addSyncCompleteListener(listener: (syncUpdate: ICafeSyncGroupStatus) => void) {
+  syncCompleteListeners.push(listener)
+  return new EventSubscription(
+    () => syncCompleteListeners = syncCompleteListeners.filter((item) => item !== listener),
+  )
+}
+
+export function addSyncFailedListener(listener: (syncUpdate: ICafeSyncGroupStatus) => void) {
+  syncFailedListeners.push(listener)
+  return new EventSubscription(
+    () => syncFailedListeners = syncFailedListeners.filter((item) => item !== listener),
+  )
+}
+
 eventEmitter.addListener('NODE_STARTED', () => {
   for (const listener of nodeStartedListeners) {
     listener()
@@ -275,5 +301,26 @@ eventEmitter.addListener('CONTACT_QUERY_RESULT', (payload) => {
   const contact = Contact.decode(Buffer.from(data, 'base64'))
   for (const listener of contactQueryResultListeners) {
     listener(queryId, contact)
+  }
+})
+
+eventEmitter.addListener('SYNC_UPDATE', (base64) => {
+  const status = CafeSyncGroupStatus.decode(Buffer.from(base64, 'base64'))
+  for (const listener of syncUpdateListeners) {
+    listener(status)
+  }
+})
+
+eventEmitter.addListener('SYNC_COMPLETE', (base64) => {
+  const status = CafeSyncGroupStatus.decode(Buffer.from(base64, 'base64'))
+  for (const listener of syncCompleteListeners) {
+    listener(status)
+  }
+})
+
+eventEmitter.addListener('SYNC_FAILED', (base64) => {
+  const status = CafeSyncGroupStatus.decode(Buffer.from(base64, 'base64'))
+  for (const listener of syncFailedListeners) {
+    listener(status)
   }
 })

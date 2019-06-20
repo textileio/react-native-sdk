@@ -4,8 +4,6 @@ import { Buffer } from 'buffer'
 import {
   Peer,
   IPeer,
-  IDirectory,
-  Directory,
   Block,
   IBlock,
   Thread,
@@ -55,6 +53,16 @@ export async function setName(name: string): Promise<void> {
 export async function avatar(): Promise<string | undefined> {
   const result: string = await ProfileBridge.avatar()
   return result.length > 0 ? result : undefined
+}
+
+/**
+ * Set the user's avatar image
+ * @param item The path to an image or existing hash to set as the avatar
+ * @returns A Promise that will resolve with the Block result
+ */
+export async function setAvatar(item: string): Promise<IBlock> {
+  const result = await ProfileBridge.setAvatar(item)
+  return Block.decode(Buffer.from(result, 'base64'))
 }
 
 /**
