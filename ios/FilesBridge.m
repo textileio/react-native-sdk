@@ -28,15 +28,8 @@ RCT_EXPORT_METHOD(addData:(NSString *)dataBase64 threadId:(NSString *)threadId c
   }];
 }
 
-RCT_EXPORT_METHOD(addFiles:(NSString *)stringsBase64 threadId:(NSString *)threadId caption:(NSString *)caption resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
-  NSData *stringsData = [[NSData alloc] initWithBase64EncodedString:stringsBase64 options:0];
-  NSError *error;
-  Strings *strings = [[Strings alloc] initWithData:stringsData error:&error];
-  if (error) {
-    fulfillWithResult(nil, error, resolve, reject);
-    return;
-  }
-  [Textile.instance.files addFiles:strings threadId:threadId caption:caption completion:^(Block * _Nullable block, NSError * _Nonnull error) {
+RCT_EXPORT_METHOD(addFiles:(NSString *)paths threadId:(NSString *)threadId caption:(NSString *)caption resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+  [Textile.instance.files addFiles:paths threadId:threadId caption:caption completion:^(Block * _Nullable block, NSError * _Nonnull error) {
     fulfillWithResult([block.data base64EncodedStringWithOptions:0], error, resolve, reject);
   }];
 }
@@ -54,15 +47,23 @@ RCT_EXPORT_METHOD(list:(NSString*)threadId offset:(NSString*)offset limit:(NSInt
 }
 
 RCT_EXPORT_METHOD(content:(NSString*)hash resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
-  NSError *error;
-  NSString *result = [Textile.instance.files content:hash error:&error];
-  fulfillWithResult(result, error, resolve, reject);
+  [Textile.instance.files content:hash completion:^(NSData * _Nullable data, NSString * _Nullable mediaType, NSError * _Nonnull error) {
+    NSDictionary *result = @{
+                             @"data" : [data base64EncodedStringWithOptions:0],
+                             @"mediaType" : mediaType
+                             };
+    fulfillWithResult(result, error, resolve, reject);
+  }];
 }
 
 RCT_EXPORT_METHOD(imageContentForMinWidth:(NSString*)pth minWidth:(NSInteger)minWidth resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
-  NSError *error;
-  NSString *result = [Textile.instance.files imageContentForMinWidth:pth minWidth:minWidth error:&error];
-  fulfillWithResult(result, error, resolve, reject);
+  [Textile.instance.files imageContentForMinWidth:pth minWidth:minWidth completion:^(NSData * _Nullable data, NSString * _Nullable mediaType, NSError * _Nonnull error) {
+    NSDictionary *result = @{
+                             @"data" : [data base64EncodedStringWithOptions:0],
+                             @"mediaType" : mediaType
+                             };
+    fulfillWithResult(result, error, resolve, reject);
+  }];
 }
 
 @end

@@ -27,10 +27,13 @@ RCT_EXPORT_METHOD(peerId:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRej
 }
 
 RCT_EXPORT_METHOD(dataAtPath:(NSString*)pth resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
-  NSError *error;
-  NSData *data = [Textile.instance.ipfs dataAtPath:pth error:&error];
-  NSString *dataString = [data base64EncodedStringWithOptions:0];
-  fulfillWithResult(dataString, error, resolve, reject);
+  [Textile.instance.ipfs dataAtPath:pth completion:^(NSData * _Nullable data, NSString * _Nullable mediaType, NSError * _Nonnull error) {
+    NSDictionary *result = @{
+                             @"data" : [data base64EncodedStringWithOptions:0],
+                             @"mediaType" : mediaType
+                             };
+    fulfillWithResult(result, error, resolve, reject);
+  }];
 }
 
 @end
