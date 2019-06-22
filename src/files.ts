@@ -26,14 +26,13 @@ export async function addData(data: Uint8Array, threadId: string, caption?: stri
 
 /**
  * Add files to a Textile thread
- * @param files List of file paths to add, can be file system paths, IPFS hashes, or existing hashes
+ * @param paths Comma separated list of file paths to add, can be file system paths, IPFS hashes, or existing hashes
  * @param threadId The thread id the files will be added to
  * @param caption A caption to associate with the files
  * @returns A Promise that will resolve with the Block result
  */
-export async function addFiles(files: IStrings, threadId: string, caption?: string): Promise<IBlock> {
-  const payload = Strings.encode(files).finish()
-  const result = await FilesBridge.addFiles(Buffer.from(payload).toString('base64'), threadId, caption)
+export async function addFiles(paths: string, threadId: string, caption?: string): Promise<IBlock> {
+  const result = await FilesBridge.addFiles(paths, threadId, caption)
   return Block.decode(Buffer.from(result, 'base64'))
 }
 
