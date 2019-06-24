@@ -26,7 +26,7 @@ public class Util {
     static WritableMap encodeData(final byte[] data, final String media) {
         final WritableMap map = new WritableNativeMap();
         map.putString("data", Util.encode(data));
-        map.putString("media", media);
+        map.putString("mediaType", media);
         return map;
     }
 
