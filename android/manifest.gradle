@@ -1,0 +1,11 @@
+ext {
+    minSdk = 24
+    targetSdk = 28
+
+    // Gradle classpath dependencies versions
+    gradleVersion = '3.3.2'
+    mavenGradleVersion = '2.1'
+
+    // Textile
+    textileVersion = '1.1.0-rc-0'
+}

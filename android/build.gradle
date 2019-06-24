@@ -1,40 +1,37 @@
-import groovy.json.JsonSlurper
-
-def computeVersionName() {
-    // dynamically retrieve version from package.json
-    def slurper = new JsonSlurper()
-    def json = slurper.parse(file('../package.json'), "utf-8")
-    return json.version
-}
+apply plugin: 'com.android.library'
 
 buildscript {
+    apply from: './manifest.gradle'
+
     repositories {
         google()
         jcenter()
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.3.0'
+        classpath "com.android.tools.build:gradle:$gradleVersion"
     }
 }
 
-apply plugin: 'com.android.library'
-
-def DEFAULT_COMPILE_SDK_VERSION = 27
-def DEFAULT_BUILD_TOOLS_VERSION = "27.0.3"
-def DEFAULT_TARGET_SDK_VERSION = 26
-
 android {
-    compileSdkVersion rootProject.hasProperty('compileSdkVersion') ? rootProject.compileSdkVersion : DEFAULT_COMPILE_SDK_VERSION
+    compileSdkVersion rootProject.hasProperty('compileSdkVersion') ? rootProject.compileSdkVersion : targetSdk
 
     defaultConfig {
-        minSdkVersion 16
-        targetSdkVersion rootProject.hasProperty('targetSdkVersion') ? rootProject.targetSdkVersion : DEFAULT_TARGET_SDK_VERSION
+        minSdkVersion minSdk
+        targetSdkVersion rootProject.hasProperty('targetSdkVersion') ? rootProject.targetSdkVersion : targetSdk
         versionCode 1
         versionName computeVersionName()
     }
     lintOptions {
         abortOnError false
+    }
+}
+
+allprojects {
+    repositories {
+        maven {
+            url 'https://jitpack.io'
+        }
     }
 }
 
@@ -45,14 +42,20 @@ repositories {
     maven {
         url "$rootDir/../../react-native/android"
     }
+    maven {
+        url 'https://dl.bintray.com/textile/maven'
+    }
 }
 
 dependencies {
-    implementation "com.facebook.react:react-native:+"  // From node_modules
-    api 'io.textile:textile:1.1.0-rc0'
+    api "io.textile:textile:$textileVersion"
+    implementation "com.facebook.react:react-native:+"
 }
 
-task wrapper(type: Wrapper) {
-    gradleVersion = '4.4'
-    distributionUrl = distributionUrl.replace("bin", "all")
+import groovy.json.JsonSlurper
+
+def computeVersionName() {
+    def slurper = new JsonSlurper()
+    def json = slurper.parse(file('../package.json'), "utf-8")
+    return json.version
 }
