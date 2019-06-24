@@ -13,7 +13,7 @@ class TextileEvents implements TextileEventListener {
 
     private DeviceEventManagerModule.RCTDeviceEventEmitter emitter;
 
-    TextileEvents(DeviceEventManagerModule.RCTDeviceEventEmitter emitter) {
+    TextileEvents(final DeviceEventManagerModule.RCTDeviceEventEmitter emitter) {
         this.emitter = emitter;
     }
 
@@ -23,7 +23,7 @@ class TextileEvents implements TextileEventListener {
     }
 
     @Override
-    public void nodeFailedToStart(Exception e) {
+    public void nodeFailedToStart(final Exception e) {
         emitter.emit("NODE_FAILED_TO_START", e.getMessage());
     }
 
@@ -33,7 +33,7 @@ class TextileEvents implements TextileEventListener {
     }
 
     @Override
-    public void nodeFailedToStop(Exception e) {
+    public void nodeFailedToStop(final Exception e) {
         emitter.emit("NODE_FAILED_TO_STOP", e.getMessage());
     }
 
@@ -43,7 +43,7 @@ class TextileEvents implements TextileEventListener {
     }
 
     @Override
-    public void willStopNodeInBackgroundAfterDelay(int seconds) {
+    public void willStopNodeInBackgroundAfterDelay(final int seconds) {
         emitter.emit("WILL_STOP_NODE_IN_BACKGROUND_AFTER_DELAY", seconds);
     }
 
@@ -53,13 +53,13 @@ class TextileEvents implements TextileEventListener {
     }
 
     @Override
-    public void notificationReceived(Model.Notification notification) {
+    public void notificationReceived(final Model.Notification notification) {
         emitter.emit("NOTIFICATION_RECEIVED", Util.encode(notification.toByteArray()));
     }
 
     @Override
-    public void threadUpdateReceived(String threadId, FeedItemData feedItemData) {
-        WritableMap map = Arguments.createMap();
+    public void threadUpdateReceived(final String threadId, final FeedItemData feedItemData) {
+        final WritableMap map = Arguments.createMap();
         map.putString("threadId", threadId);
         map.putString("block", feedItemData.block);
         map.putInt("type", feedItemData.type.ordinal());
@@ -68,51 +68,66 @@ class TextileEvents implements TextileEventListener {
     }
 
     @Override
-    public void threadAdded(String threadId) {
+    public void threadAdded(final String threadId) {
         emitter.emit("THREAD_ADDED", threadId);
     }
 
     @Override
-    public void threadRemoved(String threadId) {
+    public void threadRemoved(final String threadId) {
         emitter.emit("THREAD_REMOVED", threadId);
     }
 
     @Override
-    public void accountPeerAdded(String peerId) {
+    public void accountPeerAdded(final String peerId) {
         emitter.emit("ACCOUNT_PEER_ADDED", peerId);
     }
 
     @Override
-    public void accountPeerRemoved(String peerId) {
+    public void accountPeerRemoved(final String peerId) {
         emitter.emit("ACCOUNT_PEER_REMOVED", peerId);
     }
 
     @Override
-    public void queryDone(String queryId) {
+    public void queryDone(final String queryId) {
         emitter.emit("QUERY_DONE", queryId);
     }
 
     @Override
-    public void queryError(String queryId, Exception e) {
-        WritableMap map = new WritableNativeMap();
+    public void queryError(final String queryId, final Exception e) {
+        final WritableMap map = new WritableNativeMap();
         map.putString("queryId", queryId);
         map.putString("error", e.getMessage());
         emitter.emit("QUERY_ERROR", map);
     }
 
     @Override
-    public void clientThreadQueryResult(String queryId, Model.Thread thread) {
-        WritableMap map = new WritableNativeMap();
+    public void clientThreadQueryResult(final String queryId, final Model.Thread thread) {
+        final WritableMap map = new WritableNativeMap();
         map.putString("queryId", queryId);
         map.putString("data", Util.encode(thread.toByteArray()));
         emitter.emit("CLIENT_THREAD_QUERY_RESULT", map);
     }
 
     @Override
-    public void contactQueryResult(String queryId, Model.Contact contact) {
-        WritableMap map = new WritableNativeMap();
+    public void contactQueryResult(final String queryId, final Model.Contact contact) {
+        final WritableMap map = new WritableNativeMap();
         map.putString("queryId", queryId);
         map.putString("data", Util.encode(contact.toByteArray()));
         emitter.emit("CONTACT_QUERY_RESULT", map);
+    }
+
+    @Override
+    public void syncUpdate(final Model.CafeSyncGroupStatus status) {
+        emitter.emit("SYNC_UPDATE", Util.encode(status.toByteArray()));
+    }
+
+    @Override
+    public void syncComplete(final Model.CafeSyncGroupStatus status) {
+        emitter.emit("SYNC_COMPLETE", Util.encode(status.toByteArray()));
+    }
+
+    @Override
+    public void syncFailed(final Model.CafeSyncGroupStatus status) {
+        emitter.emit("SYNC_FAILED", Util.encode(status.toByteArray()));
     }
 }

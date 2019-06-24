@@ -35,11 +35,11 @@ public class ThreadsBridge extends ReactContextBaseJavaModule {
             @Override
             public void run() {
                 try {
-                    View.AddThreadConfig config = View.AddThreadConfig.parseFrom(Util.decode(configStr));
-                    Model.Thread thread = Textile.instance().threads.add(config);
+                    final View.AddThreadConfig config = View.AddThreadConfig.parseFrom(Util.decode(configStr));
+                    final Model.Thread thread = Textile.instance().threads.add(config);
                     promise.resolve(Util.encode(thread.toByteArray()));
                 }
-                catch (Exception e) {
+                catch (final Exception e) {
                     promise.reject("add", e);
                 }
             }
@@ -52,11 +52,11 @@ public class ThreadsBridge extends ReactContextBaseJavaModule {
             @Override
             public void run() {
                 try {
-                    Model.Thread thread = Model.Thread.parseFrom(Util.decode(threadStr));
+                    final Model.Thread thread = Model.Thread.parseFrom(Util.decode(threadStr));
                     Textile.instance().threads.addOrUpdate(thread);
                     promise.resolve(null);
                 }
-                catch (Exception e) {
+                catch (final Exception e) {
                     promise.reject("addOrUpdate", e);
                 }
             }
@@ -72,7 +72,7 @@ public class ThreadsBridge extends ReactContextBaseJavaModule {
                     Textile.instance().threads.rename(threadId, name);
                     promise.resolve(null);
                 }
-                catch (Exception e) {
+                catch (final Exception e) {
                     promise.reject("rename", e);
                 }
             }
@@ -85,10 +85,10 @@ public class ThreadsBridge extends ReactContextBaseJavaModule {
             @Override
             public void run() {
                 try {
-                    Model.Thread thread = Textile.instance().threads.get(threadId);
+                    final Model.Thread thread = Textile.instance().threads.get(threadId);
                     promise.resolve(thread != null ? Util.encode(thread.toByteArray()) : null);
                 }
-                catch (Exception e) {
+                catch (final Exception e) {
                     promise.reject("get", e);
                 }
             }
@@ -101,10 +101,10 @@ public class ThreadsBridge extends ReactContextBaseJavaModule {
             @Override
             public void run() {
                 try {
-                    Model.ThreadList list = Textile.instance().threads.list();
+                    final Model.ThreadList list = Textile.instance().threads.list();
                     promise.resolve(Util.encode(list.toByteArray()));
                 }
-                catch (Exception e) {
+                catch (final Exception e) {
                     promise.reject("list", e);
                 }
             }
@@ -117,10 +117,10 @@ public class ThreadsBridge extends ReactContextBaseJavaModule {
             @Override
             public void run() {
                 try {
-                    Model.PeerList list = Textile.instance().threads.peers(threadId);
+                    final Model.PeerList list = Textile.instance().threads.peers(threadId);
                     promise.resolve(Util.encode(list.toByteArray()));
                 }
-                catch (Exception e) {
+                catch (final Exception e) {
                     promise.reject("peers", e);
                 }
             }
@@ -135,7 +135,7 @@ public class ThreadsBridge extends ReactContextBaseJavaModule {
                 try {
                     promise.resolve(Textile.instance().threads.remove(threadId));
                 }
-                catch (Exception e) {
+                catch (final Exception e) {
                     promise.reject("remove", e);
                 }
             }
@@ -151,7 +151,7 @@ public class ThreadsBridge extends ReactContextBaseJavaModule {
                     Textile.instance().threads.snapshot();
                     promise.resolve(null);
                 }
-                catch (Exception e) {
+                catch (final Exception e) {
                     promise.reject("snapshot", e);
                 }
             }
@@ -167,12 +167,12 @@ public class ThreadsBridge extends ReactContextBaseJavaModule {
                     if (ThreadsBridge.searchHandle != null) {
                         ThreadsBridge.searchHandle.cancel();
                     }
-                    QueryOuterClass.ThreadSnapshotQuery query = QueryOuterClass.ThreadSnapshotQuery.parseFrom(Util.decode(queryStr));
-                    QueryOuterClass.QueryOptions options = QueryOuterClass.QueryOptions.parseFrom(Util.decode(optionsStr));
+                    final QueryOuterClass.ThreadSnapshotQuery query = QueryOuterClass.ThreadSnapshotQuery.parseFrom(Util.decode(queryStr));
+                    final QueryOuterClass.QueryOptions options = QueryOuterClass.QueryOptions.parseFrom(Util.decode(optionsStr));
                     ThreadsBridge.searchHandle = Textile.instance().threads.searchSnapshots(query, options);
                     promise.resolve(ThreadsBridge.searchHandle.getId());
                 }
-                catch (Exception e) {
+                catch (final Exception e) {
                     promise.reject("searchSnapshots", e);
                 }
             }
@@ -191,7 +191,7 @@ public class ThreadsBridge extends ReactContextBaseJavaModule {
                     }
                     promise.resolve(null);
                 }
-                catch (Exception e) {
+                catch (final Exception e) {
                     promise.reject("cancelSync", e);
                 }
             }

@@ -31,7 +31,7 @@ public class CommentsBridge extends ReactContextBaseJavaModule {
                 try {
                     promise.resolve(Textile.instance().comments.add(blockId, body));
                 }
-                catch (Exception e) {
+                catch (final Exception e) {
                     promise.reject("addComment", e);
                 }
             }

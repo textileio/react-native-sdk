@@ -31,7 +31,7 @@ public class IgnoresBridge extends ReactContextBaseJavaModule {
                 try {
                     promise.resolve(Textile.instance().ignores.add(blockId));
                 }
-                catch (Exception e) {
+                catch (final Exception e) {
                     promise.reject("add", e);
                 }
             }

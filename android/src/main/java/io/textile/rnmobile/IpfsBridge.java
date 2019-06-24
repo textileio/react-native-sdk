@@ -8,6 +8,7 @@ import com.facebook.react.bridge.ReactMethod;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
+import io.textile.textile.Handlers;
 import io.textile.textile.Textile;
 
 public class IpfsBridge extends ReactContextBaseJavaModule {
@@ -31,7 +32,7 @@ public class IpfsBridge extends ReactContextBaseJavaModule {
                 try {
                     promise.resolve(Textile.instance().ipfs.peerId());
                 }
-                catch (Exception e) {
+                catch (final Exception e) {
                     promise.reject("peerId", e);
                 }
             }
@@ -43,12 +44,17 @@ public class IpfsBridge extends ReactContextBaseJavaModule {
         executor.execute(new Runnable() {
             @Override
             public void run() {
-                try {
-                    promise.resolve(Util.encode(Textile.instance().ipfs.dataAtPath(path)));
-                }
-                catch (Exception e) {
-                    promise.reject("dataAtPath", e);
-                }
+                Textile.instance().ipfs.dataAtPath(path, new Handlers.DataHandler() {
+                    @Override
+                    public void onComplete(final byte[] data, final String media) {
+                        promise.resolve(Util.encodeData(data, media));
+                    }
+
+                    @Override
+                    public void onError(final Exception e) {
+                        promise.reject("dataAtPath", e);
+                    }
+                });
             }
         });
     }

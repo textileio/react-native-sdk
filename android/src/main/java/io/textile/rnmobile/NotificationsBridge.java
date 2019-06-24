@@ -30,10 +30,10 @@ public class NotificationsBridge extends ReactContextBaseJavaModule {
             @Override
             public void run() {
                 try {
-                    Model.NotificationList list = Textile.instance().notifications.list(offset, limit);
+                    final Model.NotificationList list = Textile.instance().notifications.list(offset, limit);
                     promise.resolve(Util.encode(list.toByteArray()));
                 }
-                catch (Exception e) {
+                catch (final Exception e) {
                     promise.reject("list", e);
                 }
             }
@@ -48,7 +48,7 @@ public class NotificationsBridge extends ReactContextBaseJavaModule {
                 try {
                     promise.resolve(Textile.instance().notifications.countUnread());
                 }
-                catch (Exception e) {
+                catch (final Exception e) {
                     promise.reject("countUnread", e);
                 }
             }
@@ -64,7 +64,7 @@ public class NotificationsBridge extends ReactContextBaseJavaModule {
                     Textile.instance().notifications.read(notificationId);
                     promise.resolve(null);
                 }
-                catch (Exception e) {
+                catch (final Exception e) {
                     promise.reject("read", e);
                 }
             }
@@ -80,7 +80,7 @@ public class NotificationsBridge extends ReactContextBaseJavaModule {
                     Textile.instance().notifications.readAll();
                     promise.resolve(null);
                 }
-                catch (Exception e) {
+                catch (final Exception e) {
                     promise.reject("readAll", e);
                 }
             }
@@ -95,7 +95,7 @@ public class NotificationsBridge extends ReactContextBaseJavaModule {
                 try {
                     promise.resolve(Textile.instance().notifications.acceptInvite(id));
                 }
-                catch (Exception e) {
+                catch (final Exception e) {
                     promise.reject("acceptInvite", e);
                 }
             }
@@ -111,7 +111,7 @@ public class NotificationsBridge extends ReactContextBaseJavaModule {
                     Textile.instance().notifications.ignoreInvite(id);
                     promise.resolve(null);
                 }
-                catch (Exception e) {
+                catch (final Exception e) {
                     promise.reject("ignoreInvite", e);
                 }
             }

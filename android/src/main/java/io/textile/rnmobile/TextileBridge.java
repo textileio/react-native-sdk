@@ -33,11 +33,12 @@ public class TextileBridge extends ReactContextBaseJavaModule {
             @Override
             public void run() {
                 try {
-                    String phrase = Textile.initialize(context, debug, logToDisk);
-                    DeviceEventManagerModule.RCTDeviceEventEmitter emitter = context.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class);
+                    final String phrase = Textile.initialize(context, debug, logToDisk);
+                    DeviceEventManagerModule.RCTDeviceEventEmitter emitter =
+                            context.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class);
                     Textile.instance().addEventListener(new TextileEvents(emitter));
                     promise.resolve(phrase);
-                } catch (Exception e) {
+                } catch (final Exception e) {
                     promise.reject("initialize", e);
                 }
             }
@@ -62,7 +63,7 @@ public class TextileBridge extends ReactContextBaseJavaModule {
                 try {
                     promise.resolve(Textile.instance().version());
                 }
-                catch (Exception e) {
+                catch (final Exception e) {
                     promise.reject("version", e);
                 }
             }
@@ -77,7 +78,7 @@ public class TextileBridge extends ReactContextBaseJavaModule {
                 try {
                     promise.resolve(Textile.instance().gitSummary());
                 }
-                catch (Exception e) {
+                catch (final Exception e) {
                     promise.reject("gitSummary", e);
                 }
             }
@@ -90,11 +91,26 @@ public class TextileBridge extends ReactContextBaseJavaModule {
             @Override
             public void run() {
                 try {
-                    View.Summary summary = Textile.instance().summary();
+                    final View.Summary summary = Textile.instance().summary();
                     promise.resolve(Util.encode(summary.toByteArray()));
                 }
-                catch (Exception e) {
+                catch (final Exception e) {
                     promise.reject("summary", e);
+                }
+            }
+        });
+    }
+
+    @ReactMethod
+    public void online(final Promise promise) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    promise.resolve(Textile.instance().online());
+                }
+                catch (final Exception e) {
+                    promise.reject("online", e);
                 }
             }
         });
@@ -108,7 +124,8 @@ public class TextileBridge extends ReactContextBaseJavaModule {
             public void run() {
                 try {
                     Textile.instance().destroy();
-                } catch (Exception e) {
+                } catch (final Exception e) {
+                    // noop
                 }
             }
         });
