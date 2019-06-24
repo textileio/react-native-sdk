@@ -19,7 +19,7 @@ export async function peerId(): Promise<string> {
  * Textile.ipfs.dataAtPath(path);
  * ```
  */
-export async function dataAtPath(path: string): Promise<string> {
-  const result = await IpfsBridge.dataAtPath(path)
-  return result as string
+export async function dataAtPath(path: string): Promise<{ data: Uint8Array, mediaType: string }> {
+  const { data, mediaType } = await IpfsBridge.dataAtPath(path)
+  return { data: Buffer.from(data, 'base64'), mediaType }
 }

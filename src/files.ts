@@ -6,8 +6,6 @@ import {
   FilesList,
   IBlock,
   IFilesList,
-  IStrings,
-  Strings,
 } from './model'
 
 const { FilesBridge } = NativeModules
@@ -65,8 +63,9 @@ export async function list(threadId: string, offset: string, limit: number): Pro
  * Textile.files.content(hash);
  * ```
  */
-export async function content(hash: string): Promise<string> {
-  return FilesBridge.content(hash)
+export async function content(hash: string): Promise<{ data: Uint8Array, mediaType: string }> {
+  const { data, mediaType } = await FilesBridge.content(hash)
+  return { data: Buffer.from(data, 'base64'), mediaType }
 }
 
 /**
@@ -77,6 +76,10 @@ export async function content(hash: string): Promise<string> {
  * Textile.files.imageContentForMinWidth(path, minWidth);
  * ```
  */
-export async function imageContentForMinWidth(pth: string, minWidth: number): Promise<string> {
-  return FilesBridge.imageContentForMinWidth(pth, minWidth)
+export async function imageContentForMinWidth(
+  pth: string,
+  minWidth: number,
+): Promise<{ data: Uint8Array, mediaType: string }> {
+  const { data, mediaType } = await FilesBridge.imageContentForMinWidth(pth, minWidth)
+  return { data: Buffer.from(data, 'base64'), mediaType }
 }
