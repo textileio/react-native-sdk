@@ -7,5 +7,5 @@ ext {
     mavenGradleVersion = '2.1'
 
     // Textile
-    textileVersion = '1.1.0-rc-1'
+    textileVersion = '1.1.0'
 }
