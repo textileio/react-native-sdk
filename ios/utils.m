@@ -33,6 +33,9 @@ NSString * feedItemDataToBase64(FeedItemData *feedItemData) {
     case FeedItemTypeLeave:
       data = [feedItemData.leave.data base64EncodedStringWithOptions:0];
       break;
+    case FeedItemTypeAnnounce:
+      data = [feedItemData.announce.data base64EncodedStringWithOptions:0];
+      break;
   }
   return data;
 }
