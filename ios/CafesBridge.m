@@ -21,10 +21,10 @@ RCT_EXPORT_MODULE();
   return dispatch_queue_create("io.textile.TextileNodeQueue", DISPATCH_QUEUE_SERIAL);
 }
 
-RCT_EXPORT_METHOD(register:(NSString*)host token:(NSString*)token resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
-  NSError *error;
-  [Textile.instance.cafes register:host token:token error:&error];
-  fulfillWithResult(nil, error, resolve, reject);
+RCT_EXPORT_METHOD(register:(NSString*)peerId token:(NSString*)token resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+  [Textile.instance.cafes register:peerId token:token completion:^(NSError * _Nonnull error) {
+    fulfillWithResult(nil, error, resolve, reject);
+  }];
 }
 
 RCT_EXPORT_METHOD(session:(NSString*)peerId resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
@@ -40,15 +40,15 @@ RCT_EXPORT_METHOD(sessions:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseR
 }
 
 RCT_EXPORT_METHOD(refreshSession:(NSString*)peerId resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
-  NSError *error;
-  CafeSession *session = [Textile.instance.cafes refreshSession:peerId error:&error];
-  fulfillWithResult([session.data base64EncodedStringWithOptions:0], error, resolve, reject);
+  [Textile.instance.cafes refreshSession:peerId completion:^(CafeSession * _Nullable session, NSError * _Nonnull error) {
+    fulfillWithResult([session.data base64EncodedStringWithOptions:0], error, resolve, reject);
+  }];
 }
 
 RCT_EXPORT_METHOD(deregister:(NSString*)peerId resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
-  NSError *error;
-  [Textile.instance.cafes deregister:peerId error:&error];
-  fulfillWithResult(nil, error, resolve, reject);
+  [Textile.instance.cafes deregister:peerId completion:^(NSError * _Nonnull error) {
+    fulfillWithResult(nil, error, resolve, reject);
+  }];
 }
 
 RCT_EXPORT_METHOD(checkMessages:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {

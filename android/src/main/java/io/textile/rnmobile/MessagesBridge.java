@@ -32,7 +32,7 @@ public class MessagesBridge extends ReactContextBaseJavaModule {
                 try {
                     promise.resolve(Textile.instance().messages.add(threadId, body));
                 }
-                catch (Exception e) {
+                catch (final Exception e) {
                     promise.reject("add", e);
                 }
             }
@@ -45,10 +45,10 @@ public class MessagesBridge extends ReactContextBaseJavaModule {
             @Override
             public void run() {
                 try {
-                    View.TextList list = Textile.instance().messages.list(offset, limit, threadId);
+                    final View.TextList list = Textile.instance().messages.list(offset, limit, threadId);
                     promise.resolve(Util.encode(list.toByteArray()));
                 }
-                catch (Exception e) {
+                catch (final Exception e) {
                     promise.reject("list", e);
                 }
             }

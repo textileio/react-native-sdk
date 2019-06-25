@@ -34,11 +34,11 @@ public class ContactsBridge extends ReactContextBaseJavaModule {
             @Override
             public void run() {
                 try {
-                    Model.Contact contact = Model.Contact.parseFrom(Util.decode(contactStr));
+                    final Model.Contact contact = Model.Contact.parseFrom(Util.decode(contactStr));
                     Textile.instance().contacts.add(contact);
                     promise.resolve(null);
                 }
-                catch (Exception e) {
+                catch (final Exception e) {
                     promise.reject("add", e);
                 }
             }
@@ -51,10 +51,10 @@ public class ContactsBridge extends ReactContextBaseJavaModule {
             @Override
             public void run() {
                 try {
-                    Model.Contact contact = Textile.instance().contacts.get(address);
+                    final Model.Contact contact = Textile.instance().contacts.get(address);
                     promise.resolve(contact != null ? Util.encode(contact.toByteArray()) : null);
                 }
-                catch (Exception e) {
+                catch (final Exception e) {
                     promise.reject("get", e);
                 }
             }
@@ -67,10 +67,10 @@ public class ContactsBridge extends ReactContextBaseJavaModule {
             @Override
             public void run() {
                 try {
-                    Model.ContactList list = Textile.instance().contacts.list();
+                    final Model.ContactList list = Textile.instance().contacts.list();
                     promise.resolve(Util.encode(list.toByteArray()));
                 }
-                catch (Exception e) {
+                catch (final Exception e) {
                     promise.reject("list", e);
                 }
             }
@@ -86,7 +86,7 @@ public class ContactsBridge extends ReactContextBaseJavaModule {
                     Textile.instance().contacts.remove(address);
                     promise.resolve(null);
                 }
-                catch (Exception e) {
+                catch (final Exception e) {
                     promise.reject("remove", e);
                 }
             }
@@ -99,10 +99,10 @@ public class ContactsBridge extends ReactContextBaseJavaModule {
             @Override
             public void run() {
                 try {
-                    Model.ThreadList list = Textile.instance().contacts.threads(address);
+                    final Model.ThreadList list = Textile.instance().contacts.threads(address);
                     promise.resolve(Util.encode(list.toByteArray()));
                 }
-                catch (Exception e) {
+                catch (final Exception e) {
                     promise.reject("threads", e);
                 }
             }
@@ -118,12 +118,12 @@ public class ContactsBridge extends ReactContextBaseJavaModule {
                     if (ContactsBridge.searchHandle != null) {
                         ContactsBridge.searchHandle.cancel();
                     }
-                    QueryOuterClass.ContactQuery query = QueryOuterClass.ContactQuery.parseFrom(Util.decode(queryStr));
-                    QueryOuterClass.QueryOptions options = QueryOuterClass.QueryOptions.parseFrom(Util.decode(optionsStr));
+                    final QueryOuterClass.ContactQuery query = QueryOuterClass.ContactQuery.parseFrom(Util.decode(queryStr));
+                    final QueryOuterClass.QueryOptions options = QueryOuterClass.QueryOptions.parseFrom(Util.decode(optionsStr));
                     ContactsBridge.searchHandle = Textile.instance().contacts.search(query, options);
                     promise.resolve(ContactsBridge.searchHandle.getId());
                 }
-                catch (Exception e) {
+                catch (final Exception e) {
                     promise.reject("search", e);
                 }
             }
@@ -142,7 +142,7 @@ public class ContactsBridge extends ReactContextBaseJavaModule {
                     }
                     promise.resolve(null);
                 }
-                catch (Exception e) {
+                catch (final Exception e) {
                     promise.reject("cancelSearch", e);
                 }
             }

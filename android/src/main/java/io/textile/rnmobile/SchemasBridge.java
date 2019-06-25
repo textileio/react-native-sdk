@@ -30,11 +30,11 @@ public class SchemasBridge extends ReactContextBaseJavaModule {
             @Override
             public void run() {
                 try {
-                    Model.Node node = Model.Node.parseFrom(Util.decode(nodeStr));
-                    Model.FileIndex index = Textile.instance().schemas.add(node);
+                    final Model.Node node = Model.Node.parseFrom(Util.decode(nodeStr));
+                    final Model.FileIndex index = Textile.instance().schemas.add(node);
                     promise.resolve(Util.encode(index.toByteArray()));
                 }
-                catch (Exception e) {
+                catch (final Exception e) {
                     promise.reject("add", e);
                 }
             }

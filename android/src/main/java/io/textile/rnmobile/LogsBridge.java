@@ -30,11 +30,11 @@ public class LogsBridge extends ReactContextBaseJavaModule {
             @Override
             public void run() {
                 try {
-                    View.LogLevel level = View.LogLevel.parseFrom(Util.decode(levelStr));
+                    final View.LogLevel level = View.LogLevel.parseFrom(Util.decode(levelStr));
                     Textile.instance().logs.setLevel(level);
                     promise.resolve(null);
                 }
-                catch (Exception e) {
+                catch (final Exception e) {
                     promise.reject("setLevel", e);
                 }
             }

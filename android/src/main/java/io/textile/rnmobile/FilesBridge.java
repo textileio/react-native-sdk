@@ -8,10 +8,9 @@ import com.facebook.react.bridge.ReactMethod;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
-import io.textile.pb.Mobile;
 import io.textile.pb.Model;
 import io.textile.pb.View;
-import io.textile.textile.Files;
+import io.textile.textile.Handlers;
 import io.textile.textile.Textile;
 
 public class FilesBridge extends ReactContextBaseJavaModule {
@@ -28,55 +27,40 @@ public class FilesBridge extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void prepare(final String strBase64, final String threadId, final Promise promise) {
+    public void addData(final String inputBase64, final String threadId, final String caption, final Promise promise) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
-                Textile.instance().files.prepare(strBase64, threadId, new Files.PreparedFilesHandler() {
-                    @Override
-                    public void onFilesPrepared(Mobile.MobilePreparedFiles preparedFiles) {
-                        promise.resolve(Util.encode(preparedFiles.toByteArray()));
-                    }
+                Textile.instance().files.addData(
+                        Util.decode(inputBase64), threadId, caption, new Handlers.BlockHandler() {
+                            @Override
+                            public void onComplete(final Model.Block block) {
+                                promise.resolve(Util.encode(block.toByteArray()));
+                            }
 
-                    @Override
-                    public void onError(Exception e) {
-                        promise.reject("prepare", e);
-                    }
-                });
+                            @Override
+                            public void onError(final Exception e) {
+                                promise.reject("addData", e);
+                            }
+                        });
             }
         });
     }
 
     @ReactMethod
-    public void prepareSync(final String strBase64, final String threadId, final Promise promise) {
+    public void addFiles(final String files, final String threadId, final String caption, final Promise promise) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
-                try {
-                    Mobile.MobilePreparedFiles preparedFiles = Textile.instance().files.prepareSync(strBase64, threadId);
-                    promise.resolve(Util.encode(preparedFiles.toByteArray()));
-                }
-                catch (Exception e) {
-                    promise.reject("prepareSync", e);
-                }
-            }
-        });
-    }
-
-    @ReactMethod
-    public void prepareByPath(final String path, final String threadId, final Promise promise) {
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                Textile.instance().files.prepareByPath(path, threadId, new Files.PreparedFilesHandler() {
+                Textile.instance().files.addFiles(files, threadId, caption, new Handlers.BlockHandler() {
                     @Override
-                    public void onFilesPrepared(Mobile.MobilePreparedFiles preparedFiles) {
-                        promise.resolve(Util.encode(preparedFiles.toByteArray()));
+                    public void onComplete(final Model.Block block) {
+                        promise.resolve(Util.encode(block.toByteArray()));
                     }
 
                     @Override
-                    public void onError(Exception e) {
-                        promise.reject("prepareByPath", e);
+                    public void onError(final Exception e) {
+                        promise.reject("addFiles", e);
                     }
                 });
             }
@@ -84,50 +68,21 @@ public class FilesBridge extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void prepareByPathSync(final String path, final String threadId, final Promise promise) {
+    public void shareFiles(final String hash, final String threadId, final String caption, final Promise promise) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
-                try {
-                    Mobile.MobilePreparedFiles preparedFiles = Textile.instance().files.prepareByPathSync(path, threadId);
-                    promise.resolve(Util.encode(preparedFiles.toByteArray()));
-                }
-                catch (Exception e) {
-                    promise.reject("prepareByPathSync", e);
-                }
-            }
-        });
-    }
+                Textile.instance().files.shareFiles(hash, threadId, caption, new Handlers.BlockHandler() {
+                    @Override
+                    public void onComplete(final Model.Block block) {
+                        promise.resolve(Util.encode(block.toByteArray()));
+                    }
 
-    @ReactMethod
-    public void add(final String dirStr, final String threadId, final String caption, final Promise promise) {
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    View.Directory directory = View.Directory.parseFrom(Util.decode(dirStr));
-                    Model.Block block = Textile.instance().files.add(directory, threadId, caption);
-                    promise.resolve(Util.encode(block.toByteArray()));
-                }
-                catch (Exception e) {
-                    promise.reject("add", e);
-                }
-            }
-        });
-    }
-
-    @ReactMethod
-    public void addByTarget(final String target, final String threadId, final String caption, final Promise promise) {
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Model.Block block = Textile.instance().files.addByTarget(target, threadId, caption);
-                    promise.resolve(Util.encode(block.toByteArray()));
-                }
-                catch (Exception e) {
-                    promise.reject("addByTarget", e);
-                }
+                    @Override
+                    public void onError(final Exception e) {
+                        promise.reject("shareFiles", e);
+                    }
+                });
             }
         });
     }
@@ -138,10 +93,10 @@ public class FilesBridge extends ReactContextBaseJavaModule {
             @Override
             public void run() {
                 try {
-                    View.FilesList list = Textile.instance().files.list(threadId, offset, limit);
+                    final View.FilesList list = Textile.instance().files.list(threadId, offset, limit);
                     promise.resolve(Util.encode(list.toByteArray()));
                 }
-                catch (Exception e) {
+                catch (final Exception e) {
                     promise.reject("list", e);
                 }
             }
@@ -153,12 +108,17 @@ public class FilesBridge extends ReactContextBaseJavaModule {
         executor.execute(new Runnable() {
             @Override
             public void run() {
-                try {
-                    promise.resolve(Textile.instance().files.content(hash));
-                }
-                catch (Exception e) {
-                    promise.reject("content", e);
-                }
+                Textile.instance().files.content(hash, new Handlers.DataHandler() {
+                    @Override
+                    public void onComplete(final byte[] data, final String media) {
+                        promise.resolve(Util.encodeData(data, media));
+                    }
+
+                    @Override
+                    public void onError(final Exception e) {
+                        promise.reject("content", e);
+                    }
+                });
             }
         });
     }
@@ -168,12 +128,17 @@ public class FilesBridge extends ReactContextBaseJavaModule {
         executor.execute(new Runnable() {
             @Override
             public void run() {
-                try {
-                    promise.resolve(Textile.instance().files.imageContentForMinWidth(pth, minWidth));
-                }
-                catch (Exception e) {
-                    promise.reject("imageContentForMinWidth", e);
-                }
+                Textile.instance().files.imageContentForMinWidth(pth, minWidth, new Handlers.DataHandler() {
+                    @Override
+                    public void onComplete(final byte[] data, final String media) {
+                        promise.resolve(Util.encodeData(data, media));
+                    }
+
+                    @Override
+                    public void onError(final Exception e) {
+                        promise.reject("imageContentForMinWidth", e);
+                    }
+                });
             }
         });
     }

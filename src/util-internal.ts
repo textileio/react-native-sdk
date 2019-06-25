@@ -7,6 +7,7 @@ import {
   Ignore,
   Join,
   Leave,
+  Announce,
   FeedItemType,
   FeedItemData,
 } from './model'
@@ -54,6 +55,12 @@ export function toFeedItemData(type: FeedItemType, block: string, data: string):
         type,
         block,
         value: Leave.decode(Buffer.from(data, 'base64')),
+      }
+    case FeedItemType.Announce:
+      return {
+        type,
+        block,
+        value: Announce.decode(Buffer.from(data, 'base64')),
       }
   }
 }

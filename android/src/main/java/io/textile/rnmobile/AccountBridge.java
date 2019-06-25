@@ -36,7 +36,7 @@ public class AccountBridge extends ReactContextBaseJavaModule {
                 try {
                     promise.resolve(Textile.instance().account.address());
                 }
-                catch (Exception e) {
+                catch (final Exception e) {
                     promise.reject("address", e);
                 }
             }
@@ -51,7 +51,7 @@ public class AccountBridge extends ReactContextBaseJavaModule {
                 try {
                     promise.resolve(Textile.instance().account.seed());
                 }
-                catch (Exception e) {
+                catch (final Exception e) {
                     promise.reject("seed", e);
                 }
             }
@@ -66,7 +66,7 @@ public class AccountBridge extends ReactContextBaseJavaModule {
                 try {
                     promise.resolve(Util.encode(Textile.instance().account.encrypt(Util.decode(inputStr))));
                 }
-                catch (Exception e) {
+                catch (final Exception e) {
                     promise.reject("encrypt", e);
                 }
             }
@@ -81,7 +81,7 @@ public class AccountBridge extends ReactContextBaseJavaModule {
                 try {
                     promise.resolve(Util.encode(Textile.instance().account.decrypt(Util.decode(inputStr))));
                 }
-                catch (Exception e) {
+                catch (final Exception e) {
                     promise.reject("decrypt", e);
                 }
             }
@@ -94,10 +94,10 @@ public class AccountBridge extends ReactContextBaseJavaModule {
             @Override
             public void run() {
                 try {
-                    Model.Contact contact = Textile.instance().account.contact();
+                    final Model.Contact contact = Textile.instance().account.contact();
                     promise.resolve(Util.encode(contact.toByteArray()));
                 }
-                catch (Exception e) {
+                catch (final Exception e) {
                     promise.reject("contact", e);
                 }
             }
@@ -113,11 +113,11 @@ public class AccountBridge extends ReactContextBaseJavaModule {
                     if (AccountBridge.searchHandle != null) {
                         AccountBridge.searchHandle.cancel();
                     }
-                    QueryOuterClass.QueryOptions options = QueryOuterClass.QueryOptions.parseFrom(Util.decode(optionsStr));
+                    final QueryOuterClass.QueryOptions options = QueryOuterClass.QueryOptions.parseFrom(Util.decode(optionsStr));
                     AccountBridge.searchHandle = Textile.instance().account.sync(options);
                     promise.resolve(AccountBridge.searchHandle.getId());
                 }
-                catch (Exception e) {
+                catch (final Exception e) {
                     promise.reject("syncAccount", e);
                 }
             }
@@ -136,7 +136,7 @@ public class AccountBridge extends ReactContextBaseJavaModule {
                     }
                     promise.resolve(null);
                 }
-                catch (Exception e) {
+                catch (final Exception e) {
                     promise.reject("cancelSync", e);
                 }
             }

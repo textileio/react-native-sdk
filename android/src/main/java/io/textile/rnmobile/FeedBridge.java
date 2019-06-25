@@ -35,11 +35,11 @@ public class FeedBridge extends ReactContextBaseJavaModule {
             @Override
             public void run() {
                 try {
-                    View.FeedRequest request = View.FeedRequest.parseFrom(Util.decode(reqStr));
-                    List<FeedItemData> list = Textile.instance().feed.list(request);
-                    WritableArray converted = Arguments.createArray();
-                    for (FeedItemData feedItemData : list) {
-                        WritableMap map = Arguments.createMap();
+                    final View.FeedRequest request = View.FeedRequest.parseFrom(Util.decode(reqStr));
+                    final List<FeedItemData> list = Textile.instance().feed.list(request);
+                    final WritableArray converted = Arguments.createArray();
+                    for (final FeedItemData feedItemData : list) {
+                        final WritableMap map = Arguments.createMap();
                         map.putString("block", feedItemData.block);
                         map.putInt("type", feedItemData.type.ordinal());
                         map.putString("data", Util.feedItemDataToBase64(feedItemData));
@@ -47,7 +47,7 @@ public class FeedBridge extends ReactContextBaseJavaModule {
                     }
                     promise.resolve(converted);
                 }
-                catch (Exception e) {
+                catch (final Exception e) {
                     promise.reject("list", e);
                 }
             }

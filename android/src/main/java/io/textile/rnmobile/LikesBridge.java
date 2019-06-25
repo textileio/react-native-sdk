@@ -31,7 +31,7 @@ public class LikesBridge extends ReactContextBaseJavaModule {
                 try {
                     promise.resolve(Textile.instance().likes.add(blockId));
                 }
-                catch (Exception e) {
+                catch (final Exception e) {
                     promise.reject("add", e);
                 }
             }

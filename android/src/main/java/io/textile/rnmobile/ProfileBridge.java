@@ -10,6 +10,7 @@ import java.util.concurrent.Executors;
 
 import io.textile.pb.Model;
 import io.textile.pb.View;
+import io.textile.textile.Handlers;
 import io.textile.textile.Textile;
 
 public class ProfileBridge extends ReactContextBaseJavaModule {
@@ -31,10 +32,10 @@ public class ProfileBridge extends ReactContextBaseJavaModule {
             @Override
             public void run() {
                 try {
-                    Model.Peer peer = Textile.instance().profile.get();
+                    final Model.Peer peer = Textile.instance().profile.get();
                     promise.resolve(Util.encode(peer.toByteArray()));
                 }
-                catch (Exception e) {
+                catch (final Exception e) {
                     promise.reject("get", e);
                 }
             }
@@ -49,7 +50,7 @@ public class ProfileBridge extends ReactContextBaseJavaModule {
                 try {
                     promise.resolve(Textile.instance().profile.name());
                 }
-                catch (Exception e) {
+                catch (final Exception e) {
                     promise.reject("name", e);
                 }
             }
@@ -65,7 +66,7 @@ public class ProfileBridge extends ReactContextBaseJavaModule {
                     Textile.instance().profile.setName(name);
                     promise.resolve(null);
                 }
-                catch (Exception e) {
+                catch (final Exception e) {
                     promise.reject("setName", e);
                 }
             }
@@ -80,9 +81,29 @@ public class ProfileBridge extends ReactContextBaseJavaModule {
                 try {
                     promise.resolve(Textile.instance().profile.avatar());
                 }
-                catch (Exception e) {
+                catch (final Exception e) {
                     promise.reject("avatar", e);
                 }
+            }
+        });
+    }
+
+    @ReactMethod
+    public void setAvatar(final String file, final Promise promise) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                Textile.instance().profile.setAvatar(file, new Handlers.BlockHandler() {
+                    @Override
+                    public void onComplete(final Model.Block block) {
+                        promise.resolve(Util.encode(block.toByteArray()));
+                    }
+
+                    @Override
+                    public void onError(final Exception e) {
+                        promise.reject("setAvatar", e);
+                    }
+                });
             }
         });
     }
@@ -93,9 +114,9 @@ public class ProfileBridge extends ReactContextBaseJavaModule {
             @Override
             public void run() {
                 try {
-                    Model.Thread thread = Textile.instance().profile.accountThread();
+                    final Model.Thread thread = Textile.instance().profile.accountThread();
                     promise.resolve(Util.encode(thread.toByteArray()));
-                } catch (Exception e) {
+                } catch (final Exception e) {
                     promise.reject("accountThread", e);
                 }
             }

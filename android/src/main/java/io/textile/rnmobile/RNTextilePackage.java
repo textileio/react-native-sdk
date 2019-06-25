@@ -14,10 +14,10 @@ import java.util.List;
 
 public class RNTextilePackage implements ReactPackage {
     @Override
-    public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
+    public List<NativeModule> createNativeModules(final ReactApplicationContext reactContext) {
         // Register your native module
         // https://facebook.github.io/react-native/docs/native-modules-android.html#register-the-module
-        List<NativeModule> modules = new ArrayList<>();
+        final List<NativeModule> modules = new ArrayList<>();
 
         modules.add(new AccountBridge(reactContext));
         modules.add(new CafesBridge(reactContext));
@@ -44,9 +44,9 @@ public class RNTextilePackage implements ReactPackage {
     public List<Class<? extends JavaScriptModule>> createJSModules() {
         return Collections.emptyList();
     }
+
     @Override
-    public List<ViewManager> createViewManagers(ReactApplicationContext reactContext) {
+    public List<ViewManager> createViewManagers(final ReactApplicationContext reactContext) {
         return Collections.emptyList();
     }
-
 }

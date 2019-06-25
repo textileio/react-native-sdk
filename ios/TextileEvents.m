@@ -33,7 +33,10 @@ RCT_EXPORT_MODULE();
            @"QUERY_DONE",
            @"QUERY_ERROR",
            @"CLIENT_THREAD_QUERY_RESULT",
-           @"CONTACT_QUERY_RESULT"
+           @"CONTACT_QUERY_RESULT",
+           @"SYNC_UPDATE",
+           @"SYNC_COMPLETE",
+           @"SYNC_FAILED"
          ];
 }
 
@@ -67,10 +70,6 @@ RCT_EXPORT_MODULE();
 
 - (void)notificationReceived:(Notification *)notification {
   [self sendEventWithName:@"NOTIFICATION_RECEIVED" body:[notification.data base64EncodedStringWithOptions:0]];
-}
-
-- (void)threadUpdateReceived:(FeedItem *)feedItem {
-  [self sendEventWithName:@"THREAD_UPDATE_RECEIVED" body:[feedItem.data base64EncodedStringWithOptions:0]];
 }
 
 - (void)threadUpdateReceived:(NSString *)threadId data:(FeedItemData *)feedItemData {
@@ -124,6 +123,18 @@ RCT_EXPORT_MODULE();
                          @"data": [contact.data base64EncodedStringWithOptions:0]
                        };
   [self sendEventWithName:@"CONTACT_QUERY_RESULT" body:body];
+}
+
+- (void)syncUpdate:(CafeSyncGroupStatus *)status {
+  [self sendEventWithName:@"SYNC_UPDATE" body:[status.data base64EncodedStringWithOptions:0]];
+}
+
+- (void)syncComplete:(CafeSyncGroupStatus *)status {
+  [self sendEventWithName:@"SYNC_COMPLETE" body:[status.data base64EncodedStringWithOptions:0]];
+}
+
+- (void)syncFailed:(CafeSyncGroupStatus *)status {
+  [self sendEventWithName:@"SYNC_FAILED" body:[status.data base64EncodedStringWithOptions:0]];
 }
 
 @end

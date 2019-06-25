@@ -9,6 +9,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 import io.textile.pb.Model;
+import io.textile.textile.Handlers;
 import io.textile.textile.Textile;
 
 public class CafesBridge extends ReactContextBaseJavaModule {
@@ -25,65 +26,21 @@ public class CafesBridge extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void register(final String host, final String token, final Promise promise) {
+    public void register(final String peerId, final String token, final Promise promise) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
-                try {
-                    Textile.instance().cafes.register(host, token);
-                    promise.resolve(null);
-                }
-                catch (Exception e) {
-                    promise.reject("register", e);
-                }
-            }
-        });
-    }
+                Textile.instance().cafes.register(peerId, token, new Handlers.ErrorHandler() {
+                    @Override
+                    public void onComplete() {
+                        promise.resolve(null);
+                    }
 
-    @ReactMethod
-    public void session(final String peerId, final Promise promise) {
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Model.CafeSession session = Textile.instance().cafes.session(peerId);
-                    promise.resolve(session != null ? Util.encode(session.toByteArray()) : null);
-                }
-                catch (Exception e) {
-                    promise.reject("session", e);
-                }
-            }
-        });
-    }
-
-    @ReactMethod
-    public void sessions(final Promise promise) {
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Model.CafeSessionList list = Textile.instance().cafes.sessions();
-                    promise.resolve(Util.encode(list.toByteArray()));
-                }
-                catch (Exception e) {
-                    promise.reject("sessions", e);
-                }
-            }
-        });
-    }
-
-    @ReactMethod
-    public void refreshSession(final String peerId, final Promise promise) {
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Model.CafeSession session = Textile.instance().cafes.refreshSession(peerId);
-                    promise.resolve(session != null ? Util.encode(session.toByteArray()) : null);
-                }
-                catch (Exception e) {
-                    promise.reject("refreshSession", e);
-                }
+                    @Override
+                    public void onError(final Exception e) {
+                        promise.reject("register", e);
+                    }
+                });
             }
         });
     }
@@ -93,13 +50,37 @@ public class CafesBridge extends ReactContextBaseJavaModule {
         executor.execute(new Runnable() {
             @Override
             public void run() {
-                try {
-                    Textile.instance().cafes.deregister(peerId);
-                    promise.resolve(null);
-                }
-                catch (Exception e) {
-                    promise.reject("deregister", e);
-                }
+                Textile.instance().cafes.deregister(peerId, new Handlers.ErrorHandler() {
+                    @Override
+                    public void onComplete() {
+                        promise.resolve(null);
+                    }
+
+                    @Override
+                    public void onError(final Exception e) {
+                        promise.reject("deregister", e);
+                    }
+                });
+            }
+        });
+    }
+
+    @ReactMethod
+    public void refreshSession(final String peerId, final Promise promise) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                Textile.instance().cafes.refreshSession(peerId, new Handlers.CafeSessionHandler() {
+                    @Override
+                    public void onComplete(final Model.CafeSession session) {
+                        promise.resolve(session.toByteArray());
+                    }
+
+                    @Override
+                    public void onError(final Exception e) {
+                        promise.reject("refreshSession", e);
+                    }
+                });
             }
         });
     }
@@ -113,8 +94,40 @@ public class CafesBridge extends ReactContextBaseJavaModule {
                     Textile.instance().cafes.checkMessages();
                     promise.resolve(null);
                 }
-                catch (Exception e) {
+                catch (final Exception e) {
                     promise.reject("checkMessages", e);
+                }
+            }
+        });
+    }
+
+    @ReactMethod
+    public void session(final String peerId, final Promise promise) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    final Model.CafeSession session = Textile.instance().cafes.session(peerId);
+                    promise.resolve(session != null ? Util.encode(session.toByteArray()) : null);
+                }
+                catch (final Exception e) {
+                    promise.reject("session", e);
+                }
+            }
+        });
+    }
+
+    @ReactMethod
+    public void sessions(final Promise promise) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    final Model.CafeSessionList list = Textile.instance().cafes.sessions();
+                    promise.resolve(Util.encode(list.toByteArray()));
+                }
+                catch (final Exception e) {
+                    promise.reject("sessions", e);
                 }
             }
         });

@@ -33,7 +33,7 @@ public class InvitesBridge extends ReactContextBaseJavaModule {
                     Textile.instance().invites.add(threadId, address);
                     promise.resolve(null);
                 }
-                catch (Exception e) {
+                catch (final Exception e) {
                     promise.reject("add", e);
                 }
             }
@@ -46,10 +46,10 @@ public class InvitesBridge extends ReactContextBaseJavaModule {
             @Override
             public void run() {
                 try {
-                    View.ExternalInvite invite = Textile.instance().invites.addExternal(threadId);
+                    final View.ExternalInvite invite = Textile.instance().invites.addExternal(threadId);
                     promise.resolve(Util.encode(invite.toByteArray()));
                 }
-                catch (Exception e) {
+                catch (final Exception e) {
                     promise.reject("addExternal", e);
                 }
             }
@@ -62,9 +62,9 @@ public class InvitesBridge extends ReactContextBaseJavaModule {
             @Override
             public void run() {
                 try {
-                    View.InviteViewList list = Textile.instance().invites.list();
+                    final View.InviteViewList list = Textile.instance().invites.list();
                     promise.resolve(Util.encode(list.toByteArray()));
-                } catch (Exception e) {
+                } catch (final Exception e) {
                     promise.reject("list", e);
                 }
             }
@@ -78,7 +78,7 @@ public class InvitesBridge extends ReactContextBaseJavaModule {
             public void run() {
                 try {
                     promise.resolve(Textile.instance().invites.accept(inviteId));
-                } catch (Exception e) {
+                } catch (final Exception e) {
                     promise.reject("accept", e);
                 }
             }
@@ -93,7 +93,7 @@ public class InvitesBridge extends ReactContextBaseJavaModule {
                 try {
                     promise.resolve(Textile.instance().invites.acceptExternal(inviteId, key));
                 }
-                catch (Exception e) {
+                catch (final Exception e) {
                     promise.reject("acceptExternal", e);
                 }
             }

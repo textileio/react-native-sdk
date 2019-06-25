@@ -13,11 +13,11 @@ const { CafesBridge } = NativeModules
 /**
  * Register a new remote cafe.
  * ```typescript
- * Textile.cafes.register(url, token);
+ * Textile.cafes.register(peerId, token);
  * ```
  */
-export async function register(url: string, token: string): Promise<void> {
-  return CafesBridge.register(url, token)
+export async function register(peerId: string, token: string): Promise<void> {
+  return CafesBridge.register(peerId, token)
 }
 
 /**
