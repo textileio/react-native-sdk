@@ -72,10 +72,6 @@ RCT_EXPORT_MODULE();
   [self sendEventWithName:@"NOTIFICATION_RECEIVED" body:[notification.data base64EncodedStringWithOptions:0]];
 }
 
-- (void)threadUpdateReceived:(FeedItem *)feedItem {
-  [self sendEventWithName:@"THREAD_UPDATE_RECEIVED" body:[feedItem.data base64EncodedStringWithOptions:0]];
-}
-
 - (void)threadUpdateReceived:(NSString *)threadId data:(FeedItemData *)feedItemData {
   [self sendEventWithName:@"THREAD_UPDATE_RECEIVED" body:@{
                                                            @"threadId" : threadId,
