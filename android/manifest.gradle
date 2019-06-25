@@ -3,9 +3,9 @@ ext {
     targetSdk = 28
 
     // Gradle classpath dependencies versions
-    gradleVersion = '3.3.2'
+    gradleVersion = '3.4.1'
     mavenGradleVersion = '2.1'
 
     // Textile
-    textileVersion = '1.1.0-rc-0'
+    textileVersion = '1.1.0-rc-1'
 }
