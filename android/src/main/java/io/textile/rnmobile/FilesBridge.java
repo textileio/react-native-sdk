@@ -47,6 +47,7 @@ public class FilesBridge extends ReactContextBaseJavaModule {
         });
     }
 
+    @ReactMethod
     public void addFiles(final String files, final String threadId, final String caption, final Promise promise) {
         executor.execute(new Runnable() {
             @Override
@@ -66,6 +67,7 @@ public class FilesBridge extends ReactContextBaseJavaModule {
         });
     }
 
+    @ReactMethod
     public void shareFiles(final String hash, final String threadId, final String caption, final Promise promise) {
         executor.execute(new Runnable() {
             @Override
