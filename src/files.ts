@@ -12,13 +12,13 @@ const { FilesBridge } = NativeModules
 
 /**
  * Add raw data to a Textile thread
- * @param data Raw data
+ * @param base64 Raw data as a base64 string
  * @param threadId The thread id the data will be added to
  * @param caption A caption to associate with the data
  * @returns A Promise that will resolve with the Block result
  */
-export async function addData(data: Uint8Array, threadId: string, caption?: string): Promise<IBlock> {
-  const result = await FilesBridge.addData(Buffer.from(data).toString('base64'), threadId, caption)
+export async function addData(base64: string, threadId: string, caption?: string): Promise<IBlock> {
+  const result = await FilesBridge.addData(base64, threadId, caption)
   return Block.decode(Buffer.from(result, 'base64'))
 }
 

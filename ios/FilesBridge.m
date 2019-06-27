@@ -21,9 +21,8 @@ RCT_EXPORT_MODULE();
   return dispatch_queue_create("io.textile.TextileNodeQueue", DISPATCH_QUEUE_SERIAL);
 }
 
-RCT_EXPORT_METHOD(addData:(NSString *)dataBase64 threadId:(NSString *)threadId caption:(NSString *)caption resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
-  NSData *data = [[NSData alloc] initWithBase64EncodedString:dataBase64 options:0];
-  [Textile.instance.files addData:data threadId:threadId caption:caption completion:^(Block * _Nullable block, NSError * _Nonnull error) {
+RCT_EXPORT_METHOD(addData:(NSString *)base64 threadId:(NSString *)threadId caption:(NSString *)caption resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+  [Textile.instance.files addData:base64 threadId:threadId caption:caption completion:^(Block * _Nullable block, NSError * _Nonnull error) {
     fulfillWithResult([block.data base64EncodedStringWithOptions:0], error, resolve, reject);
   }];
 }
