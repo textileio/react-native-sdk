@@ -27,12 +27,12 @@ public class FilesBridge extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void addData(final String inputBase64, final String threadId, final String caption, final Promise promise) {
+    public void addData(final String base64, final String threadId, final String caption, final Promise promise) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
                 Textile.instance().files.addData(
-                        Util.decode(inputBase64), threadId, caption, new Handlers.BlockHandler() {
+                        base64, threadId, caption, new Handlers.BlockHandler() {
                             @Override
                             public void onComplete(final Model.Block block) {
                                 promise.resolve(Util.encode(block.toByteArray()));
