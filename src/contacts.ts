@@ -11,7 +11,7 @@ import {
   IContactList,
   IThreadList,
   IContactQuery,
-  IQueryOptions,
+  IQueryOptions
 } from './model'
 
 const { ContactsBridge } = NativeModules
@@ -65,10 +65,13 @@ export async function threads(address: string): Promise<IThreadList> {
  * Textile.contacts.search(query, options);
  * ```
  */
-export async function search(query: IContactQuery, options: IQueryOptions): Promise<string> {
+export async function search(
+  query: IContactQuery,
+  options: IQueryOptions
+): Promise<string> {
   return ContactsBridge.search(
     Buffer.from(ContactQuery.encode(query).finish()).toString('base64'),
-    Buffer.from(QueryOptions.encode(options).finish()).toString('base64'),
+    Buffer.from(QueryOptions.encode(options).finish()).toString('base64')
   )
 }
 

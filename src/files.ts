@@ -1,12 +1,7 @@
 import { NativeModules } from 'react-native'
 import { Buffer } from 'buffer'
 
-import {
-  Block,
-  FilesList,
-  IBlock,
-  IFilesList,
-} from './model'
+import { Block, FilesList, IBlock, IFilesList } from './model'
 
 const { FilesBridge } = NativeModules
 
@@ -17,7 +12,11 @@ const { FilesBridge } = NativeModules
  * @param caption A caption to associate with the data
  * @returns A Promise that will resolve with the Block result
  */
-export async function addData(base64: string, threadId: string, caption?: string): Promise<IBlock> {
+export async function addData(
+  base64: string,
+  threadId: string,
+  caption?: string
+): Promise<IBlock> {
   const result = await FilesBridge.addData(base64, threadId, caption)
   return Block.decode(Buffer.from(result, 'base64'))
 }
@@ -29,7 +28,11 @@ export async function addData(base64: string, threadId: string, caption?: string
  * @param caption A caption to associate with the files
  * @returns A Promise that will resolve with the Block result
  */
-export async function addFiles(paths: string, threadId: string, caption?: string): Promise<IBlock> {
+export async function addFiles(
+  paths: string,
+  threadId: string,
+  caption?: string
+): Promise<IBlock> {
   const result = await FilesBridge.addFiles(paths, threadId, caption)
   return Block.decode(Buffer.from(result, 'base64'))
 }
@@ -41,7 +44,11 @@ export async function addFiles(paths: string, threadId: string, caption?: string
  * @param caption A caption to associate with the files
  * @returns A Promise that will resolve with the Block result
  */
-export async function shareFiles(target: string, threadId: string, caption?: string): Promise<IBlock> {
+export async function shareFiles(
+  target: string,
+  threadId: string,
+  caption?: string
+): Promise<IBlock> {
   const result = await FilesBridge.shareFiles(target, threadId, caption)
   return Block.decode(Buffer.from(result, 'base64'))
 }
@@ -52,7 +59,11 @@ export async function shareFiles(target: string, threadId: string, caption?: str
  * Textile.files.list(threadId, offset, limit);
  * ```
  */
-export async function list(threadId: string, offset: string, limit: number): Promise<IFilesList> {
+export async function list(
+  threadId: string,
+  offset: string,
+  limit: number
+): Promise<IFilesList> {
   const result = await FilesBridge.list(threadId, offset, limit)
   return FilesList.decode(Buffer.from(result, 'base64'))
 }
@@ -63,7 +74,9 @@ export async function list(threadId: string, offset: string, limit: number): Pro
  * Textile.files.content(hash);
  * ```
  */
-export async function content(hash: string): Promise<{ data: Uint8Array, mediaType: string }> {
+export async function content(
+  hash: string
+): Promise<{ data: Uint8Array; mediaType: string }> {
   const { data, mediaType } = await FilesBridge.content(hash)
   return { data: Buffer.from(data, 'base64'), mediaType }
 }
@@ -78,8 +91,11 @@ export async function content(hash: string): Promise<{ data: Uint8Array, mediaTy
  */
 export async function imageContentForMinWidth(
   pth: string,
-  minWidth: number,
-): Promise<{ data: Uint8Array, mediaType: string }> {
-  const { data, mediaType } = await FilesBridge.imageContentForMinWidth(pth, minWidth)
+  minWidth: number
+): Promise<{ data: Uint8Array; mediaType: string }> {
+  const { data, mediaType } = await FilesBridge.imageContentForMinWidth(
+    pth,
+    minWidth
+  )
   return { data: Buffer.from(data, 'base64'), mediaType }
 }

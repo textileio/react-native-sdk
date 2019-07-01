@@ -1,12 +1,7 @@
 import { NativeModules } from 'react-native'
 import { Buffer } from 'buffer'
 
-import {
-  FileIndex,
-  Node,
-  IFileIndex,
-  INode,
-} from './model'
+import { FileIndex, Node, IFileIndex, INode } from './model'
 
 const { SchemasBridge } = NativeModules
 
@@ -18,6 +13,8 @@ const { SchemasBridge } = NativeModules
  */
 export async function add(node: INode): Promise<IFileIndex> {
   const payload = Node.encode(node).finish()
-  const result = await SchemasBridge.add(Buffer.from(payload).toString('base64'))
+  const result = await SchemasBridge.add(
+    Buffer.from(payload).toString('base64')
+  )
   return FileIndex.decode(Buffer.from(result, 'base64'))
 }

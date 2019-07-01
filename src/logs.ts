@@ -1,10 +1,7 @@
 import { NativeModules } from 'react-native'
 import { Buffer } from 'buffer'
 
-import {
-  LogLevel,
-  ILogLevel,
-} from './model'
+import { LogLevel, ILogLevel } from './model'
 
 const { LogsBridge } = NativeModules
 
