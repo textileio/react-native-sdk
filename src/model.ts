@@ -6,7 +6,7 @@ import {
   IIgnore,
   IJoin,
   ILeave,
-  IAnnounce,
+  IAnnounce
 } from '@textile/js-types'
 
 export * from '@textile/js-types'
@@ -26,7 +26,7 @@ export enum FeedItemType {
   Ignore,
   Join,
   Leave,
-  Announce,
+  Announce
 }
 
 export interface TextFeedItem {
@@ -78,11 +78,11 @@ export interface AnnounceFeedItem {
 }
 
 export type FeedItemData =
-  TextFeedItem |
-  CommentFeedItem |
-  LikeFeedItem |
-  FilesFeedItem |
-  IgnoreFeedItem |
-  JoinFeedItem |
-  LeaveFeedItem |
-  AnnounceFeedItem
+  | TextFeedItem
+  | CommentFeedItem
+  | LikeFeedItem
+  | FilesFeedItem
+  | IgnoreFeedItem
+  | JoinFeedItem
+  | LeaveFeedItem
+  | AnnounceFeedItem

@@ -1,10 +1,7 @@
 import { NativeModules } from 'react-native'
 import { Buffer } from 'buffer'
 
-import {
-  NotificationList,
-  INotificationList,
-} from './model'
+import { NotificationList, INotificationList } from './model'
 
 const { NotificationsBridge } = NativeModules
 
@@ -14,7 +11,10 @@ const { NotificationsBridge } = NativeModules
  * Textile.notifications.list(offset, limit);
  * ```
  */
-export async function list(offset: string, limit: number): Promise<INotificationList> {
+export async function list(
+  offset: string,
+  limit: number
+): Promise<INotificationList> {
   const result = await NotificationsBridge.list(offset, limit)
   return NotificationList.decode(Buffer.from(result, 'base64'))
 }

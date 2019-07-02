@@ -1,10 +1,7 @@
 import { NativeModules } from 'react-native'
 import { Buffer } from 'buffer'
 
-import {
-  TextList,
-  ITextList,
-} from './model'
+import { TextList, ITextList } from './model'
 
 const { MessagesBridge } = NativeModules
 
@@ -25,7 +22,11 @@ export async function add(threadId: string, body: string): Promise<string> {
  * Textile.messages.list(offset, limit);
  * ```
  */
-export async function list(offset: string, limit: number, threadId?: string): Promise<ITextList> {
+export async function list(
+  offset: string,
+  limit: number,
+  threadId?: string
+): Promise<ITextList> {
   const result = await MessagesBridge.list(offset, limit, threadId)
   return TextList.decode(Buffer.from(result, 'base64'))
 }
