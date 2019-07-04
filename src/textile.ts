@@ -62,7 +62,6 @@ export async function walletAccountAt(
  */
 export async function isInitialized(repoPath: string): Promise<boolean> {
   const result = await TextileBridge.isInitialized(repoPath)
-  // TODO: check this value on each platform
   return result
 }
 
