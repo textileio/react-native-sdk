@@ -1,7 +1,12 @@
 import { NativeModules } from 'react-native'
 import { Buffer } from 'buffer'
 
-import { Summary, ISummary } from './model'
+import {
+  Summary,
+  ISummary,
+  IMobileWalletAccount,
+  MobileWalletAccount
+} from './model'
 import * as account from './account'
 import * as cafes from './cafes'
 import * as comments from './comments'
@@ -25,31 +30,84 @@ import * as util from './util'
 const { TextileBridge } = NativeModules
 
 /**
- * Initialize the Textile node, returnin the recovery phrase only the first time called
- * ```typescript
- * const recoveryPhrase = Textile.initialize(false, true);
- * ```
+ * Create a new Textile wallet
+ * @param wordCount The number of words the wallet recovery phrase should contain
+ * @returns The new wallet recovery phrase Promise
  */
-export async function initialize(
-  debug: boolean,
-  logToDisk: boolean
-): Promise<string | undefined> {
-  const result: string | undefined = await TextileBridge.initialize(
-    debug,
-    logToDisk
-  )
+export async function newWallet(wordCount: number): Promise<string> {
+  const phrase = await TextileBridge.newWallet(wordCount)
+  return phrase
+}
+
+/**
+ * Resolve a wallet account
+ * @param phrase The wallet recovery phrase
+ * @param index The index of the account to resolve
+ * @param password The optional wallet password
+ * @returns The wallet account Promise
+ */
+export async function walletAccountAt(
+  phrase: string,
+  index: number,
+  password?: string
+): Promise<IMobileWalletAccount> {
+  const result = await TextileBridge.walletAccountAt(phrase, index, password)
+  return MobileWalletAccount.decode(Buffer.from(result, 'base64'))
+}
+
+/**
+ * Check if Textile is already initialized
+ * @param repoPath The path to the Textile repo
+ * @returns A boolean Promise value indicating if Textile is initialized or not
+ */
+export async function isInitialized(repoPath: string): Promise<boolean> {
+  const result = await TextileBridge.isInitialized(repoPath)
+  // TODO: check this value on each platform
   return result
 }
 
 /**
- * Get the Textile node repo path
- * ```typescript
- * Textile.repoPath();
- * ```
+ * Initialize the shared Textile instance with an existing account seed
+ * @param repoPath The path to the Textile repo
+ * @param seed The account seed
+ * @param debug Sets the log level to debug or not
+ * @param logToDisk Whether or not to write Textile logs to disk
  */
-export async function repoPath(): Promise<string> {
-  const result = await TextileBridge.repoPath()
-  return result as string
+export async function initialize(
+  repoPath: string,
+  seed: string,
+  debug: boolean,
+  logToDisk: boolean
+): Promise<void> {
+  return await TextileBridge.initialize(repoPath, seed, debug, logToDisk)
+}
+
+/**
+ * Initialize the shared Textile instance, creating a new wallet
+ * @param repoPath The path to the Textile repo
+ * @param debug Sets the log level to debug or not
+ * @param logToDisk Whether or not to write Textile logs to disk
+ * @returns The wallet recovery phrase Promise
+ */
+export async function initializeCreatingNewWalletAndAccount(
+  repoPath: string,
+  debug: boolean,
+  logToDisk: boolean
+): Promise<string> {
+  return await TextileBridge.initializeCreatingNewWalletAndAccount(
+    repoPath,
+    debug,
+    logToDisk
+  )
+}
+
+/**
+ * After initialization is complete, launch Textile
+ * @param repoPath The path to the Textile repo
+ * @param debug Sets the log level to debug or not
+ */
+export async function launch(repoPath: string, debug: boolean): Promise<void> {
+  return await TextileBridge.launch(repoPath, debug)
 }
 
 /**
