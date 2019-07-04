@@ -13,7 +13,7 @@ import {
   IThreadList,
   IPeerList,
   IThreadSnapshotQuery,
-  IQueryOptions,
+  IQueryOptions
 } from './model'
 
 const { ThreadsBridge } = NativeModules
@@ -26,7 +26,9 @@ const { ThreadsBridge } = NativeModules
  */
 export async function add(config: IAddThreadConfig): Promise<IThread> {
   const payload = AddThreadConfig.encode(config).finish()
-  const result = await ThreadsBridge.add(Buffer.from(payload).toString('base64'))
+  const result = await ThreadsBridge.add(
+    Buffer.from(payload).toString('base64')
+  )
   return Thread.decode(Buffer.from(result, 'base64'))
 }
 
@@ -112,10 +114,13 @@ export async function snapshot(): Promise<void> {
  * const snapshots = Textile.threads.searchSnapshots(query, options);
  * ```
  */
-export async function searchSnapshots(query: IThreadSnapshotQuery, options: IQueryOptions): Promise<string> {
+export async function searchSnapshots(
+  query: IThreadSnapshotQuery,
+  options: IQueryOptions
+): Promise<string> {
   return ThreadsBridge.searchSnapshots(
     Buffer.from(ThreadSnapshotQuery.encode(query).finish()).toString('base64'),
-    Buffer.from(QueryOptions.encode(options).finish()).toString('base64'),
+    Buffer.from(QueryOptions.encode(options).finish()).toString('base64')
   )
 }
 

@@ -1,14 +1,7 @@
 import { NativeModules } from 'react-native'
 import { Buffer } from 'buffer'
 
-import {
-  Peer,
-  IPeer,
-  Block,
-  IBlock,
-  Thread,
-  IThread,
-} from './model'
+import { Peer, IPeer, Block, IBlock, Thread, IThread } from './model'
 
 const { ProfileBridge } = NativeModules
 

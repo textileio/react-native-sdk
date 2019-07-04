@@ -1,10 +1,7 @@
 import { NativeModules } from 'react-native'
 import { Buffer } from 'buffer'
 
-import {
-  Summary,
-  ISummary,
-} from './model'
+import { Summary, ISummary } from './model'
 import * as account from './account'
 import * as cafes from './cafes'
 import * as comments from './comments'
@@ -25,7 +22,7 @@ import * as threads from './threads'
 import * as events from './events'
 import * as util from './util'
 
-const  { TextileBridge } = NativeModules
+const { TextileBridge } = NativeModules
 
 /**
  * Initialize the Textile node, returnin the recovery phrase only the first time called
@@ -33,8 +30,14 @@ const  { TextileBridge } = NativeModules
  * const recoveryPhrase = Textile.initialize(false, true);
  * ```
  */
-export async function initialize(debug: boolean, logToDisk: boolean): Promise<string | undefined> {
-  const result: string | undefined = await TextileBridge.initialize(debug, logToDisk)
+export async function initialize(
+  debug: boolean,
+  logToDisk: boolean
+): Promise<string | undefined> {
+  const result: string | undefined = await TextileBridge.initialize(
+    debug,
+    logToDisk
+  )
   return result
 }
 
@@ -101,5 +104,5 @@ export {
   schemas,
   threads,
   events,
-  util,
+  util
 }

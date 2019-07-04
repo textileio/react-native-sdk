@@ -5,7 +5,7 @@ import {
   ExternalInvite,
   IExternalInvite,
   InviteViewList,
-  IInviteViewList,
+  IInviteViewList
 } from './model'
 
 const { InvitesBridge } = NativeModules
@@ -59,7 +59,10 @@ export async function accept(inviteId: string): Promise<string> {
  * Textile.invites.acceptExternal(id, key);
  * ```
  */
-export async function acceptExternal(id_: string, key: string): Promise<string> {
+export async function acceptExternal(
+  id_: string,
+  key: string
+): Promise<string> {
   const result = await InvitesBridge.acceptExternal(id_, key)
   return result as string
 }

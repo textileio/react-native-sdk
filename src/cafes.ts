@@ -5,7 +5,7 @@ import {
   CafeSession,
   ICafeSession,
   CafeSessionList,
-  ICafeSessionList,
+  ICafeSessionList
 } from './model'
 
 const { CafesBridge } = NativeModules
@@ -26,7 +26,9 @@ export async function register(peerId: string, token: string): Promise<void> {
  * Textile.cafes.session(peerId);
  * ```
  */
-export async function session(peerId: string): Promise<ICafeSession | undefined> {
+export async function session(
+  peerId: string
+): Promise<ICafeSession | undefined> {
   const result = await CafesBridge.session(peerId)
   if (!result) {
     return undefined
@@ -51,7 +53,9 @@ export async function sessions(): Promise<ICafeSessionList> {
  * Textile.cafes.refreshSession(peerId);
  * ```
  */
-export async function refreshSession(peerId: string): Promise<ICafeSession | undefined> {
+export async function refreshSession(
+  peerId: string
+): Promise<ICafeSession | undefined> {
   const result = await CafesBridge.refreshSession(peerId)
   if (!result) {
     return undefined

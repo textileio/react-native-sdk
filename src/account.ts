@@ -1,12 +1,7 @@
 import { NativeModules } from 'react-native'
 import { Buffer } from 'buffer'
 
-import {
-  Contact,
-  IContact,
-  QueryOptions,
-  IQueryOptions,
-} from './model'
+import { Contact, IContact, QueryOptions, IQueryOptions } from './model'
 
 const { AccountBridge } = NativeModules
 
@@ -78,7 +73,7 @@ export async function contact(): Promise<IContact> {
  */
 export async function sync(options: IQueryOptions): Promise<string> {
   return AccountBridge.sync(
-    Buffer.from(QueryOptions.encode(options).finish()).toString('base64'),
+    Buffer.from(QueryOptions.encode(options).finish()).toString('base64')
   )
 }
 
