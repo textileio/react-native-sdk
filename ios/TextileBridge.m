@@ -31,20 +31,43 @@ RCT_EXPORT_MODULE();
   return dispatch_queue_create("io.textile.TextileNodeQueue", DISPATCH_QUEUE_SERIAL);
 }
 
-RCT_EXPORT_METHOD(initialize:(BOOL)debug logToDisk:(BOOL)logToDisk resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_EXPORT_METHOD(newWallet:(NSInteger)wordCount resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSError *error;
-  NSString *phrase = [Textile initializeWithDebug:debug logToDisk:logToDisk error:&error];
-  if (error) {
-    fulfillWithResult(nil, error, resolve, reject);
-  } else {
-    TextileEvents *eventHandler = self.bridge.textileEvents;
-    Textile.instance.delegate = eventHandler;
-    fulfillWithResult(phrase, error, resolve, reject);
-  }
+  NSString *phrase = [Textile newWallet:wordCount error:&error];
+  fulfillWithResult(phrase, error, resolve, reject);
 }
 
-RCT_EXPORT_METHOD(repoPath:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
-  resolve(Textile.instance.repoPath);
+RCT_EXPORT_METHOD(walletAccountAt:(NSString *)phrase index:(NSInteger)index password:(NSString *)password resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+  NSError *error;
+  MobileWalletAccount *account = [Textile walletAccountAt:phrase index:index password:password error:&error];
+  fulfillWithResult([account.data base64EncodedStringWithOptions:0], error, resolve, reject);
+}
+
+RCT_EXPORT_METHOD(isInitialized:(NSString *)repoPath resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+  BOOL initialized = [Textile isInitialized:repoPath];
+  fulfillWithResult(@(initialized), nil, resolve, reject);
+}
+
+RCT_EXPORT_METHOD(initialize:(NSString *)repoPath seed:(NSString *)seed debug:(BOOL)debug logToDisk:(BOOL)logToDisk resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+  NSError *error;
+  [Textile initialize:repoPath seed:seed debug:debug logToDisk:logToDisk error:&error];
+  fulfillWithResult(nil, error, resolve, reject);
+}
+
+RCT_EXPORT_METHOD(initializeCreatingNewWalletAndAccount:(NSString *)repoPath debug:(BOOL)debug logToDisk:(BOOL)logToDisk resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+  NSError *error;
+  NSString *phrase = [Textile initializeCreatingNewWalletAndAccount:repoPath debug:debug logToDisk:logToDisk error:&error];
+  fulfillWithResult(phrase, error, resolve, reject);
+}
+
+RCT_EXPORT_METHOD(launch:(NSString *)repoPath debug:(BOOL)debug resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+  NSError *error;
+  BOOL success = [Textile launch:repoPath debug:debug error:&error];
+  if (success) {
+    TextileEvents *eventHandler = self.bridge.textileEvents;
+    Textile.instance.delegate = eventHandler;
+  }
+  fulfillWithResult(nil, error, resolve, reject);
 }
 
 RCT_EXPORT_METHOD(version:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
