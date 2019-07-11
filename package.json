@@ -1,6 +1,6 @@
 {
   "name": "@textile/react-native-sdk",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "## Getting started",
   "nativePackage": true,
   "main": "dist/index.js",
@@ -62,7 +62,7 @@
     "typescript": "^3.1.1"
   },
   "dependencies": {
-    "@textile/js-types": "0.5.4",
+    "@textile/js-types": "0.6.2",
     "buffer": "^5.2.1"
   },
   "directories": {
