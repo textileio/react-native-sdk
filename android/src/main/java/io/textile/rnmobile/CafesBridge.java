@@ -73,7 +73,7 @@ public class CafesBridge extends ReactContextBaseJavaModule {
                 Textile.instance().cafes.refreshSession(peerId, new Handlers.CafeSessionHandler() {
                     @Override
                     public void onComplete(final Model.CafeSession session) {
-                        promise.resolve(session.toByteArray());
+                        promise.resolve(Util.encode(session.toByteArray()));
                     }
 
                     @Override
