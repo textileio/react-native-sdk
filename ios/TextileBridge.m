@@ -22,8 +22,7 @@ RCT_EXPORT_MODULE();
 
 - (void)invalidate {
   dispatch_sync([self methodQueue], ^{
-    NSError *error;
-    [Textile.instance destroy:&error];
+    [Textile.instance destroy];
   });
 }
 

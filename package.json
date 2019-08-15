@@ -1,6 +1,6 @@
 {
   "name": "@textile/react-native-sdk",
-  "version": "3.0.6",
+  "version": "3.0.7",
   "description": "## Getting started",
   "nativePackage": true,
   "main": "dist/index.js",
@@ -15,7 +15,7 @@
     "build": "rm -rf dist/ && tsc",
     "lint": "eslint --fix --ext .mjs,.js,.jsx,.ts,.tsx .",
     "test": "jest --no-watchman",
-    "docs": "node ./scripts/contributors.js; ./node_modules/typedoc/bin/typedoc"
+    "docs": "node ./scripts/contributors.js; ./node_modules/typedoc/bin/typedoc --mode modules"
   },
   "keywords": [
     "react-native"
@@ -62,7 +62,7 @@
     "typescript": "^3.1.1"
   },
   "dependencies": {
-    "@textile/js-types": "0.6.2",
+    "@textile/js-types": "0.6.11",
     "buffer": "^5.2.1"
   },
   "directories": {
