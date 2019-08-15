@@ -634,10 +634,10 @@
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@protobufjs/utf8/-/utf8-1.1.0.tgz#a777360b5b39a1a2e5106f8e858f2fd2d060c570"
 
-"@textile/js-types@0.6.2":
-  version "0.6.2"
-  resolved "https://registry.yarnpkg.com/@textile/js-types/-/js-types-0.6.2.tgz#471c0668f6817df3584b2dc00fb24cab8791b656"
-  integrity sha512-OHCMJSJFHFCJ1KEhnk+WdLBvpTJM+v4RVWunK8OqLv4ckZ29hJTxMOSXI86761gGmmtPSxTZ4WdKZXuabpdT5A==
+"@textile/js-types@0.6.11":
+  version "0.6.11"
+  resolved "https://registry.yarnpkg.com/@textile/js-types/-/js-types-0.6.11.tgz#ca3df3e960d6f284566d55021ca582f43cd68f41"
+  integrity sha512-TuX8yXLbtRWVb2l7UjWndtbiyxE+xVAYSl+1RXO7vm2MejFEIyI+sO9p4NmZZ9w5BBoEDWjcsPZ16AFJoa16fQ==
   dependencies:
     protobufjs "^6.8.8"
 
