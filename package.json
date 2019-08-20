@@ -63,7 +63,7 @@
   },
   "dependencies": {
     "@textile/js-types": "0.6.11",
-    "buffer": "^5.2.1"
+    "buffer": "5.2.1"
   },
   "directories": {
     "src": "src"
