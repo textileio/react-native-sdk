@@ -90,13 +90,17 @@ public class CafesBridge extends ReactContextBaseJavaModule {
         executor.execute(new Runnable() {
             @Override
             public void run() {
-                try {
-                    Textile.instance().cafes.checkMessages();
-                    promise.resolve(null);
-                }
-                catch (final Exception e) {
-                    promise.reject("checkMessages", e);
-                }
+                Textile.instance().cafes.checkMessages(new Handlers.ErrorHandler() {
+                    @Override
+                    public void onComplete() {
+                        promise.resolve(null);
+                    }
+
+                    @Override
+                    public void onError(final Exception e) {
+                        promise.reject("checkMessages", e);
+                    }
+                });
             }
         });
     }
