@@ -52,9 +52,9 @@ RCT_EXPORT_METHOD(deregister:(NSString*)peerId resolver:(RCTPromiseResolveBlock)
 }
 
 RCT_EXPORT_METHOD(checkMessages:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
-  NSError *error;
-  [Textile.instance.cafes checkMessages:&error];
-  fulfillWithResult(nil, error, resolve, reject);
+  [Textile.instance.cafes checkMessages:^(NSError * _Nonnull error) {
+    fulfillWithResult(nil, error, resolve, reject);
+  }];
 }
 
 @end
