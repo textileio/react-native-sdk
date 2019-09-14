@@ -1,4 +1,5 @@
 import { NativeModules } from 'react-native'
+import { Buffer } from 'buffer'
 
 const { IpfsBridge } = NativeModules
 
