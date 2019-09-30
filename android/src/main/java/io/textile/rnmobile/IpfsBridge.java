@@ -40,6 +40,25 @@ public class IpfsBridge extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
+    public void connect(final String multiaddr, final Promise promise) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    if (Textile.instance().ipfs.swarmConnect(multiaddr)) {
+                        promise.resolve(true);
+                    } else {
+                        promise.reject(new Exception("connect"));
+                    }
+                }
+                catch (final Exception e) {
+                    promise.reject("connect", e);
+                }
+            }
+        });
+    }
+
+    @ReactMethod
     public void dataAtPath(final String path, final Promise promise) {
         executor.execute(new Runnable() {
             @Override

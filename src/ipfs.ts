@@ -15,6 +15,19 @@ export async function peerId(): Promise<string> {
 }
 
 /**
+ * Open a new direct connection to a peer using an IPFS multiaddr
+ * ```typescript
+ * Textile.ipfs.connect(multiaddr);
+ * ```
+ */
+export async function connect(
+    multiaddr: string
+): Promise<boolean> {
+  const result = await IpfsBridge.connect(multiaddr)
+  return result
+}
+
+/**
  * Get raw file data by IPFS path. See `cat` method in IPFS.
  * ```typescript
  * Textile.ipfs.dataAtPath(path);
