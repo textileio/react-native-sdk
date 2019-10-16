@@ -21,9 +21,13 @@
 RCT_EXPORT_MODULE();
 
 - (void)invalidate {
-  dispatch_sync([self methodQueue], ^{
-    [Textile.instance destroy];
+  dispatch_semaphore_t sema = dispatch_semaphore_create(0);
+  dispatch_async([self methodQueue], ^{
+    [Textile.instance destroyWithCompletion:^(BOOL success, NSError *error){
+      dispatch_semaphore_signal(sema);
+    }];
   });
+  dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
 }
 
 - (dispatch_queue_t)methodQueue {
