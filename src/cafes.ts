@@ -13,11 +13,11 @@ const { CafesBridge } = NativeModules
 /**
  * Register a new remote cafe.
  * ```typescript
- * Textile.cafes.register(peerId, token);
+ * Textile.cafes.register(url, token);
  * ```
  */
-export async function register(peerId: string, token: string): Promise<void> {
-  return CafesBridge.register(peerId, token)
+export async function register(url: string, token: string): Promise<void> {
+  return CafesBridge.register(url, token)
 }
 
 /**
@@ -50,13 +50,13 @@ export async function sessions(): Promise<ICafeSessionList> {
 /**
  * Refresh an existing session by peerId.
  * ```typescript
- * Textile.cafes.refreshSession(peerId);
+ * Textile.cafes.refreshSession(sessionId);
  * ```
  */
 export async function refreshSession(
-  peerId: string
+  sessionId: string
 ): Promise<ICafeSession | undefined> {
-  const result = await CafesBridge.refreshSession(peerId)
+  const result = await CafesBridge.refreshSession(sessionId)
   if (!result) {
     return undefined
   }
@@ -66,11 +66,11 @@ export async function refreshSession(
 /**
  * Deregister a remote Cafe.
  * ```typescript
- * Textile.cafes.deregister();
+ * Textile.cafes.deregister(sessionId);
  * ```
  */
-export async function deregister(id: string): Promise<void> {
-  return CafesBridge.deregister(id)
+export async function deregister(sessionId: string): Promise<void> {
+  return CafesBridge.deregister(sessionId)
 }
 
 /**

@@ -26,11 +26,11 @@ public class CafesBridge extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void register(final String peerId, final String token, final Promise promise) {
+    public void register(final String url, final String token, final Promise promise) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
-                Textile.instance().cafes.register(peerId, token, new Handlers.ErrorHandler() {
+                Textile.instance().cafes.register(url, token, new Handlers.ErrorHandler() {
                     @Override
                     public void onComplete() {
                         promise.resolve(null);
@@ -46,11 +46,11 @@ public class CafesBridge extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void deregister(final String peerId, final Promise promise) {
+    public void deregister(final String sessionId, final Promise promise) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
-                Textile.instance().cafes.deregister(peerId, new Handlers.ErrorHandler() {
+                Textile.instance().cafes.deregister(sessionId, new Handlers.ErrorHandler() {
                     @Override
                     public void onComplete() {
                         promise.resolve(null);
@@ -66,11 +66,11 @@ public class CafesBridge extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void refreshSession(final String peerId, final Promise promise) {
+    public void refreshSession(final String sessionId, final Promise promise) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
-                Textile.instance().cafes.refreshSession(peerId, new Handlers.CafeSessionHandler() {
+                Textile.instance().cafes.refreshSession(sessionId, new Handlers.CafeSessionHandler() {
                     @Override
                     public void onComplete(final Model.CafeSession session) {
                         promise.resolve(Util.encode(session.toByteArray()));
