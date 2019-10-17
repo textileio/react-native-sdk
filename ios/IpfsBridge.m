@@ -26,6 +26,20 @@ RCT_EXPORT_METHOD(peerId:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRej
   fulfillWithResult([Textile.instance.ipfs peerId:&error], error, resolve, reject);
 }
 
+RCT_EXPORT_METHOD(connect:(NSString*)multiaddr resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+  NSError *error;
+  BOOL connected = [Textile.instance.ipfs swarmConnect:multiaddr error:&error];
+  if (!error) {
+    if (connected) {
+      resolve(true);
+    } else {
+      reject(@"EUNSPECIFIED", @"connect", nil);;
+    }
+  } else {
+    reject(@(error.code).stringValue, error.localizedDescription, error);
+  }
+}
+
 RCT_EXPORT_METHOD(dataAtPath:(NSString*)pth resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   [Textile.instance.ipfs dataAtPath:pth completion:^(NSData * _Nullable data, NSString * _Nullable mediaType, NSError * _Nonnull error) {
     NSDictionary *result = @{
