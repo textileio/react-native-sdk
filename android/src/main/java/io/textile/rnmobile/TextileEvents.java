@@ -101,6 +101,15 @@ class TextileEvents implements TextileEventListener {
     }
 
     @Override
+    public void pubsubQueryResult(final String queryId, final String message, final String messageId) {
+        final WritableMap map = new WritableNativeMap();
+        map.putString("queryId", queryId);
+        map.putString("message", message);
+        map.putString("messageId", messageId);
+        emitter.emit("PUBSUB_QUERY_RESULT", map);
+    }
+
+    @Override
     public void clientThreadQueryResult(final String queryId, final Model.Thread thread) {
         final WritableMap map = new WritableNativeMap();
         map.putString("queryId", queryId);

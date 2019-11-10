@@ -46,8 +46,12 @@ let threadAddedListeners: Array<(threadId: string) => void> = []
 let threadRemovedListeners: Array<(threadId: string) => void> = []
 let accountPeerAddedListeners: Array<(peerId: string) => void> = []
 let accountPeerRemovedListeners: Array<(peerId: string) => void> = []
-let queryDoneListeners: Array<(queryId: string) => void> = []
-let queryErrorListeners: Array<(queryId: string, error: string) => void> = []
+let queryDoneListeners: Array<any> = []
+let queryErrorListeners: Array<any> = []
+let pubsubQueryResultListeners: Array<{
+  listener: (queryId: string, message: string, messageId: string) => void
+  queryId: string
+}> = []
 let clientThreadQueryResultListeners: Array<
   (queryId: string, thread: IThread) => void
 > = []
@@ -205,26 +209,67 @@ export function addAccountPeerRemovedListener(
   )
 }
 
-export function addQueryDoneListener(listener: (queryId: string) => void) {
-  queryDoneListeners.push(listener)
+export function addQueryDoneListener(
+  listener: (queryId: string) => void,
+  queryId?: string
+) {
+  queryDoneListeners.push(
+    queryId
+      ? {
+          listener,
+          queryId
+        }
+      : listener
+  )
   return new EventSubscription(
     () =>
-      (queryDoneListeners = queryDoneListeners.filter(
-        item => item !== listener
+      (queryDoneListeners = queryDoneListeners.filter(item =>
+        item.queryId ? item.queryId !== queryId : item !== listener
       ))
   )
 }
 
 export function addQueryErrorListener(
-  listener: (queryId: string, error: string) => void
+  listener: (queryId: string, error: string) => void,
+  queryId?: string
 ) {
-  queryErrorListeners.push(listener)
+  queryErrorListeners.push(
+    queryId
+      ? {
+          listener,
+          queryId
+        }
+      : listener
+  )
   return new EventSubscription(
     () =>
-      (queryErrorListeners = queryErrorListeners.filter(
-        item => item !== listener
+      (queryErrorListeners = queryErrorListeners.filter(item =>
+        item.queryId ? item.queryId !== queryId : item !== listener
       ))
   )
+}
+
+export function addPubsubQueryResultListener(
+  listener: (queryId: string, message: string, messageId: string) => void,
+  queryId: string,
+  queryHandle: { close: () => void }
+) {
+  pubsubQueryResultListeners.push({
+    listener,
+    queryId
+  })
+  return new EventSubscription(() => {
+    pubsubQueryResultListeners = pubsubQueryResultListeners.filter(
+      item => item.queryId !== queryId
+    )
+    queryDoneListeners = queryDoneListeners.filter(
+      item => item.queryId !== queryId
+    )
+    queryErrorListeners = queryErrorListeners.filter(
+      item => item.queryId !== queryId
+    )
+    queryHandle.close()
+  })
 }
 
 export function addClientThreadQueryResultListener(
@@ -381,14 +426,41 @@ eventEmitter.addListener('ACCOUNT_PEER_REMOVED', peerId => {
 
 eventEmitter.addListener('QUERY_DONE', queryId => {
   for (const listener of queryDoneListeners) {
-    listener(queryId)
+    if (listener.queryId && listener.queryId === queryId) {
+      listener.listener(queryId)
+    } else {
+      listener(queryId)
+    }
   }
+
+  pubsubQueryResultListeners = pubsubQueryResultListeners.filter(
+    item => item.queryId !== queryId
+  )
+  queryDoneListeners = queryDoneListeners.filter(
+    item => item.queryId !== queryId
+  )
+  queryErrorListeners = queryErrorListeners.filter(
+    item => item.queryId !== queryId
+  )
 })
 
 eventEmitter.addListener('QUERY_ERROR', payload => {
   const { queryId, error } = payload
   for (const listener of queryErrorListeners) {
-    listener(queryId, error)
+    if (listener.queryId && listener.queryId === queryId) {
+      listener.listener(queryId, error)
+    } else {
+      listener(queryId, error)
+    }
+  }
+})
+
+eventEmitter.addListener('PUBSUB_QUERY_RESULT', payload => {
+  const { queryId, message, messageId } = payload
+  for (const item of pubsubQueryResultListeners) {
+    if (item.queryId === queryId) {
+      item.listener(queryId, message, messageId)
+    }
   }
 })
 
