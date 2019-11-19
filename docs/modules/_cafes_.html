@@ -94,7 +94,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/textileio/react-native-sdk/blob/df240c6/src/cafes.ts#L82">cafes.ts:82</a></li>
+									<li>Defined in <a href="https://github.com/textileio/react-native-sdk/blob/1f643d3/src/cafes.ts#L82">cafes.ts:82</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -111,25 +111,25 @@
 					<a name="deregister" class="tsd-anchor"></a>
 					<h3>deregister</h3>
 					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
-						<li class="tsd-signature tsd-kind-icon">deregister<span class="tsd-signature-symbol">(</span>id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">deregister<span class="tsd-signature-symbol">(</span>sessionId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/textileio/react-native-sdk/blob/df240c6/src/cafes.ts#L72">cafes.ts:72</a></li>
+									<li>Defined in <a href="https://github.com/textileio/react-native-sdk/blob/1f643d3/src/cafes.ts#L72">cafes.ts:72</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
 									<p>Deregister a remote Cafe.</p>
-									<pre><code class="language-typescript">Textile.cafes.deregister();</code></pre>
+									<pre><code class="language-typescript">Textile.cafes.deregister(sessionId);</code></pre>
 								</div>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>id: <span class="tsd-signature-type">string</span></h5>
+									<h5>sessionId: <span class="tsd-signature-type">string</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -140,25 +140,25 @@
 					<a name="refreshsession" class="tsd-anchor"></a>
 					<h3>refresh<wbr>Session</h3>
 					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
-						<li class="tsd-signature tsd-kind-icon">refresh<wbr>Session<span class="tsd-signature-symbol">(</span>peerId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ICafeSession</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">refresh<wbr>Session<span class="tsd-signature-symbol">(</span>sessionId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ICafeSession</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/textileio/react-native-sdk/blob/df240c6/src/cafes.ts#L56">cafes.ts:56</a></li>
+									<li>Defined in <a href="https://github.com/textileio/react-native-sdk/blob/1f643d3/src/cafes.ts#L56">cafes.ts:56</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
 									<p>Refresh an existing session by peerId.</p>
-									<pre><code class="language-typescript">Textile.cafes.refreshSession(peerId);</code></pre>
+									<pre><code class="language-typescript">Textile.cafes.refreshSession(sessionId);</code></pre>
 								</div>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>peerId: <span class="tsd-signature-type">string</span></h5>
+									<h5>sessionId: <span class="tsd-signature-type">string</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ICafeSession</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -169,25 +169,25 @@
 					<a name="register" class="tsd-anchor"></a>
 					<h3>register</h3>
 					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
-						<li class="tsd-signature tsd-kind-icon">register<span class="tsd-signature-symbol">(</span>peerId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, token<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">register<span class="tsd-signature-symbol">(</span>url<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, token<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/textileio/react-native-sdk/blob/df240c6/src/cafes.ts#L19">cafes.ts:19</a></li>
+									<li>Defined in <a href="https://github.com/textileio/react-native-sdk/blob/1f643d3/src/cafes.ts#L19">cafes.ts:19</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
 									<p>Register a new remote cafe.</p>
-									<pre><code class="language-typescript">Textile.cafes.register(peerId, token);</code></pre>
+									<pre><code class="language-typescript">Textile.cafes.register(url, token);</code></pre>
 								</div>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>peerId: <span class="tsd-signature-type">string</span></h5>
+									<h5>url: <span class="tsd-signature-type">string</span></h5>
 								</li>
 								<li>
 									<h5>token: <span class="tsd-signature-type">string</span></h5>
@@ -207,7 +207,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/textileio/react-native-sdk/blob/df240c6/src/cafes.ts#L29">cafes.ts:29</a></li>
+									<li>Defined in <a href="https://github.com/textileio/react-native-sdk/blob/1f643d3/src/cafes.ts#L29">cafes.ts:29</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -236,7 +236,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/textileio/react-native-sdk/blob/df240c6/src/cafes.ts#L45">cafes.ts:45</a></li>
+									<li>Defined in <a href="https://github.com/textileio/react-native-sdk/blob/1f643d3/src/cafes.ts#L45">cafes.ts:45</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
