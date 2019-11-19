@@ -16,7 +16,7 @@ Pod::Spec.new do |s|
   s.tvos.deployment_target = '9.0'
 
   s.dependency 'React'
-  s.dependency 'Textile', '2.0.12'
+  s.dependency 'Textile', '2.1.0'
 
   s.preserve_paths      = 'README.md', 'LICENSE', 'package.json'
   s.source_files        = 'ios/**/*.{h,m}'
