@@ -20,9 +20,7 @@ export async function peerId(): Promise<string> {
  * Textile.ipfs.connect(multiaddr);
  * ```
  */
-export async function connect(
-    multiaddr: string
-): Promise<boolean> {
+export async function connect(multiaddr: string): Promise<boolean> {
   const result = await IpfsBridge.connect(multiaddr)
   return result
 }
@@ -38,4 +36,40 @@ export async function dataAtPath(
 ): Promise<{ data: Uint8Array; mediaType: string }> {
   const { data, mediaType } = await IpfsBridge.dataAtPath(path)
   return { data: Buffer.from(data, 'base64'), mediaType }
+}
+
+/**
+ * Publishes a message to a given pubsub topic
+ * ```typescript
+ * Textile.ipfs.pubsubPub(topic, data);
+ * ```
+ */
+export async function pubsubPub(
+  topic: string,
+  data: string | object
+): Promise<string> {
+  return await IpfsBridge.pubsubPub(
+    topic,
+    typeof data === 'string' ? data : JSON.stringify(data)
+  )
+}
+
+/**
+ * Subscribes to messages on a given topic
+ * ```typescript
+ * Textile.ipfs.pubsubSub(topic);
+ * ```
+ */
+export async function pubsubSub(
+  topic: string
+): Promise<{ queryId: string; queryHandle: { close: () => void } }> {
+  const queryId = await IpfsBridge.pubsubSub(topic)
+  return {
+    queryId,
+    queryHandle: {
+      close: () => {
+        IpfsBridge.cancelPubsubSub(queryId)
+      }
+    }
+  }
 }

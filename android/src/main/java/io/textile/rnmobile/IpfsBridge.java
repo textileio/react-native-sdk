@@ -77,4 +77,52 @@ public class IpfsBridge extends ReactContextBaseJavaModule {
             }
         });
     }
+
+    @ReactMethod
+    public void pubsubPub(final String topic, final String data, final Promise promise) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Textile.instance().ipfs.pubsubPub(topic, data);
+                    promise.resolve(true);
+                }
+                catch (final Exception e) {
+                    promise.reject("pubsubPub", e);
+                }
+            }
+        });
+    }
+
+    @ReactMethod
+    public void pubsubSub(final String topic, final Promise promise) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    String queryId = Textile.instance().ipfs.pubsubSub(topic);
+                    promise.resolve(queryId);
+                }
+                catch (final Exception e) {
+                    promise.reject("pubsubSub", e);
+                }
+            }
+        });
+    }
+
+    @ReactMethod
+    public void cancelPubsubSub(final String queryId, final Promise promise) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Textile.instance().ipfs.cancelPubsubSub(queryId);
+                    promise.resolve(null);
+                }
+                catch (final Exception e) {
+                    promise.reject("cancelPubsubSub", e);
+                }
+            }
+        });
+    }
 }

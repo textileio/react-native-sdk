@@ -50,6 +50,24 @@ RCT_EXPORT_METHOD(dataAtPath:(NSString*)pth resolver:(RCTPromiseResolveBlock)res
   }];
 }
 
+RCT_EXPORT_METHOD(pubsubPub:(NSString*)topic data:(NSString*)data resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+  NSError *error;
+  [Textile.instance.ipfs pubsubPub:topic data:data error:&error];
+  fulfillWithResult(true, error, resolve, reject);
+}
+
+RCT_EXPORT_METHOD(pubsubSub:(NSString*)topic resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+  NSError *error;
+  NSString *queryId = [Textile.instance.ipfs pubsubSub:topic error:&error];
+  fulfillWithResult(queryId, error, resolve, reject);
+}
+
+RCT_EXPORT_METHOD(cancelPubsubSub:(NSString*)queryId resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+  NSError *error;
+  [Textile.instance.ipfs cancelPubsubSub:queryId error:&error];
+  fulfillWithResult(nil, error, resolve, reject);
+}
+
 @end
 
 @implementation RCTBridge (IpfsBridge)
