@@ -62,8 +62,12 @@
 	<div class="row">
 		<div class="col-8 col-content">
 			<div class="tsd-panel tsd-typography">
-				<h1 id="react-native-textile">React Native Textile</h1>
-				<h2 id="installation">Installation</h2>
+				<a href="#react-native-textile" id="react-native-textile" style="color: inherit; text-decoration: none;">
+					<h1>React Native Textile</h1>
+				</a>
+				<a href="#installation" id="installation" style="color: inherit; text-decoration: none;">
+					<h2>Installation</h2>
+				</a>
 				<p><code>npm install @textile/react-native-sdk --save</code></p>
 				<p><strong>Link the Framework</strong></p>
 				<p><code>react-native link @textile/react-native-sdk</code></p>
@@ -76,22 +80,36 @@
 					<li><a href="https://github.com/transistorsoft/react-native-background-fetch">react-native-background-fetch</a></li>
 					<li><a href="https://github.com/ocetnik/react-native-background-timer">react-native-background-timer</a></li>
 				</ol>
-				<h3 id="typescript-types">Typescript Types</h3>
+				<a href="#typescript-types" id="typescript-types" style="color: inherit; text-decoration: none;">
+					<h3>Typescript Types</h3>
+				</a>
 				<p>@textile/react-native-sdk is written in TypeScript and compiled to JavaScript. You can use either in your app.</p>
-				<h4 id="import-model-types">Import Model Types</h4>
+				<a href="#import-model-types" id="import-model-types" style="color: inherit; text-decoration: none;">
+					<h4>Import Model Types</h4>
+				</a>
 				<p>Most model types are in the <code>pb</code> (protobuf) models module. You can use it the types as follows.</p>
 				<pre><code class="language-javascript"><span class="hljs-keyword">import</span> { API, pb } <span class="hljs-keyword">from</span> <span class="hljs-string">'@textile/react-native-sdk'</span>;
 
 <span class="hljs-comment">// List all Threads</span>
 <span class="hljs-keyword">const</span> threads: pb.ThreadList = <span class="hljs-keyword">yield</span> call(API.threads.list);</code></pre>
-				<h2 id="examples">Examples</h2>
-				<h3 id="react-native-boilerplate">React Native Boilerplate</h3>
+				<a href="#examples" id="examples" style="color: inherit; text-decoration: none;">
+					<h2>Examples</h2>
+				</a>
+				<a href="#react-native-boilerplate" id="react-native-boilerplate" style="color: inherit; text-decoration: none;">
+					<h3>React Native Boilerplate</h3>
+				</a>
 				<p>To jump right into a working app, see our demo <a href="https://github.com/textileio/react-native-boilerplate">IPFS boilerplate app</a>.</p>
-				<h3 id="advanced-boilerplate">Advanced Boilerplate</h3>
+				<a href="#advanced-boilerplate" id="advanced-boilerplate" style="color: inherit; text-decoration: none;">
+					<h3>Advanced Boilerplate</h3>
+				</a>
 				<p>We also have a more advanced boilerplate that contains <code>react-navigation</code>, redux, and sagas together with Textile. Find that here, <a href="https://github.com/textileio/advanced-react-native-boilerplate/tree/master">advanced-react-native-boilerplate</a>.</p>
-				<h2 id="run-textile">Run Textile</h2>
+				<a href="#run-textile" id="run-textile" style="color: inherit; text-decoration: none;">
+					<h2>Run Textile</h2>
+				</a>
 				<p>A few of the Textile methods require access to a single instance with stored state. This instance can be wired into your app in one single place and then communicated with over Events. The minimum requirement to wire Textile into your app are:</p>
-				<h3 id="setup-teardown">Setup &amp; Teardown</h3>
+				<a href="#setup-amp-teardown" id="setup-amp-teardown" style="color: inherit; text-decoration: none;">
+					<h3>Setup &amp; Teardown</h3>
+				</a>
 				<pre><code class="language-javascript"><span class="hljs-keyword">import</span> Textile <span class="hljs-keyword">from</span> <span class="hljs-string">'@textile/react-native-sdk'</span>;
 
 <span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">App</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span>&lt;<span class="hljs-title">Props</span>&gt; </span>{
@@ -113,20 +131,30 @@
     )
   }
 }</code></pre>
-				<h3 id="listen-to-events">Listen to Events</h3>
+				<a href="#listen-to-events" id="listen-to-events" style="color: inherit; text-decoration: none;">
+					<h3>Listen to Events</h3>
+				</a>
 				<p>Textile will send a number of events that your app can monitor in order to show information or change interfaces.</p>
-				<h4 id="new-node-state">New Node State</h4>
+				<a href="#new-node-state" id="new-node-state" style="color: inherit; text-decoration: none;">
+					<h4>New Node State</h4>
+				</a>
 				<p>You can monitor startup and shutdown events for the node.</p>
 				<pre><code class="language-javascript"><span class="hljs-keyword">this</span>.events.addListener(<span class="hljs-string">'newNodeState'</span>, (payload) =&gt; {
   <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'New node state:'</span> payload.state)
 })</code></pre>
-				<h4 id="node-online">Node Online</h4>
+				<a href="#node-online" id="node-online" style="color: inherit; text-decoration: none;">
+					<h4>Node Online</h4>
+				</a>
 				<p>Here is an example for listening for the Textile node to come online.</p>
 				<pre><code class="language-javascript"><span class="hljs-keyword">this</span>.events.addListener(<span class="hljs-string">'NODE_ONLINE'</span>, () =&gt; {
   <span class="hljs-built_in">console</span>.info(<span class="hljs-string">'Textile node now online'</span>);
 })</code></pre>
-				<h3 id="optional-features">Optional Features</h3>
-				<h4 id="trigger-background-updates">Trigger background updates</h4>
+				<a href="#optional-features" id="optional-features" style="color: inherit; text-decoration: none;">
+					<h3>Optional Features</h3>
+				</a>
+				<a href="#trigger-background-updates" id="trigger-background-updates" style="color: inherit; text-decoration: none;">
+					<h4>Trigger background updates</h4>
+				</a>
 				<p>The node is designed to gracefully disconnect and wind-down tasks when the user backgrounds the containing app. However, some apps may choose to spin the node up in the background in order to sync data or discover new updates. The react-native library will attempt to fire these events on it&#39;s own when your app gets background time, however, the react-native detection of these events hasn&#39;t been 100%. Additionally, it is helpful if your app fires events based of native background &amp; location event triggers.</p>
 				<p>You can do this in a background fetch triggered background event</p>
 				<pre><code class="language-javascript">  <span class="hljs-keyword">import</span> Textile <span class="hljs-keyword">from</span> <span class="hljs-string">'@textile/react-native-sdk'</span>;
@@ -145,11 +173,17 @@
     Textile.locationUpdate();
   }</code></pre>
 				<p><code>backgroundFetch</code> and <code>locationUpdate</code> are stateless APIs and can be run anywhere in your app without having to reference your initialized node.</p>
-				<h3 id="use-the-textil-api">Use the Textil API</h3>
+				<a href="#use-the-textil-api" id="use-the-textil-api" style="color: inherit; text-decoration: none;">
+					<h3>Use the Textil API</h3>
+				</a>
 				<p>The API doesn&#39;t require an initialized Textile object and can be used anywhere in your code as long as Textile was previously initialized and is running.</p>
-				<h4 id="import-the-api">Import the API</h4>
+				<a href="#import-the-api" id="import-the-api" style="color: inherit; text-decoration: none;">
+					<h4>Import the API</h4>
+				</a>
 				<pre><code class="language-javascript"><span class="hljs-keyword">import</span> { API } <span class="hljs-keyword">from</span> <span class="hljs-string">'@textile/react-native-sdk'</span>;</code></pre>
-				<h4 id="make-an-api-request">Make an API request</h4>
+				<a href="#make-an-api-request" id="make-an-api-request" style="color: inherit; text-decoration: none;">
+					<h4>Make an API request</h4>
+				</a>
 				<pre><code class="language-javascript">API.data(<span class="hljs-string">'QmTgtbb4LckHaXh1YhpNcBu48cFY8zgT1Lh49q7q7ksf3M'</span>);</code></pre>
 			</div>
 		</div>
@@ -160,70 +194,70 @@
 						<a href="globals.html"><em>Globals</em></a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="modules/_account_.html">"account"</a>
+						<a href="modules/_account_.html">&quot;account&quot;</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="modules/_cafes_.html">"cafes"</a>
+						<a href="modules/_cafes_.html">&quot;cafes&quot;</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="modules/_comments_.html">"comments"</a>
+						<a href="modules/_comments_.html">&quot;comments&quot;</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="modules/_contacts_.html">"contacts"</a>
+						<a href="modules/_contacts_.html">&quot;contacts&quot;</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="modules/_events_.html">"events"</a>
+						<a href="modules/_events_.html">&quot;events&quot;</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="modules/_feed_.html">"feed"</a>
+						<a href="modules/_feed_.html">&quot;feed&quot;</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="modules/_files_.html">"files"</a>
+						<a href="modules/_files_.html">&quot;files&quot;</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="modules/_flags_.html">"flags"</a>
+						<a href="modules/_flags_.html">&quot;flags&quot;</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="modules/_ignores_.html">"ignores"</a>
+						<a href="modules/_ignores_.html">&quot;ignores&quot;</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="modules/_invites_.html">"invites"</a>
+						<a href="modules/_invites_.html">&quot;invites&quot;</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="modules/_ipfs_.html">"ipfs"</a>
+						<a href="modules/_ipfs_.html">&quot;ipfs&quot;</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="modules/_likes_.html">"likes"</a>
+						<a href="modules/_likes_.html">&quot;likes&quot;</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="modules/_logs_.html">"logs"</a>
+						<a href="modules/_logs_.html">&quot;logs&quot;</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="modules/_messages_.html">"messages"</a>
+						<a href="modules/_messages_.html">&quot;messages&quot;</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="modules/_model_.html">"model"</a>
+						<a href="modules/_model_.html">&quot;model&quot;</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="modules/_notifications_.html">"notifications"</a>
+						<a href="modules/_notifications_.html">&quot;notifications&quot;</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="modules/_profile_.html">"profile"</a>
+						<a href="modules/_profile_.html">&quot;profile&quot;</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="modules/_schemas_.html">"schemas"</a>
+						<a href="modules/_schemas_.html">&quot;schemas&quot;</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="modules/_textile_.html">"textile"</a>
+						<a href="modules/_textile_.html">&quot;textile&quot;</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="modules/_threads_.html">"threads"</a>
+						<a href="modules/_threads_.html">&quot;threads&quot;</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="modules/_util_.html">"util"</a>
+						<a href="modules/_util_.html">&quot;util&quot;</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="modules/_util_internal_.html">"util-<wbr>internal"</a>
+						<a href="modules/_util_internal_.html">&quot;util-<wbr>internal&quot;</a>
 					</li>
 				</ul>
 			</nav>
@@ -246,6 +280,7 @@
 				<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>
 				<li class="tsd-kind-index-signature"><span class="tsd-kind-icon">Index signature</span></li>
 				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
+				<li class="tsd-kind-type-alias tsd-has-type-parameter"><span class="tsd-kind-icon">Type alias with type parameter</span></li>
 			</ul>
 			<ul class="tsd-legend">
 				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
