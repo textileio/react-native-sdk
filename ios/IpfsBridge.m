@@ -31,7 +31,7 @@ RCT_EXPORT_METHOD(connect:(NSString*)multiaddr resolver:(RCTPromiseResolveBlock)
   BOOL connected = [Textile.instance.ipfs swarmConnect:multiaddr error:&error];
   if (!error) {
     if (connected) {
-      resolve(true);
+      resolve(@true);
     } else {
       reject(@"EUNSPECIFIED", @"connect", nil);;
     }
@@ -53,7 +53,7 @@ RCT_EXPORT_METHOD(dataAtPath:(NSString*)pth resolver:(RCTPromiseResolveBlock)res
 RCT_EXPORT_METHOD(pubsubPub:(NSString*)topic data:(NSString*)data resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSError *error;
   [Textile.instance.ipfs pubsubPub:topic data:data error:&error];
-  fulfillWithResult(true, error, resolve, reject);
+  fulfillWithResult(@true, error, resolve, reject);
 }
 
 RCT_EXPORT_METHOD(pubsubSub:(NSString*)topic resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
@@ -63,9 +63,8 @@ RCT_EXPORT_METHOD(pubsubSub:(NSString*)topic resolver:(RCTPromiseResolveBlock)re
 }
 
 RCT_EXPORT_METHOD(cancelPubsubSub:(NSString*)queryId resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
-  NSError *error;
-  [Textile.instance.ipfs cancelPubsubSub:queryId error:&error];
-  fulfillWithResult(nil, error, resolve, reject);
+  [Textile.instance.ipfs cancelPubsubSub:queryId];
+  fulfillWithResult(nil, nil, resolve, reject);
 }
 
 @end

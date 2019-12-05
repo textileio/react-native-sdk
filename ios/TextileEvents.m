@@ -36,7 +36,8 @@ RCT_EXPORT_MODULE();
            @"CONTACT_QUERY_RESULT",
            @"SYNC_UPDATE",
            @"SYNC_COMPLETE",
-           @"SYNC_FAILED"
+           @"SYNC_FAILED",
+           @"PUBSUB_QUERY_RESULT"
          ];
 }
 
