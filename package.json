@@ -15,7 +15,7 @@
     "build": "rm -rf dist/ && tsc",
     "lint": "eslint --fix --ext .mjs,.js,.jsx,.ts,.tsx .",
     "test": "jest --no-watchman",
-    "docs": "node ./scripts/contributors.js; ./node_modules/typedoc/bin/typedoc --mode modules"
+    "docs": "node ./scripts/contributors.js; npx typedoc --out ./docs --mode modules ./src"
   },
   "keywords": [
     "react-native"
@@ -58,7 +58,7 @@
     "react-native": "^0.57.2",
     "react-test-renderer": "16.5.0",
     "ts-jest": "^23.10.5",
-    "typedoc": "^0.14.2",
+    "typedoc": "^0.15.0",
     "typescript": "^3.1.1"
   },
   "dependencies": {
