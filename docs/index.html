@@ -71,7 +71,7 @@
 				<p><code>npm install @textile/react-native-sdk --save</code></p>
 				<p><strong>Link the Framework</strong></p>
 				<p><code>react-native link @textile/react-native-sdk</code></p>
-				<p>Note: The iOS component of <code>@textile/react-native-sdk</code> should be installed using Cocoapods. <code>react-native-link</code> should do this correctly. More documentation coming here.</p>
+				<p>Note: The iOS component of <code>@textile/react-native-sdk</code> should be installed using Cocoapods. Newer versions of React Native will auto link the library, and <code>react-native link</code> can be run otherwise.</p>
 				<p><strong>Update Android Gradle</strong></p>
 				<p>You&#39;ll need to add Textile&#39;s maven repository to your project <code>build.gradle</code>&#39;s <code>allProjects.repositories</code> section:</p>
 				<pre><code><span class="hljs-section">maven</span> { <span class="hljs-attribute">url</span> <span class="hljs-string">"https://dl.bintray.com/textile/maven"</span> }</code></pre><p><strong>Other dependencies</strong></p>
@@ -84,14 +84,6 @@
 					<h3>Typescript Types</h3>
 				</a>
 				<p>@textile/react-native-sdk is written in TypeScript and compiled to JavaScript. You can use either in your app.</p>
-				<a href="#import-model-types" id="import-model-types" style="color: inherit; text-decoration: none;">
-					<h4>Import Model Types</h4>
-				</a>
-				<p>Most model types are in the <code>pb</code> (protobuf) models module. You can use it the types as follows.</p>
-				<pre><code class="language-javascript"><span class="hljs-keyword">import</span> { API, pb } <span class="hljs-keyword">from</span> <span class="hljs-string">'@textile/react-native-sdk'</span>;
-
-<span class="hljs-comment">// List all Threads</span>
-<span class="hljs-keyword">const</span> threads: pb.ThreadList = <span class="hljs-keyword">yield</span> call(API.threads.list);</code></pre>
 				<a href="#examples" id="examples" style="color: inherit; text-decoration: none;">
 					<h2>Examples</h2>
 				</a>
@@ -106,85 +98,60 @@
 				<a href="#run-textile" id="run-textile" style="color: inherit; text-decoration: none;">
 					<h2>Run Textile</h2>
 				</a>
-				<p>A few of the Textile methods require access to a single instance with stored state. This instance can be wired into your app in one single place and then communicated with over Events. The minimum requirement to wire Textile into your app are:</p>
-				<a href="#setup-amp-teardown" id="setup-amp-teardown" style="color: inherit; text-decoration: none;">
-					<h3>Setup &amp; Teardown</h3>
-				</a>
-				<pre><code class="language-javascript"><span class="hljs-keyword">import</span> Textile <span class="hljs-keyword">from</span> <span class="hljs-string">'@textile/react-native-sdk'</span>;
+				<p>At a minimum, you&#39;ll need to initialize Textile if required, then launch Textile. You&#39;ll also probably want to subscribe to many of the events emitted by Textile. You can see this below:</p>
+				<pre><code class="language-javascript"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+<span class="hljs-keyword">import</span> {
+  SafeAreaView,
+  Text,
+  StatusBar,
+} <span class="hljs-keyword">from</span> <span class="hljs-string">'react-native'</span>;
 
-<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">App</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span>&lt;<span class="hljs-title">Props</span>&gt; </span>{
-  textile = Textile;
+<span class="hljs-keyword">import</span> FS <span class="hljs-keyword">from</span> <span class="hljs-string">'react-native-fs'</span>;
+<span class="hljs-keyword">import</span> Textile <span class="hljs-keyword">from</span> <span class="hljs-string">'@textile/react-native-sdk'</span>;
 
-  componentDidMount() {
-    <span class="hljs-keyword">this</span>.textile.setup();
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">App</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">React</span>.<span class="hljs-title">Component</span> </span>{
+
+  <span class="hljs-keyword">constructor</span>(props) {
+    <span class="hljs-keyword">super</span>(props);
+    <span class="hljs-keyword">this</span>.state = {<span class="hljs-attr">version</span>: <span class="hljs-string">""</span>};
   }
 
-  componentWillUnMount() {
-    <span class="hljs-keyword">this</span>.textile.tearDown();
+  componentDidMount() {
+    <span class="hljs-keyword">this</span>.setup();
+  }
+
+  <span class="hljs-keyword">async</span> setup() {
+    Textile.events.addNodeOnlineListener(<span class="hljs-keyword">this</span>.nodeOnline);
+
+    <span class="hljs-keyword">const</span> repoPath = <span class="hljs-string">`<span class="hljs-subst">${FS.DocumentDirectoryPath}</span>/textile-go`</span>;
+    <span class="hljs-keyword">const</span> initialized = <span class="hljs-keyword">await</span> Textile.isInitialized(repoPath);
+    <span class="hljs-keyword">if</span> (!initialized) {
+      <span class="hljs-keyword">const</span> phrase = <span class="hljs-keyword">await</span> Textile.initializeCreatingNewWalletAndAccount(repoPath, <span class="hljs-literal">true</span>, <span class="hljs-literal">true</span>);
+      <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"recovery phrase: "</span>, phrase);
+    }
+    Textile.launch(repoPath, <span class="hljs-literal">true</span>);
+
+    <span class="hljs-keyword">const</span> version = <span class="hljs-keyword">await</span> Textile.version();
+    <span class="hljs-keyword">this</span>.setState({version});
+  }
+
+  nodeOnline = <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"node online"</span>)
   }
 
   render() {
     <span class="hljs-keyword">return</span> (
-      <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">View</span>&gt;</span>
-        <span class="hljs-tag">&lt;<span class="hljs-name">Text</span>&gt;</span>Textile<span class="hljs-tag">&lt;/<span class="hljs-name">Text</span>&gt;</span>
-      <span class="hljs-tag">&lt;/<span class="hljs-name">View</span>&gt;</span></span>
-    )
+      &lt;&gt;
+        &lt;StatusBar barStyle="dark-content" /&gt;
+        &lt;SafeAreaView style={{flex: 1, alignItems: "center", justifyContent: "center"}}&gt;
+          &lt;Text&gt;Textile version: {this.state.version}&lt;/Text&gt;
+        &lt;/SafeAreaView&gt;
+      &lt;/&gt;
+    );
   }
-}</code></pre>
-				<a href="#listen-to-events" id="listen-to-events" style="color: inherit; text-decoration: none;">
-					<h3>Listen to Events</h3>
-				</a>
-				<p>Textile will send a number of events that your app can monitor in order to show information or change interfaces.</p>
-				<a href="#new-node-state" id="new-node-state" style="color: inherit; text-decoration: none;">
-					<h4>New Node State</h4>
-				</a>
-				<p>You can monitor startup and shutdown events for the node.</p>
-				<pre><code class="language-javascript"><span class="hljs-keyword">this</span>.events.addListener(<span class="hljs-string">'newNodeState'</span>, (payload) =&gt; {
-  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'New node state:'</span> payload.state)
-})</code></pre>
-				<a href="#node-online" id="node-online" style="color: inherit; text-decoration: none;">
-					<h4>Node Online</h4>
-				</a>
-				<p>Here is an example for listening for the Textile node to come online.</p>
-				<pre><code class="language-javascript"><span class="hljs-keyword">this</span>.events.addListener(<span class="hljs-string">'NODE_ONLINE'</span>, () =&gt; {
-  <span class="hljs-built_in">console</span>.info(<span class="hljs-string">'Textile node now online'</span>);
-})</code></pre>
-				<a href="#optional-features" id="optional-features" style="color: inherit; text-decoration: none;">
-					<h3>Optional Features</h3>
-				</a>
-				<a href="#trigger-background-updates" id="trigger-background-updates" style="color: inherit; text-decoration: none;">
-					<h4>Trigger background updates</h4>
-				</a>
-				<p>The node is designed to gracefully disconnect and wind-down tasks when the user backgrounds the containing app. However, some apps may choose to spin the node up in the background in order to sync data or discover new updates. The react-native library will attempt to fire these events on it&#39;s own when your app gets background time, however, the react-native detection of these events hasn&#39;t been 100%. Additionally, it is helpful if your app fires events based of native background &amp; location event triggers.</p>
-				<p>You can do this in a background fetch triggered background event</p>
-				<pre><code class="language-javascript">  <span class="hljs-keyword">import</span> Textile <span class="hljs-keyword">from</span> <span class="hljs-string">'@textile/react-native-sdk'</span>;
+}
 
-  ...
-  setup () {
-    BackgroundFetch.configure({}, () =&gt; {
-      Textile.backgroundFetch();
-    }, (error) =&gt; {})
-  }</code></pre>
-				<p>Or yu can do this in a location triggered background event</p>
-				<pre><code class="language-javascript">  <span class="hljs-keyword">import</span> Textile <span class="hljs-keyword">from</span> <span class="hljs-string">'@textile/react-native-sdk'</span>;
-
-  ...
-  handleNewPosition () {
-    Textile.locationUpdate();
-  }</code></pre>
-				<p><code>backgroundFetch</code> and <code>locationUpdate</code> are stateless APIs and can be run anywhere in your app without having to reference your initialized node.</p>
-				<a href="#use-the-textil-api" id="use-the-textil-api" style="color: inherit; text-decoration: none;">
-					<h3>Use the Textil API</h3>
-				</a>
-				<p>The API doesn&#39;t require an initialized Textile object and can be used anywhere in your code as long as Textile was previously initialized and is running.</p>
-				<a href="#import-the-api" id="import-the-api" style="color: inherit; text-decoration: none;">
-					<h4>Import the API</h4>
-				</a>
-				<pre><code class="language-javascript"><span class="hljs-keyword">import</span> { API } <span class="hljs-keyword">from</span> <span class="hljs-string">'@textile/react-native-sdk'</span>;</code></pre>
-				<a href="#make-an-api-request" id="make-an-api-request" style="color: inherit; text-decoration: none;">
-					<h4>Make an API request</h4>
-				</a>
-				<pre><code class="language-javascript">API.data(<span class="hljs-string">'QmTgtbb4LckHaXh1YhpNcBu48cFY8zgT1Lh49q7q7ksf3M'</span>);</code></pre>
+export default App;</code></pre>
 			</div>
 		</div>
 		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">

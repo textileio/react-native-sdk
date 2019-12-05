@@ -11,7 +11,7 @@ Installation
 
 `react-native link @textile/react-native-sdk`
 
-Note: The iOS component of `@textile/react-native-sdk` should be installed using Cocoapods. `react-native-link` should do this correctly. More documentation coming here.
+Note: The iOS component of `@textile/react-native-sdk` should be installed using Cocoapods. Newer versions of React Native will auto link the library, and `react-native link` can be run otherwise.
 
 **Update Android Gradle**
 
@@ -33,17 +33,6 @@ The Textile library also requires that your project has two other libraries inst
 
 @textile/react-native-sdk is written in TypeScript and compiled to JavaScript. You can use either in your app.
 
-#### Import Model Types
-
-Most model types are in the `pb` (protobuf) models module. You can use it the types as follows.
-
-```javascript
-import { API, pb } from '@textile/react-native-sdk';
-
-// List all Threads
-const threads: pb.ThreadList = yield call(API.threads.list);
-```
-
 Examples
 --------
 
@@ -58,102 +47,60 @@ We also have a more advanced boilerplate that contains `react-navigation`, redux
 Run Textile
 -----------
 
-A few of the Textile methods require access to a single instance with stored state. This instance can be wired into your app in one single place and then communicated with over Events. The minimum requirement to wire Textile into your app are:
-
-### Setup & Teardown
+At a minimum, you'll need to initialize Textile if required, then launch Textile. You'll also probably want to subscribe to many of the events emitted by Textile. You can see this below:
 
 ```javascript
+import React from 'react';
+import {
+  SafeAreaView,
+  Text,
+  StatusBar,
+} from 'react-native';
+
+import FS from 'react-native-fs';
 import Textile from '@textile/react-native-sdk';
 
-export default class App extends Component<Props> {
-  textile = Textile;
+class App extends React.Component {
 
-  componentDidMount() {
-    this.textile.setup();
+  constructor(props) {
+    super(props);
+    this.state = {version: ""};
   }
 
-  componentWillUnMount() {
-    this.textile.tearDown();
+  componentDidMount() {
+    this.setup();
+  }
+
+  async setup() {
+    Textile.events.addNodeOnlineListener(this.nodeOnline);
+
+    const repoPath = `${FS.DocumentDirectoryPath}/textile-go`;
+    const initialized = await Textile.isInitialized(repoPath);
+    if (!initialized) {
+      const phrase = await Textile.initializeCreatingNewWalletAndAccount(repoPath, true, true);
+      console.log("recovery phrase: ", phrase);
+    }
+    Textile.launch(repoPath, true);
+    
+    const version = await Textile.version();
+    this.setState({version});
+  }
+
+  nodeOnline = () => {
+    console.log("node online")
   }
 
   render() {
     return (
-      <View>
-        <Text>Textile</Text>
-      </View>
-    )
+      <>
+        <StatusBar barStyle="dark-content" />
+        <SafeAreaView style={{flex: 1, alignItems: "center", justifyContent: "center"}}>
+          <Text>Textile version: {this.state.version}</Text>
+        </SafeAreaView>
+      </>
+    );
   }
 }
-```
 
-### Listen to Events
-
-Textile will send a number of events that your app can monitor in order to show information or change interfaces.
-
-#### New Node State
-
-You can monitor startup and shutdown events for the node.
-
-```javascript
-this.events.addListener('newNodeState', (payload) => {
-  console.log('New node state:' payload.state)
-})
-```
-
-#### Node Online
-
-Here is an example for listening for the Textile node to come online.
-
-```javascript
-this.events.addListener('NODE_ONLINE', () => {
-  console.info('Textile node now online');
-})
-```
-
-### Optional Features
-
-#### Trigger background updates
-
-The node is designed to gracefully disconnect and wind-down tasks when the user backgrounds the containing app. However, some apps may choose to spin the node up in the background in order to sync data or discover new updates. The react-native library will attempt to fire these events on it's own when your app gets background time, however, the react-native detection of these events hasn't been 100%. Additionally, it is helpful if your app fires events based of native background & location event triggers.
-
-You can do this in a background fetch triggered background event
-
-```javascript
-  import Textile from '@textile/react-native-sdk';
-
-  ...
-  setup () {
-    BackgroundFetch.configure({}, () => {
-      Textile.backgroundFetch();
-    }, (error) => {})
-  }
-```
-
-Or yu can do this in a location triggered background event
-
-```javascript
-  import Textile from '@textile/react-native-sdk';
-
-  ...
-  handleNewPosition () {
-    Textile.locationUpdate();
-  }
-```
-
-`backgroundFetch` and `locationUpdate` are stateless APIs and can be run anywhere in your app without having to reference your initialized node.
-
-### Use the Textil API
-
-The API doesn't require an initialized Textile object and can be used anywhere in your code as long as Textile was previously initialized and is running.
-
-#### Import the API
-
-```javascript
-import { API } from '@textile/react-native-sdk';
-```
-
-#### Make an API request
-
-```javascript
-API.data('QmTgtbb4LckHaXh1YhpNcBu48cFY8zgT1Lh49q7q7ksf3M');
+export default App;
 ```
