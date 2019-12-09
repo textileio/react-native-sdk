@@ -115,13 +115,8 @@ public class IpfsBridge extends ReactContextBaseJavaModule {
         executor.execute(new Runnable() {
             @Override
             public void run() {
-                try {
-                    Textile.instance().ipfs.cancelPubsubSub(queryId);
-                    promise.resolve(null);
-                }
-                catch (final Exception e) {
-                    promise.reject("cancelPubsubSub", e);
-                }
+                Textile.instance().ipfs.cancelPubsubSub(queryId);
+                promise.resolve(null);
             }
         });
     }
