@@ -29,7 +29,7 @@ public class TextileBridge extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void newWallet(final long wordCount, final Promise promise) {
+    public void newWallet(final Integer wordCount, final Promise promise) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
@@ -43,7 +43,7 @@ public class TextileBridge extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void walletAccountAt(final String phrase, final long index, final String password, final Promise promise) {
+    public void walletAccountAt(final String phrase, final Integer index, final String password, final Promise promise) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
