@@ -8,6 +8,14 @@
 ![Platform](https://img.shields.io/badge/platform-typescript-lightgrey.svg?style=popout-square)
 [![Version](https://img.shields.io/npm/v/@textile/react-native-sdk.svg?style=popout-square)](https://www.npmjs.com/package/@textile/react-native-sdk)
 
+---
+**Deprecation Warning**
+
+Textile Threads v1 are being deprecated. Please follow our ongoing work on v2 on both the [go-textile-threads repo](https://github.com/textileio/go-textile-threads) and the [early preview](https://paper.dropbox.com/doc/Threads-v2-Early-Preview-X8fKsMiTyztuQ1L8CnUng). 
+
+Until Threads v2 release and integration into the React Native SDK, this repo should be used for experimental purposes only.
+---
+
 > Textile provides encrypted, recoverable, schema-based, and cross-application data storage built on IPFS and libp2p. We like to think of it as a decentralized data wallet with built-in protocols for sharing and recovery, or more simply, an open and programmable iCloud.
 
 ## Table of Contents
