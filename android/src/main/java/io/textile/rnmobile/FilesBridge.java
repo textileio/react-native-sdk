@@ -88,6 +88,22 @@ public class FilesBridge extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
+    public  void file(final String blockId, final Promise promise) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    final View.Files files = Textile.instance().files.file(blockId);
+                    promise.resolve(Util.encode(files.toByteArray()));
+                }
+                catch (final Exception e) {
+                    promise.reject("file", e);
+                }
+            }
+        });
+    }
+
+    @ReactMethod
     public void list(final String threadId, final String offset, final Integer limit, final Promise promise) {
         executor.execute(new Runnable() {
             @Override
