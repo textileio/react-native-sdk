@@ -16,6 +16,7 @@ Textile Threads v1 are being deprecated. Please follow our ongoing work on v2 on
 Until Threads v2 release and integration into the React Native SDK, this repo should be used for experimental purposes only.
 
 For instructions on running the v2 delopment library in React Native, [see here](https://github.com/textileio/js-threads-client/#react-native).
+
 ---
 
 > Textile provides encrypted, recoverable, schema-based, and cross-application data storage built on IPFS and libp2p. We like to think of it as a decentralized data wallet with built-in protocols for sharing and recovery, or more simply, an open and programmable iCloud.
@@ -23,7 +24,6 @@ For instructions on running the v2 delopment library in React Native, [see here]
 ## Table of Contents
 
 - [react-native-sdk](#react-native-sdk)
-  - [For instructions on running the v2 delopment library in React Native, see here.](#for-instructions-on-running-the-v2-delopment-library-in-react-native-see-here)
   - [Table of Contents](#table-of-contents)
   - [Install](#install)
   - [Usage](#usage)
