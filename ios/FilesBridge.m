@@ -39,6 +39,12 @@ RCT_EXPORT_METHOD(shareFiles:(NSString *)target threadId:(NSString *)threadId ca
   }];
 }
 
+RCT_EXPORT_METHOD(file:(NSString*)blockId resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    NSError *error;
+    Files *files = [Textile.instance.files file:blockId error:&error];
+    fulfillWithResult([files.data base64EncodedStringWithOptions:0], error, resolve, reject);
+}
+
 RCT_EXPORT_METHOD(list:(NSString*)threadId offset:(NSString*)offset limit:(NSInteger)limit resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSError *error;
   FilesList *list = [Textile.instance.files list:threadId offset:offset limit:limit error:&error];
@@ -47,21 +53,29 @@ RCT_EXPORT_METHOD(list:(NSString*)threadId offset:(NSString*)offset limit:(NSInt
 
 RCT_EXPORT_METHOD(content:(NSString*)hash resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   [Textile.instance.files content:hash completion:^(NSData * _Nullable data, NSString * _Nullable mediaType, NSError * _Nonnull error) {
-    NSDictionary *result = @{
-                             @"data" : [data base64EncodedStringWithOptions:0],
-                             @"mediaType" : mediaType
-                             };
-    fulfillWithResult(result, error, resolve, reject);
+      if (data && !error) {
+          NSDictionary *result = @{
+              @"data" : [data base64EncodedStringWithOptions:0],
+              @"mediaType" : mediaType
+          };
+          fulfillWithResult(result, error, resolve, reject);
+      } else {
+          fulfillWithResult(nil, error, resolve, reject);
+      }
   }];
 }
 
 RCT_EXPORT_METHOD(imageContentForMinWidth:(NSString*)pth minWidth:(NSInteger)minWidth resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   [Textile.instance.files imageContentForMinWidth:pth minWidth:minWidth completion:^(NSData * _Nullable data, NSString * _Nullable mediaType, NSError * _Nonnull error) {
-    NSDictionary *result = @{
-                             @"data" : [data base64EncodedStringWithOptions:0],
-                             @"mediaType" : mediaType
-                             };
-    fulfillWithResult(result, error, resolve, reject);
+      if (data && !error) {
+          NSDictionary *result = @{
+              @"data" : [data base64EncodedStringWithOptions:0],
+              @"mediaType" : mediaType
+          };
+          fulfillWithResult(result, error, resolve, reject);
+      } else {
+          fulfillWithResult(nil, error, resolve, reject);
+      }
   }];
 }
 

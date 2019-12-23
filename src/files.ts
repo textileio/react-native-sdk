@@ -1,7 +1,7 @@
 import { NativeModules } from 'react-native'
 import { Buffer } from 'buffer'
 
-import { Block, FilesList, IBlock, IFilesList } from './model'
+import { Block, FilesList, IBlock, IFilesList, IFiles, Files } from './model'
 
 const { FilesBridge } = NativeModules
 
@@ -51,6 +51,16 @@ export async function shareFiles(
 ): Promise<IBlock> {
   const result = await FilesBridge.shareFiles(target, threadId, caption)
   return Block.decode(Buffer.from(result, 'base64'))
+}
+
+/**
+ * Get a Files object by block id
+ * @param blockId The block id of the Files to get
+ * @returns A Promise that will resolve with the Files result
+ */
+export async function file(blockId: string): Promise<IFiles> {
+  const result = await FilesBridge.file(blockId)
+  return Files.decode(Buffer.from(result, 'base64'))
 }
 
 /**
